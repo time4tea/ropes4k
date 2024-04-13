@@ -20,5 +20,5 @@ interface FlatRope extends Rope {
 	 * @return a <code>String</code> representation of a range
 	 * in this rope.
 	 */
-	public String toString(int offset, int length);
+    String toString(int offset, int length);
 }

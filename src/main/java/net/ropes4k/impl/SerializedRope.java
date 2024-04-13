@@ -36,18 +36,12 @@ final class SerializedRope implements Externalizable {
 	 */
 	public SerializedRope() {}
 
-	/**
-	 * Create a new concatenation rope from two ropes.
-	 * @param left the first rope.
-	 * @param right the second rope.
-	 */
 	public SerializedRope(final Rope rope) {
 		this.rope = rope;
 	}
 
 	@Override
-	public void readExternal(final ObjectInput in) throws IOException,
-			ClassNotFoundException {
+	public void readExternal(final ObjectInput in) throws IOException {
 		// Read the UTF string and build a rope from it. This should
 		// result in a FlatRope.
 		this.rope = Rope.BUILDER.build(in.readUTF());

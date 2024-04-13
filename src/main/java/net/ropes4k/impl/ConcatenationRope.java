@@ -69,8 +69,7 @@ public final class ConcatenationRope extends AbstractRope {
                 if (index > this.iterator.getPos()) {
                     this.iterator.skip(index-this.iterator.getPos()-1);
                     try {
-                        final char c = this.iterator.next();
-                        return c;
+                        return this.iterator.next();
                     } catch (final IllegalArgumentException e) {
                         System.out.println("Rope length is: " + rope.length() + " charAt is " + index);
                         throw e;

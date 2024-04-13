@@ -23,7 +23,6 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 
 	/**
 	 * Constructs a new rope from an underlying character sequence.
-	 * @param sequence
 	 */
 	public FlatCharSequenceRope(final CharSequence sequence) {
 		this.sequence = sequence;

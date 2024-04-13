@@ -87,7 +87,6 @@ public abstract class AbstractRope implements Rope {
 	/**
 	 * A utility method that returns an instance of this rope optimized
 	 * for sequential access.
-	 * @return
 	 */
 	protected CharSequence getForSequentialAccess() {
 		return this;

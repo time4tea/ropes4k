@@ -26,7 +26,6 @@ public final class ReverseRope extends AbstractRope {
 	 * Balancing algorithm works optimally when only FlatRopes or
 	 * SubstringRopes are supplied. Framework must guarantee this
 	 * as no runtime check is performed.
-	 * @param rope
 	 */
 	public ReverseRope(final Rope rope) {
 		this.rope = rope;
