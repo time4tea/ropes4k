@@ -8,13 +8,14 @@ package net.ropes4k.test;
 import javolution.text.Text;
 import net.ropes4k.Rope;
 import net.ropes4k.impl.AbstractRope;
-import org.junit.Assert;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Performs an extensive performance test comparing Ropes, Strings, and
@@ -796,7 +797,7 @@ public class PerformanceTest {
             final int offset = deletePlan[j][0];
             final int length = deletePlan[j][1];
             result = result.substring(0, offset).concat(result.substring(offset + length));
-            Assert.assertEquals(deletePlan[j][2], result.length());
+            assertEquals(deletePlan[j][2], result.length());
         }
         y = System.nanoTime();
         System.out.printf("[String]       Executed delete plan in % ,18d ns. Result has length: %d\n", (y - x), result.length());
