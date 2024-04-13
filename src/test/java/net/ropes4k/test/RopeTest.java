@@ -71,11 +71,6 @@ public class RopeTest {
 
 
     @Test
-    public void testTemp() {
-        // insert temporary code here.
-    }
-
-    @Test
     public void testLengthOverflow() {
         Rope x1 = Rope.BUILDER.build("01");
         for (int j = 2; j < 31; ++j)
