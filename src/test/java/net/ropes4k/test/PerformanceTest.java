@@ -31,9 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PerformanceTest {
 
     private static int seed = 342342;
-    private static Random random = new Random(PerformanceTest.seed);
-    private static int lenCC = 155551;
-    private static int lenBF = 458576;
+    private static final Random random = new Random(PerformanceTest.seed);
 
     private static final int ITERATION_COUNT = 7;
     private static final int PLAN_LENGTH = 500;
@@ -47,8 +45,10 @@ public class PerformanceTest {
     private final char[] bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt");
     private final String aChristmasCarol = new String(aChristmasCarolRaw);
     private final String bensAuto = new String(bensAutoRaw);
+    private final int lenCC = aChristmasCarol.length();
+    private final int lenBF = bensAuto.length();
 
-    public void runTheTest() throws Exception {
+    public void runTheTest() {
         long x = System.nanoTime();
         long y = System.nanoTime();
         System.out.println("Read " + aChristmasCarol.length() + " bytes in " + PerformanceTest.time(x, y));
@@ -57,7 +57,7 @@ public class PerformanceTest {
         System.out.println("**** DELETE PLAN TEST ****");
         System.out.println();
 
-        int newSize = PerformanceTest.lenCC;
+        int newSize = lenCC;
         final int[][] deletePlan = new int[PLAN_LENGTH][3];
         for (int j = 0; j < deletePlan.length; ++j) {
             deletePlan[j][0] = PerformanceTest.random.nextInt(newSize);
@@ -87,8 +87,8 @@ public class PerformanceTest {
 
         final int[][] prependPlan = new int[PLAN_LENGTH][2];
         for (int j = 0; j < prependPlan.length; ++j) {
-            prependPlan[j][0] = PerformanceTest.random.nextInt(PerformanceTest.lenCC);
-            prependPlan[j][1] = PerformanceTest.random.nextInt(PerformanceTest.lenCC - prependPlan[j][0]);
+            prependPlan[j][0] = PerformanceTest.random.nextInt(lenCC);
+            prependPlan[j][1] = PerformanceTest.random.nextInt(lenCC - prependPlan[j][0]);
         }
 
         for (int k = 20; k <= prependPlan.length; k += 20) {
@@ -114,8 +114,8 @@ public class PerformanceTest {
 
         final int[][] appendPlan = new int[PLAN_LENGTH][2];
         for (int j = 0; j < appendPlan.length; ++j) {
-            appendPlan[j][0] = PerformanceTest.random.nextInt(PerformanceTest.lenCC);
-            appendPlan[j][1] = PerformanceTest.random.nextInt(PerformanceTest.lenCC - appendPlan[j][0]);
+            appendPlan[j][0] = PerformanceTest.random.nextInt(lenCC);
+            appendPlan[j][1] = PerformanceTest.random.nextInt(lenCC - appendPlan[j][0]);
         }
 
 
@@ -141,9 +141,9 @@ public class PerformanceTest {
 
         final int[][] insertPlan = new int[PLAN_LENGTH][3];
         for (int j = 0; j < insertPlan.length; ++j) {
-            insertPlan[j][0] = PerformanceTest.random.nextInt(PerformanceTest.lenCC);                      //location to insert
-            insertPlan[j][1] = PerformanceTest.random.nextInt(PerformanceTest.lenCC);                      //clip from
-            insertPlan[j][2] = PerformanceTest.random.nextInt(PerformanceTest.lenCC - insertPlan[j][1]);   //clip length
+            insertPlan[j][0] = PerformanceTest.random.nextInt(lenCC);                      //location to insert
+            insertPlan[j][1] = PerformanceTest.random.nextInt(lenCC);                      //clip from
+            insertPlan[j][2] = PerformanceTest.random.nextInt(lenCC - insertPlan[j][1]);   //clip length
         }
 
 
@@ -171,9 +171,9 @@ public class PerformanceTest {
 
         final int[][] insertPlan2 = new int[PLAN_LENGTH][3];
         for (int j = 0; j < insertPlan2.length; ++j) {
-            insertPlan2[j][0] = PerformanceTest.random.nextInt(PerformanceTest.lenCC);                      //location to insert
-            insertPlan2[j][1] = PerformanceTest.random.nextInt(PerformanceTest.lenBF);                      //clip from
-            insertPlan2[j][2] = PerformanceTest.random.nextInt(PerformanceTest.lenBF - insertPlan2[j][1]);  //clip length
+            insertPlan2[j][0] = PerformanceTest.random.nextInt(lenCC);                      //location to insert
+            insertPlan2[j][1] = PerformanceTest.random.nextInt(lenBF);                      //clip from
+            insertPlan2[j][2] = PerformanceTest.random.nextInt(lenBF - insertPlan2[j][1]);  //clip length
         }
 
         {
@@ -356,14 +356,13 @@ public class PerformanceTest {
     /**
      * @param args
      */
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
 
         if (args.length == 1) {
             seed = Integer.parseInt(args[0]);
         }
 
         new PerformanceTest().runTheTest();
-
     }
 
     private static long stringFindTest(char[] aChristmasCarol, String toFind) {
