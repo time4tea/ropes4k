@@ -3,7 +3,7 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.test;
+package net.ropes4k.test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -18,11 +18,11 @@ import java.util.regex.Pattern;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.ahmadsoft.ropes.Rope;
-import org.ahmadsoft.ropes.impl.ConcatenationRope;
-import org.ahmadsoft.ropes.impl.FlatCharSequenceRope;
-import org.ahmadsoft.ropes.impl.ReverseRope;
-import org.ahmadsoft.ropes.impl.SubstringRope;
+import net.ropes4k.Rope;
+import net.ropes4k.impl.ConcatenationRope;
+import net.ropes4k.impl.ReverseRope;
+import net.ropes4k.impl.SubstringRope;
+import net.ropes4k.impl.FlatCharSequenceRope;
 
 public class RopeTest extends TestCase {
 	

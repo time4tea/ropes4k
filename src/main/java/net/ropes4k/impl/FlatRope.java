@@ -3,13 +3,15 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.impl;
+package net.ropes4k.impl;
+
+import net.ropes4k.Rope;
 
 /**
  * A rope that is directly backed by a data source.
  * @author Amin Ahmad
  */
-interface FlatRope extends org.ahmadsoft.ropes.Rope {
+interface FlatRope extends Rope {
 	/**
 	 * Returns a <code>String</code> representation of a range
 	 * in this rope.

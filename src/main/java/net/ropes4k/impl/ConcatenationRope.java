@@ -3,13 +3,13 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.impl;
+package net.ropes4k.impl;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 
-import org.ahmadsoft.ropes.Rope;
+import net.ropes4k.Rope;
 
 /**
  * A rope that represents the concatenation of two other ropes.

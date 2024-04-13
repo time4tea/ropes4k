@@ -3,11 +3,11 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.test;
+package net.ropes4k.test;
 
 import javolution.text.Text;
-import org.ahmadsoft.ropes.Rope;
-import org.ahmadsoft.ropes.impl.AbstractRope;
+import net.ropes4k.Rope;
+import net.ropes4k.impl.AbstractRope;
 import org.junit.Assert;
 
 import java.io.*;

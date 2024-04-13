@@ -3,7 +3,7 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.impl;
+package net.ropes4k.impl;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -11,7 +11,7 @@ import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectStreamException;
 
-import org.ahmadsoft.ropes.Rope;
+import net.ropes4k.Rope;
 
 /**
  * An instance of this class replaces ropes during the serialization

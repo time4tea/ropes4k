@@ -3,13 +3,13 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.impl;
+package net.ropes4k.impl;
 
 import java.io.PrintStream;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 
-import org.ahmadsoft.ropes.Rope;
+import net.ropes4k.Rope;
 
 /**
  * Contains utlities for manipulating ropes.

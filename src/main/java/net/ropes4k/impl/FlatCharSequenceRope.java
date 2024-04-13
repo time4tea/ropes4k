@@ -3,43 +3,40 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.impl;
+package net.ropes4k.impl;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import org.ahmadsoft.ropes.Rope;
+import net.ropes4k.Rope;
 
 /**
- * A rope representing the reversal of character sequence.
- * Internal implementation only.
+ * A rope constructed from an underlying character sequence.
  * @author Amin Ahmad
  */
-public final class ReverseRope extends AbstractRope {
+public final class FlatCharSequenceRope extends AbstractRope implements FlatRope {
 
-	private final Rope rope;
+	private final CharSequence sequence;
 
 	/**
-	 * Constructs a new rope from an underlying rope.
-	 * <p>
-	 * Balancing algorithm works optimally when only FlatRopes or
-	 * SubstringRopes are supplied. Framework must guarantee this
-	 * as no runtime check is performed.
-	 * @param rope
+	 * Constructs a new rope from an underlying character sequence.
+	 * @param sequence
 	 */
-	public ReverseRope(final Rope rope) {
-		this.rope = rope;
+	public FlatCharSequenceRope(final CharSequence sequence) {
+		this.sequence = sequence;
 	}
 
 	@Override
 	public char charAt(final int index) {
-		return this.rope.charAt(this.length() - index - 1);
+		return this.sequence.charAt(index);
 	}
 
 	@Override
 	public byte depth() {
-		return RopeUtilities.INSTANCE.depth(this.rope);
+		return 0;
 	}
 
 	@Override
@@ -50,12 +47,12 @@ public final class ReverseRope extends AbstractRope {
 			int current = start;
 			@Override
 			public boolean hasNext() {
-				return this.current < ReverseRope.this.length();
+				return this.current < FlatCharSequenceRope.this.length();
 			}
 
 			@Override
 			public Character next() {
-				return ReverseRope.this.charAt(this.current++);
+				return FlatCharSequenceRope.this.sequence.charAt(this.current++);
 			}
 
 			@Override
@@ -67,19 +64,26 @@ public final class ReverseRope extends AbstractRope {
 
 	@Override
 	public int length() {
-		return this.rope.length();
+		return this.sequence.length();
+	}
+
+	@Override
+	public Matcher matcher(final Pattern pattern) {
+		// optimized to return a matcher directly on the underlying sequence.
+		return pattern.matcher(this.sequence);
 	}
 
 	@Override
 	public Rope reverse() {
-		return this.rope;
+		return new ReverseRope(this);
 	}
 
+	@Override
 	public Iterator<Character> reverseIterator(final int start) {
 		if (start < 0 || start > this.length())
 			throw new IndexOutOfBoundsException("Rope index out of range: " + start);
 		return new Iterator<Character>() {
-			int current = ReverseRope.this.length() - start;
+			int current = FlatCharSequenceRope.this.length() - start;
 			@Override
 			public boolean hasNext() {
 				return this.current > 0;
@@ -87,7 +91,7 @@ public final class ReverseRope extends AbstractRope {
 
 			@Override
 			public Character next() {
-				return ReverseRope.this.charAt(--this.current);
+				return FlatCharSequenceRope.this.sequence.charAt(--this.current);
 			}
 
 			@Override
@@ -101,7 +105,20 @@ public final class ReverseRope extends AbstractRope {
 	public Rope subSequence(final int start, final int end) {
 		if (start == 0 && end == this.length())
 			return this;
-		return this.rope.subSequence(this.length() - end, this.length() - start).reverse();
+		if (end - start < 8 || this.sequence instanceof String /* special optimization for String */) {
+			return new FlatCharSequenceRope(this.sequence.subSequence(start, end));
+		} else {
+			return new SubstringRope(this, start, end-start);
+		}
+	}
+
+	@Override
+	public String toString() {
+		return this.sequence.toString();
+	}
+
+	public String toString(final int offset, final int length) {
+		return this.sequence.subSequence(offset, offset + length).toString();
 	}
 
 	@Override
@@ -113,7 +130,12 @@ public final class ReverseRope extends AbstractRope {
 	public void write(final Writer out, final int offset, final int length) throws IOException {
 		if (offset < 0 || offset + length > this.length())
 			throw new IndexOutOfBoundsException("Rope index out of bounds:" + (offset < 0 ? offset: offset + length));
+
+		if (this.sequence instanceof String) {	// optimization for String
+			out.write(((String) this.sequence).substring(offset, offset+length));
+			return;
+		}
 		for (int j=offset; j<offset + length; ++j)
-			out.write(this.charAt(j));
+			out.write(this.sequence.charAt(j));
 	}
 }

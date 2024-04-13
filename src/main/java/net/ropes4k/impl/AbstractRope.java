@@ -3,7 +3,7 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.impl;
+package net.ropes4k.impl;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
@@ -13,7 +13,7 @@ import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.ahmadsoft.ropes.Rope;
+import net.ropes4k.Rope;
 
 /**
  * Abstract base class for ropes that implements many of the common operations.

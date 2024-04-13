@@ -3,40 +3,43 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package org.ahmadsoft.ropes.impl;
+package net.ropes4k.impl;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import org.ahmadsoft.ropes.Rope;
+import net.ropes4k.Rope;
 
 /**
- * A rope constructed from an underlying character sequence.
+ * A rope representing the reversal of character sequence.
+ * Internal implementation only.
  * @author Amin Ahmad
  */
-public final class FlatCharSequenceRope extends AbstractRope implements FlatRope {
+public final class ReverseRope extends AbstractRope {
 
-	private final CharSequence sequence;
+	private final Rope rope;
 
 	/**
-	 * Constructs a new rope from an underlying character sequence.
-	 * @param sequence
+	 * Constructs a new rope from an underlying rope.
+	 * <p>
+	 * Balancing algorithm works optimally when only FlatRopes or
+	 * SubstringRopes are supplied. Framework must guarantee this
+	 * as no runtime check is performed.
+	 * @param rope
 	 */
-	public FlatCharSequenceRope(final CharSequence sequence) {
-		this.sequence = sequence;
+	public ReverseRope(final Rope rope) {
+		this.rope = rope;
 	}
 
 	@Override
 	public char charAt(final int index) {
-		return this.sequence.charAt(index);
+		return this.rope.charAt(this.length() - index - 1);
 	}
 
 	@Override
 	public byte depth() {
-		return 0;
+		return RopeUtilities.INSTANCE.depth(this.rope);
 	}
 
 	@Override
@@ -47,12 +50,12 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 			int current = start;
 			@Override
 			public boolean hasNext() {
-				return this.current < FlatCharSequenceRope.this.length();
+				return this.current < ReverseRope.this.length();
 			}
 
 			@Override
 			public Character next() {
-				return FlatCharSequenceRope.this.sequence.charAt(this.current++);
+				return ReverseRope.this.charAt(this.current++);
 			}
 
 			@Override
@@ -64,26 +67,19 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 
 	@Override
 	public int length() {
-		return this.sequence.length();
-	}
-
-	@Override
-	public Matcher matcher(final Pattern pattern) {
-		// optimized to return a matcher directly on the underlying sequence.
-		return pattern.matcher(this.sequence);
+		return this.rope.length();
 	}
 
 	@Override
 	public Rope reverse() {
-		return new ReverseRope(this);
+		return this.rope;
 	}
 
-	@Override
 	public Iterator<Character> reverseIterator(final int start) {
 		if (start < 0 || start > this.length())
 			throw new IndexOutOfBoundsException("Rope index out of range: " + start);
 		return new Iterator<Character>() {
-			int current = FlatCharSequenceRope.this.length() - start;
+			int current = ReverseRope.this.length() - start;
 			@Override
 			public boolean hasNext() {
 				return this.current > 0;
@@ -91,7 +87,7 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 
 			@Override
 			public Character next() {
-				return FlatCharSequenceRope.this.sequence.charAt(--this.current);
+				return ReverseRope.this.charAt(--this.current);
 			}
 
 			@Override
@@ -105,20 +101,7 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 	public Rope subSequence(final int start, final int end) {
 		if (start == 0 && end == this.length())
 			return this;
-		if (end - start < 8 || this.sequence instanceof String /* special optimization for String */) {
-			return new FlatCharSequenceRope(this.sequence.subSequence(start, end));
-		} else {
-			return new SubstringRope(this, start, end-start);
-		}
-	}
-
-	@Override
-	public String toString() {
-		return this.sequence.toString();
-	}
-
-	public String toString(final int offset, final int length) {
-		return this.sequence.subSequence(offset, offset + length).toString();
+		return this.rope.subSequence(this.length() - end, this.length() - start).reverse();
 	}
 
 	@Override
@@ -130,12 +113,7 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 	public void write(final Writer out, final int offset, final int length) throws IOException {
 		if (offset < 0 || offset + length > this.length())
 			throw new IndexOutOfBoundsException("Rope index out of bounds:" + (offset < 0 ? offset: offset + length));
-
-		if (this.sequence instanceof String) {	// optimization for String
-			out.write(((String) this.sequence).substring(offset, offset+length));
-			return;
-		}
 		for (int j=offset; j<offset + length; ++j)
-			out.write(this.sequence.charAt(j));
+			out.write(this.charAt(j));
 	}
 }
