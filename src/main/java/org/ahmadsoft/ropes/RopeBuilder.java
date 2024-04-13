@@ -43,7 +43,7 @@ public final class RopeBuilder {
 	/**
 	 * Construct a rope from an underlying character sequence.
 	 * @param sequence the underlying character sequence.
-	 * @return a rope representing the underlying character sequnce.
+	 * @return a rope representing the underlying character sequence.
 	 */
 	public Rope build(final CharSequence sequence) {
 		if (sequence instanceof Rope)

@@ -245,7 +245,7 @@ import java.util.regex.Pattern;
      * @return <code>true</code> if this rope matches the specified
      * <code>Pattern</code>, or <code>false</code> otherwise.
      */
-    public boolean matches(Pattern regex);
+    boolean matches(Pattern regex);
 
     /**
      * Returns <code>true</code> if this rope matches the specified
@@ -255,7 +255,7 @@ import java.util.regex.Pattern;
      * @return <code>true</code> if this rope matches the specified
      * regular expression, or <code>false</code> otherwise.
      */
-    public boolean matches(String regex);
+    boolean matches(String regex);
 
 
     /**
@@ -265,13 +265,13 @@ import java.util.regex.Pattern;
      *
      * @return a rebalanced rope.
      */
-    public Rope rebalance();
+    Rope rebalance();
 
     /**
      * Reverses this rope.
      * @return a reversed copy of this rope.
      */
-    public Rope reverse();
+    Rope reverse();
 
     /**
      * Returns a reverse iterator positioned to start at the end of this
@@ -315,7 +315,7 @@ import java.util.regex.Pattern;
      * Write this rope to a <code>Writer</code>.
      * @param out the writer object.
      */
-    public void write(Writer out) throws IOException;
+    void write(Writer out) throws IOException;
 
     /**
      * Write a range of this rope to a <code>Writer</code>.
@@ -323,7 +323,7 @@ import java.util.regex.Pattern;
      * @param offset the range offset.
      * @param length the range length.
      */
-    public void write(Writer out, int offset, int length) throws IOException;
+    void write(Writer out, int offset, int length) throws IOException;
     
     /**
      * Increase the length of this rope to the specified length by prepending 
@@ -333,7 +333,7 @@ import java.util.regex.Pattern;
      * @return the padded rope.
      * @see #padStart(int, char)
      */
-    public Rope padStart(int toLength);
+    Rope padStart(int toLength);
     
     /**
      * Increase the length of this rope to the specified length by repeatedly 
@@ -345,7 +345,7 @@ import java.util.regex.Pattern;
      * @return the padded rope.
      * @see #padStart(int, char)
      */
-    public Rope padStart(int toLength, char padChar);
+    Rope padStart(int toLength, char padChar);
     
     /**
      * Increase the length of this rope to the specified length by appending
@@ -355,7 +355,7 @@ import java.util.regex.Pattern;
      * @return the padded rope.
      * @see #padStart(int, char)
      */
-    public Rope padEnd(int toLength);
+    Rope padEnd(int toLength);
     
     /**
      * Increase the length of this rope to the specified length by repeatedly 
@@ -367,14 +367,14 @@ import java.util.regex.Pattern;
      * @return the padded rope.
      * @see #padStart(int, char)
      */
-    public Rope padEnd(int toLength, char padChar);
+    Rope padEnd(int toLength, char padChar);
     
     /**
      * Returns true if and only if the length of this rope is zero.
      * @return <code>true</code> if and only if the length of this
      * rope is zero, and <code>false</code> otherwise.
      */
-    public boolean isEmpty();
+    boolean isEmpty();
     
     /**
      * Returns <code>true</code> if this rope starts with the specified 
@@ -384,7 +384,7 @@ import java.util.regex.Pattern;
      * specified prefix and <code>false</code> otherwise.
      * @see #startsWith(CharSequence, int)
      */
-    public boolean startsWith(CharSequence prefix);
+    boolean startsWith(CharSequence prefix);
     /**
      * Returns <code>true</code> if this rope, beginning from a specified
      * offset, starts with the specified prefix.
@@ -393,7 +393,7 @@ import java.util.regex.Pattern;
      * @return <code>true</code> if this rope starts with the 
      * specified prefix and <code>false</code> otherwise.
      */
-    public boolean startsWith(CharSequence prefix, int offset);
+    boolean startsWith(CharSequence prefix, int offset);
     
     /**
      * Returns <code>true</code> if this rope ends with the specified 
@@ -403,7 +403,7 @@ import java.util.regex.Pattern;
      * specified suffix and <code>false</code> otherwise.
      * @see #endsWith(CharSequence, int)
      */
-    public boolean endsWith(CharSequence suffix);
+    boolean endsWith(CharSequence suffix);
     /**
      * Returns <code>true</code> if this rope, terminated at a specified
      * offset, ends with the specified suffix.
@@ -413,5 +413,5 @@ import java.util.regex.Pattern;
      * @return <code>true</code> if this rope starts with the 
      * specified prefix and <code>false</code> otherwise.
      */
-    public boolean endsWith(CharSequence suffix, int offset);
+    boolean endsWith(CharSequence suffix, int offset);
 }
