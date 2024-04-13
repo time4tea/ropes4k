@@ -25,6 +25,7 @@ package org.ahmadsoft.ropes.test;
 import javolution.text.Text;
 import org.ahmadsoft.ropes.Rope;
 import org.ahmadsoft.ropes.impl.AbstractRope;
+import org.junit.Assert;
 
 import java.io.*;
 import java.util.Arrays;
@@ -42,8 +43,8 @@ public class PerformanceTest {
 
     private static int seed = 342342;
     private static Random random = new Random(PerformanceTest.seed);
-    private static int lenCC = 182029;
-    private static int lenBF = 467196;
+    private static int lenCC = 155551;
+    private static int lenBF = 458576;
 
     private static final int ITERATION_COUNT = 7;
     private static final int PLAN_LENGTH = 500;
@@ -78,11 +79,12 @@ public class PerformanceTest {
         System.out.println();
 
         int newSize = PerformanceTest.lenCC;
-        final int[][] deletePlan = new int[PLAN_LENGTH][2];
+        final int[][] deletePlan = new int[PLAN_LENGTH][3];
         for (int j = 0; j < deletePlan.length; ++j) {
             deletePlan[j][0] = PerformanceTest.random.nextInt(newSize);
             deletePlan[j][1] = PerformanceTest.random.nextInt(Math.min(100, newSize - deletePlan[j][0]));
-            newSize -= deletePlan[j][1];
+            deletePlan[j][2] = (newSize - deletePlan[j][1]);
+            newSize = deletePlan[j][2];
         }
 
         for (int k = 20; k <= deletePlan.length; k += 20) {
@@ -467,7 +469,7 @@ public class PerformanceTest {
 
     private static char[] readBF() throws Exception {
         final CharArrayWriter out = new CharArrayWriter(467196);
-        final BufferedReader in = new BufferedReader(new FileReader("AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt"));
+        final BufferedReader in = new BufferedReader(new FileReader("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt"));
 
         final char[] c = new char[256];
         int x = -1;
@@ -480,7 +482,7 @@ public class PerformanceTest {
 
     private static char[] readCC() throws Exception {
         final CharArrayWriter out = new CharArrayWriter(182029);
-        final BufferedReader in = new BufferedReader(new FileReader("AChristmasCarol_CharlesDickens.txt"));
+        final BufferedReader in = new BufferedReader(new FileReader("test-files/AChristmasCarol_CharlesDickens.txt"));
 
         final char[] c = new char[256];
         int x = -1;
@@ -705,15 +707,15 @@ public class PerformanceTest {
         return (y - x);
     }
 
-    private static long stringBufferDeleteTest(final String aChristmasCarol, final int[][] prependPlan) {
+    private static long stringBufferDeleteTest(final String aChristmasCarol, final int[][] deletePlan) {
         long x, y;
 
         x = System.nanoTime();
         final StringBuffer result = new StringBuffer(aChristmasCarol);
 
-        for (int j = 0; j < prependPlan.length; ++j) {
-            final int offset = prependPlan[j][0];
-            final int length = prependPlan[j][1];
+        for (int j = 0; j < deletePlan.length; ++j) {
+            final int offset = deletePlan[j][0];
+            final int length = deletePlan[j][1];
             result.delete(offset, offset + length);
         }
         y = System.nanoTime();
@@ -801,16 +803,17 @@ public class PerformanceTest {
         return (y - x);
     }
 
-    private static long stringDeleteTest(final String aChristmasCarol, final int[][] prependPlan) {
+    private static long stringDeleteTest(final String aChristmasCarol, final int[][] deletePlan) {
         long x, y;
 
         x = System.nanoTime();
         String result = aChristmasCarol;
 
-        for (int j = 0; j < prependPlan.length; ++j) {
-            final int offset = prependPlan[j][0];
-            final int length = prependPlan[j][1];
+        for (int j = 0; j < deletePlan.length; ++j) {
+            final int offset = deletePlan[j][0];
+            final int length = deletePlan[j][1];
             result = result.substring(0, offset).concat(result.substring(offset + length));
+            Assert.assertEquals(deletePlan[j][2], result.length());
         }
         y = System.nanoTime();
         System.out.printf("[String]       Executed delete plan in % ,18d ns. Result has length: %d\n", (y - x), result.length());
