@@ -9,7 +9,10 @@ import javolution.text.Text;
 import net.ropes4k.Rope;
 import net.ropes4k.impl.AbstractRope;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
@@ -40,24 +43,14 @@ public class PerformanceTest {
     private static StringBuffer complexStringBuffer = null;
     private static Rope complexRope = null;
     private static Text complexText = null;
+    private final char[] aChristmasCarolRaw = readpath("test-files/AChristmasCarol_CharlesDickens.txt");
+    private final char[] bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt");
+    private final String aChristmasCarol = new String(aChristmasCarolRaw);
+    private final String bensAuto = new String(bensAutoRaw);
 
-    /**
-     * @param args
-     */
-    public static void main(final String[] args) throws Exception {
-
-        if (args.length == 1) {
-            seed = Integer.parseInt(args[0]);
-        }
-
-        long x, y;
-
-        x = System.nanoTime();
-        final char[] aChristmasCarol_RAW = readpath("test-files/AChristmasCarol_CharlesDickens.txt");
-        final char[] bensAuto_RAW = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt");
-        final String aChristmasCarol = new String(aChristmasCarol_RAW);
-        final String bensAuto = new String(bensAuto_RAW);
-        y = System.nanoTime();
+    public void runTheTest() throws Exception {
+        long x = System.nanoTime();
+        long y = System.nanoTime();
         System.out.println("Read " + aChristmasCarol.length() + " bytes in " + PerformanceTest.time(x, y));
 
         System.out.println();
@@ -159,10 +152,10 @@ public class PerformanceTest {
             {
                 long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
                 for (int j = 0; j < 1; ++j) {
-                    stats0[j] = PerformanceTest.stringInsertTest(aChristmasCarol_RAW, insertPlan, k);
-                    stats1[j] = PerformanceTest.stringBufferInsertTest(aChristmasCarol_RAW, insertPlan, k);
-                    stats2[j] = PerformanceTest.ropeInsertTest(aChristmasCarol_RAW, insertPlan, k);
-                    stats3[j] = PerformanceTest.textInsertTest(aChristmasCarol_RAW, insertPlan, k);
+                    stats0[j] = PerformanceTest.stringInsertTest(aChristmasCarolRaw, insertPlan, k);
+                    stats1[j] = PerformanceTest.stringBufferInsertTest(aChristmasCarolRaw, insertPlan, k);
+                    stats2[j] = PerformanceTest.ropeInsertTest(aChristmasCarolRaw, insertPlan, k);
+                    stats3[j] = PerformanceTest.textInsertTest(aChristmasCarolRaw, insertPlan, k);
                 }
                 stat(System.out, stats0, "ns", "[String]");
                 stat(System.out, stats1, "ns", "[StringBuffer]");
@@ -207,10 +200,10 @@ public class PerformanceTest {
         {
             long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
             for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringTraverseTest(aChristmasCarol_RAW);
-                stats1[j] = PerformanceTest.stringBufferTraverseTest(aChristmasCarol_RAW);
-                stats2[j] = PerformanceTest.ropeTraverseTest_1(aChristmasCarol_RAW);
-                stats3[j] = PerformanceTest.ropeTraverseTest_2(aChristmasCarol_RAW);
+                stats0[j] = PerformanceTest.stringTraverseTest(aChristmasCarolRaw);
+                stats1[j] = PerformanceTest.stringBufferTraverseTest(aChristmasCarolRaw);
+                stats2[j] = PerformanceTest.ropeTraverseTest_1(aChristmasCarolRaw);
+                stats3[j] = PerformanceTest.ropeTraverseTest_2(aChristmasCarolRaw);
             }
             stat(System.out, stats0, "ns", "[String]");
             stat(System.out, stats1, "ns", "[StringBuffer]");
@@ -252,11 +245,11 @@ public class PerformanceTest {
         {
             long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT], stats4 = new long[ITERATION_COUNT];
             for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarol_RAW, p1);
-                stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarol_RAW, p1);
-                stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarol_RAW, p1);
-                stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarol_RAW, p1);
-                stats4[j] = PerformanceTest.textRegexpTest(aChristmasCarol_RAW, p1);
+                stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarolRaw, p1);
+                stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarolRaw, p1);
+                stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarolRaw, p1);
+                stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarolRaw, p1);
+                stats4[j] = PerformanceTest.textRegexpTest(aChristmasCarolRaw, p1);
             }
             stat(System.out, stats0, "ns", "[String]");
             stat(System.out, stats1, "ns", "[StringBuffer]");
@@ -273,10 +266,10 @@ public class PerformanceTest {
         {
             long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
             for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarol_RAW, p1);
-                stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarol_RAW, p1);
-                stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarol_RAW, p1);
-                stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarol_RAW, p1);
+                stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarolRaw, p1);
+                stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarolRaw, p1);
+                stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarolRaw, p1);
+                stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarolRaw, p1);
             }
             stat(System.out, stats0, "ns", "[String]");
             stat(System.out, stats1, "ns", "[StringBuffer]");
@@ -316,9 +309,9 @@ public class PerformanceTest {
         {
             long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
             for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringFindTest(bensAuto_RAW, toFind);
-                stats1[j] = PerformanceTest.stringBufferFindTest(bensAuto_RAW, toFind);
-                stats2[j] = PerformanceTest.ropeFindTest(bensAuto_RAW, toFind);
+                stats0[j] = PerformanceTest.stringFindTest(bensAutoRaw, toFind);
+                stats1[j] = PerformanceTest.stringBufferFindTest(bensAutoRaw, toFind);
+                stats2[j] = PerformanceTest.ropeFindTest(bensAutoRaw, toFind);
             }
             stat(System.out, stats0, "ns", "[String]");
             stat(System.out, stats1, "ns", "[StringBuffer]");
@@ -357,6 +350,20 @@ public class PerformanceTest {
             stat(System.out, stats0, "ns", "[Out.write]");
             stat(System.out, stats1, "ns", "[Rope.write]");
         }
+
+    }
+
+    /**
+     * @param args
+     */
+    public static void main(final String[] args) throws Exception {
+
+        if (args.length == 1) {
+            seed = Integer.parseInt(args[0]);
+        }
+
+        new PerformanceTest().runTheTest();
+
     }
 
     private static long stringFindTest(char[] aChristmasCarol, String toFind) {
@@ -453,8 +460,12 @@ public class PerformanceTest {
         return (y - x);
     }
 
-    private static char[] readpath(String path) throws Exception {
-        return Files.readString(Path.of(path)).toCharArray();
+    private static char[] readpath(String path) {
+        try {
+            return Files.readString(Path.of(path)).toCharArray();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static long ropeAppendTest(final String aChristmasCarol, final int[][] appendPlan, final int planLength) {
