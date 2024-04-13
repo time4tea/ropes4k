@@ -35,11 +35,6 @@ public class PerformanceTest {
     private static final int ITERATION_COUNT = 7;
     private static final int PLAN_LENGTH = 500;
 
-
-    private static String complexString = null;
-    private static StringBuffer complexStringBuffer = null;
-    private static Rope complexRope = null;
-    private static Text complexText = null;
     private final char[] aChristmasCarolRaw = readpath("test-files/AChristmasCarol_CharlesDickens.txt");
     private final char[] bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt");
     private final String aChristmasCarol = new String(aChristmasCarolRaw);
@@ -47,93 +42,237 @@ public class PerformanceTest {
     private final int lenCC = aChristmasCarol.length();
     private final int lenBF = bensAuto.length();
 
+    private static String complexString = null;
+    private static StringBuffer complexStringBuffer = null;
+    private static Rope complexRope = null;
+    private static Text complexText = null;
+
     public void runTheTest() {
         long x = System.nanoTime();
         long y = System.nanoTime();
         System.out.println("Read " + aChristmasCarol.length() + " bytes in " + PerformanceTest.time(x, y));
 
-        System.out.println();
-        System.out.println("**** DELETE PLAN TEST ****");
-        System.out.println();
+        deletePlan();
+        prependPlan();
+        appendPlan();
+        insertPlan();
+        insertPlan2();
+        traveral1();
+        traversal2();
+        regex1();
+        regex2();
+        regexComplex();
+        search();
+        search2();
+        write();
+    }
 
-        int newSize = lenCC;
-        final int[][] deletePlan = new int[PLAN_LENGTH][3];
-        for (int j = 0; j < deletePlan.length; ++j) {
-            deletePlan[j][0] = PerformanceTest.random.nextInt(newSize);
-            deletePlan[j][1] = PerformanceTest.random.nextInt(Math.min(100, newSize - deletePlan[j][0]));
-            deletePlan[j][2] = (newSize - deletePlan[j][1]);
-            newSize = deletePlan[j][2];
-        }
+    private static void search2() {
+        System.out.println();
+        System.out.println("**** STRING SEARCH TEST (COMPLEXLY-CONSTRUCTED DATASTRUCTURES)****");
+        System.out.println("* Using a complexly constructed rope and the pattern 'consumes faster\n" +
+                "* than Labor wears; while the used key is always bright,'.");
 
-        for (int k = 20; k <= deletePlan.length; k += 20) {
-            System.out.println("Delete plan length: " + k);
-            {
-                long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
-                for (int j = 0; j < ITERATION_COUNT; ++j) {
-                    stats0[j] = PerformanceTest.stringDeleteTest(aChristmasCarol, deletePlan);
-                    stats1[j] = PerformanceTest.stringBufferDeleteTest(aChristmasCarol, deletePlan);
-                    stats2[j] = PerformanceTest.ropeDeleteTest(aChristmasCarol, deletePlan);
-                }
-                stat(stats0, "[String]");
-                stat(stats1, "[StringBuffer]");
-                stat(stats2, "[Rope]");
+
+        String toFind = "Bob was very cheerful with them, and spoke pleasantly to";
+        {
+            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
+            for (int j = 0; j < ITERATION_COUNT; ++j) {
+                stats0[j] = PerformanceTest.stringFindTest2(complexString, toFind);
+                stats1[j] = PerformanceTest.stringBufferFindTest2(complexStringBuffer, toFind);
+                stats2[j] = PerformanceTest.ropeFindTest2(complexRope, toFind);
             }
+            stat(stats0, "[String]");
+            stat(stats1, "[StringBuffer]");
+            stat(stats2, "[Rope]");
         }
+    }
+
+    private static void write() {
 
         System.out.println();
-        System.out.println("**** PREPEND PLAN TEST ****");
-        System.out.println();
+        System.out.println("**** WRITE TEST ****");
+        System.out.println("* Illustrates how to write a Rope to a stream efficiently.");
 
-        final int[][] prependPlan = new int[PLAN_LENGTH][2];
-        for (int j = 0; j < prependPlan.length; ++j) {
-            prependPlan[j][0] = PerformanceTest.random.nextInt(lenCC);
-            prependPlan[j][1] = PerformanceTest.random.nextInt(lenCC - prependPlan[j][0]);
+        long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT];
+        for (int j = 0; j < ITERATION_COUNT; ++j) {
+            stats0[j] = PerformanceTest.ropeWriteBad(complexRope);
+            stats1[j] = PerformanceTest.ropeWriteGood(complexRope);
         }
+        stat(stats0, "[Out.write]");
+        stat(stats1, "[Rope.write]");
+    }
 
-        for (int k = 20; k <= prependPlan.length; k += 20) {
-            System.out.println("Prepend plan length: " + k);
-            {
-                long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
-                for (int j = 0; j < ITERATION_COUNT; ++j) {
-                    stats0[j] = PerformanceTest.stringPrependTest(aChristmasCarol, prependPlan, k);
-                    stats1[j] = PerformanceTest.stringBufferPrependTest(aChristmasCarol, prependPlan, k);
-                    stats2[j] = PerformanceTest.ropePrependTest(aChristmasCarol, prependPlan, k);
-                    stats3[j] = PerformanceTest.textPrependTest(aChristmasCarol, prependPlan, k);
-                }
-                stat(stats0, "[String]");
-                stat(stats1, "[StringBuffer]");
-                stat(stats2, "[Rope]");
-                stat(stats3, "[Text]");
+    private void search() {
+        System.out.println();
+        System.out.println("**** STRING SEARCH TEST ****");
+        System.out.println("* Using a simply constructed rope and the pattern 'Bob was very\n" +
+                "* cheerful with them, and spoke pleasantly to'.");
+
+        String toFind = "consumes faster than Labor wears; while the used key is always bright,";
+        {
+            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
+            for (int j = 0; j < ITERATION_COUNT; ++j) {
+                stats0[j] = PerformanceTest.stringFindTest(bensAutoRaw, toFind);
+                stats1[j] = PerformanceTest.stringBufferFindTest(bensAutoRaw, toFind);
+                stats2[j] = PerformanceTest.ropeFindTest(bensAutoRaw, toFind);
             }
+            stat(stats0, "[String]");
+            stat(stats1, "[StringBuffer]");
+            stat(stats2, "[Rope]");
         }
+    }
+
+    private static void regexComplex() {
+        System.out.println();
+        System.out.println("**** REGULAR EXPRESSION TEST (COMPLEXLY-CONSTRUCTED DATASTRUCTURES) ****");
+        System.out.println("* Using a complexly-constructed rope and the pattern 'Crachit'.");
+
+
+        Pattern p1 = Pattern.compile("Cratchit");
+        long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT], stats4 = new long[ITERATION_COUNT], stats5 = new long[ITERATION_COUNT];
+        for (int j = 0; j < ITERATION_COUNT; ++j) {
+            stats0[j] = PerformanceTest.stringRegexpTest2(complexString, p1);
+            stats1[j] = PerformanceTest.stringBufferRegexpTest2(complexStringBuffer, p1);
+            stats2[j] = PerformanceTest.ropeRegexpTest2(complexRope, p1);
+            stats3[j] = PerformanceTest.ropeRebalancedRegexpTest2(complexRope, p1);
+            stats4[j] = PerformanceTest.ropeMatcherRegexpTest2(complexRope, p1);
+            stats5[j] = PerformanceTest.textRegexpTest2(complexText, p1);
+        }
+        stat(stats0, "[String]");
+        stat(stats1, "[StringBuffer]");
+        stat(stats2, "[Rope]");
+        stat(stats3, "[Reblncd Rope]");
+        stat(stats4, "[Rope.matcher]");
+        stat(stats5, "[Text]");
+    }
+
+    private void regex2() {
+        System.out.println();
+        System.out.println("**** REGULAR EXPRESSION TEST (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****");
+        System.out.println("* Using a simply-constructed rope and the pattern 'plea.*y'.");
+
+
+        Pattern p1 = Pattern.compile("plea.*y");
+        long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
+        for (int j = 0; j < ITERATION_COUNT; ++j) {
+            stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarolRaw, p1);
+            stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarolRaw, p1);
+            stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarolRaw, p1);
+            stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarolRaw, p1);
+        }
+        stat(stats0, "[String]");
+        stat(stats1, "[StringBuffer]");
+        stat(stats2, "[Rope]");
+        stat(stats3, "[Rope.matcher]");
+    }
+
+    private void regex1() {
 
         System.out.println();
-        System.out.println("**** APPEND PLAN TEST ****");
-        System.out.println();
-
-        final int[][] appendPlan = new int[PLAN_LENGTH][2];
-        for (int j = 0; j < appendPlan.length; ++j) {
-            appendPlan[j][0] = PerformanceTest.random.nextInt(lenCC);
-            appendPlan[j][1] = PerformanceTest.random.nextInt(lenCC - appendPlan[j][0]);
-        }
+        System.out.println("**** REGULAR EXPRESSION TEST (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****");
+        System.out.println("* Using a simply-constructed rope and the pattern 'Crachit'.");
 
 
-        for (int k = 20; k <= appendPlan.length; k += 20) {
-            System.out.println("Append plan length: " + k);
-            {
-                long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
-                for (int j = 0; j < ITERATION_COUNT; ++j) {
-                    stats0[j] = PerformanceTest.stringAppendTest(aChristmasCarol, appendPlan, k);
-                    stats1[j] = PerformanceTest.stringBufferAppendTest(aChristmasCarol, appendPlan, k);
-                    stats2[j] = PerformanceTest.ropeAppendTest(aChristmasCarol, appendPlan, k);
-                }
-                stat(stats0, "[String]");
-                stat(stats1, "[StringBuffer]");
-                stat(stats2, "[Rope]");
+
+        Pattern p1 = Pattern.compile("Cratchit");
+
+        {
+            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT], stats4 = new long[ITERATION_COUNT];
+            for (int j = 0; j < ITERATION_COUNT; ++j) {
+                stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarolRaw, p1);
+                stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarolRaw, p1);
+                stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarolRaw, p1);
+                stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarolRaw, p1);
+                stats4[j] = PerformanceTest.textRegexpTest(aChristmasCarolRaw, p1);
             }
+            stat(stats0, "[String]");
+            stat(stats1, "[StringBuffer]");
+            stat(stats2, "[Rope]");
+            stat(stats3, "[Rope.matcher]");
+            stat(stats4, "[Text]");
+        }
+    }
+
+    private static void traversal2() {
+
+
+        System.out.println();
+        System.out.println("**** TRAVERSAL TEST 2 (COMPLEXLY-CONSTRUCTED DATASTRUCTURES) ****");
+        System.out.println("* A traversal test wherein the datastructures are complexly\n" +
+                "* constructed, meaning constructed through hundreds of insertions,\n" +
+                "* substrings, and deletions (deletions not yet implemented). In\n" +
+                "* this case, we expect rope performance to suffer, with the\n" +
+                "* iterator version performing better than the charAt version.");
+        System.out.println();
+
+        long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT], stats4 = new long[ITERATION_COUNT];
+        for (int j = 0; j < 3; ++j) {
+            stats0[j] = PerformanceTest.stringTraverseTest2(complexString);
+            stats1[j] = PerformanceTest.stringBufferTraverseTest2(complexStringBuffer);
+            stats2[j] = PerformanceTest.ropeTraverseTest2_1(complexRope);
+            stats3[j] = PerformanceTest.ropeTraverseTest2_2(complexRope);
+            stats4[j] = PerformanceTest.textTraverseTest2(complexText);
+        }
+        stat(stats0, "[String]");
+        stat(stats1, "[StringBuffer]");
+        stat(stats2, "[Rope/charAt]");
+        stat(stats3, "[Rope/itr]");
+        stat(stats4, "[Text/charAt]");
+    }
+
+    private void traveral1() {
+        System.out.println();
+        System.out.println("**** TRAVERSAL TEST 1 (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****");
+        System.out.println("* A traversal test wherein the datastructures are simply\n" +
+                "* constructed, meaning constructed straight from the data\n" +
+                "* file with no further modifications. In this case, we expect\n" +
+                "* rope performance to be competitive, with the charAt version\n" +
+                "* performing better than the iterator version.");
+        System.out.println();
+
+        long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
+        for (int j = 0; j < ITERATION_COUNT; ++j) {
+            stats0[j] = PerformanceTest.stringTraverseTest(aChristmasCarolRaw);
+            stats1[j] = PerformanceTest.stringBufferTraverseTest(aChristmasCarolRaw);
+            stats2[j] = PerformanceTest.ropeTraverseTest_1(aChristmasCarolRaw);
+            stats3[j] = PerformanceTest.ropeTraverseTest_2(aChristmasCarolRaw);
+        }
+        stat(stats0, "[String]");
+        stat(stats1, "[StringBuffer]");
+        stat(stats2, "[Rope/charAt]");
+        stat(stats3, "[Rope/itr]");
+    }
+
+    private void insertPlan2() {
+
+
+        System.out.println();
+        System.out.println("**** INSERT PLAN TEST 2 ****");
+        System.out.println("* Insert fragments of Benjamin Franklin's Autobiography into\n" +
+                "* A Christmas Carol.\n");
+
+        final int[][] insertPlan2 = new int[PLAN_LENGTH][3];
+        for (int j = 0; j < insertPlan2.length; ++j) {
+            insertPlan2[j][0] = PerformanceTest.random.nextInt(lenCC);                      //location to insert
+            insertPlan2[j][1] = PerformanceTest.random.nextInt(lenBF);                      //clip from
+            insertPlan2[j][2] = PerformanceTest.random.nextInt(lenBF - insertPlan2[j][1]);  //clip length
         }
 
+        {
+            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
+            for (int j = 0; j < ITERATION_COUNT; ++j) {
+                stats0[j] = PerformanceTest.stringInsertTest2(aChristmasCarol, bensAuto, insertPlan2);
+                stats1[j] = PerformanceTest.stringBufferInsertTest2(aChristmasCarol, bensAuto, insertPlan2);
+                stats2[j] = PerformanceTest.ropeInsertTest2(aChristmasCarol, bensAuto, insertPlan2);
+            }
+            stat(stats0, "[String]");
+            stat(stats1, "[StringBuffer]");
+            stat(stats2, "[Rope]");
+        }
+    }
 
+    private void insertPlan() {
         System.out.println();
         System.out.println("**** INSERT PLAN TEST ****");
         System.out.println("* Insert fragments of A Christmas Carol back into itself.\n");
@@ -162,194 +301,92 @@ public class PerformanceTest {
                 stat(stats3, "[Text]");
             }
         }
+    }
 
+    private void appendPlan() {
         System.out.println();
-        System.out.println("**** INSERT PLAN TEST 2 ****");
-        System.out.println("* Insert fragments of Benjamin Franklin's Autobiography into\n" +
-                "* A Christmas Carol.\n");
+        System.out.println("**** APPEND PLAN TEST ****");
+        System.out.println();
 
-        final int[][] insertPlan2 = new int[PLAN_LENGTH][3];
-        for (int j = 0; j < insertPlan2.length; ++j) {
-            insertPlan2[j][0] = PerformanceTest.random.nextInt(lenCC);                      //location to insert
-            insertPlan2[j][1] = PerformanceTest.random.nextInt(lenBF);                      //clip from
-            insertPlan2[j][2] = PerformanceTest.random.nextInt(lenBF - insertPlan2[j][1]);  //clip length
+        final int[][] appendPlan = new int[PLAN_LENGTH][2];
+        for (int j = 0; j < appendPlan.length; ++j) {
+            appendPlan[j][0] = PerformanceTest.random.nextInt(lenCC);
+            appendPlan[j][1] = PerformanceTest.random.nextInt(lenCC - appendPlan[j][0]);
         }
 
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringInsertTest2(aChristmasCarol, bensAuto, insertPlan2);
-                stats1[j] = PerformanceTest.stringBufferInsertTest2(aChristmasCarol, bensAuto, insertPlan2);
-                stats2[j] = PerformanceTest.ropeInsertTest2(aChristmasCarol, bensAuto, insertPlan2);
+
+        for (int k = 20; k <= appendPlan.length; k += 20) {
+            System.out.println("Append plan length: " + k);
+            {
+                long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
+                for (int j = 0; j < ITERATION_COUNT; ++j) {
+                    stats0[j] = PerformanceTest.stringAppendTest(aChristmasCarol, appendPlan, k);
+                    stats1[j] = PerformanceTest.stringBufferAppendTest(aChristmasCarol, appendPlan, k);
+                    stats2[j] = PerformanceTest.ropeAppendTest(aChristmasCarol, appendPlan, k);
+                }
+                stat(stats0, "[String]");
+                stat(stats1, "[StringBuffer]");
+                stat(stats2, "[Rope]");
             }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope]");
+        }
+    }
+
+    private void prependPlan() {
+        System.out.println();
+        System.out.println("**** PREPEND PLAN TEST ****");
+        System.out.println();
+
+        final int[][] prependPlan = new int[PLAN_LENGTH][2];
+        for (int j = 0; j < prependPlan.length; ++j) {
+            prependPlan[j][0] = PerformanceTest.random.nextInt(lenCC);
+            prependPlan[j][1] = PerformanceTest.random.nextInt(lenCC - prependPlan[j][0]);
         }
 
-        System.out.println();
-        System.out.println("**** TRAVERSAL TEST 1 (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****");
-        System.out.println("* A traversal test wherein the datastructures are simply\n" +
-                "* constructed, meaning constructed straight from the data\n" +
-                "* file with no further modifications. In this case, we expect\n" +
-                "* rope performance to be competitive, with the charAt version\n" +
-                "* performing better than the iterator version.");
-        System.out.println();
-
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringTraverseTest(aChristmasCarolRaw);
-                stats1[j] = PerformanceTest.stringBufferTraverseTest(aChristmasCarolRaw);
-                stats2[j] = PerformanceTest.ropeTraverseTest_1(aChristmasCarolRaw);
-                stats3[j] = PerformanceTest.ropeTraverseTest_2(aChristmasCarolRaw);
+        for (int k = 20; k <= prependPlan.length; k += 20) {
+            System.out.println("Prepend plan length: " + k);
+            {
+                long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
+                for (int j = 0; j < ITERATION_COUNT; ++j) {
+                    stats0[j] = PerformanceTest.stringPrependTest(aChristmasCarol, prependPlan, k);
+                    stats1[j] = PerformanceTest.stringBufferPrependTest(aChristmasCarol, prependPlan, k);
+                    stats2[j] = PerformanceTest.ropePrependTest(aChristmasCarol, prependPlan, k);
+                    stats3[j] = PerformanceTest.textPrependTest(aChristmasCarol, prependPlan, k);
+                }
+                stat(stats0, "[String]");
+                stat(stats1, "[StringBuffer]");
+                stat(stats2, "[Rope]");
+                stat(stats3, "[Text]");
             }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope/charAt]");
-            stat(stats3, "[Rope/itr]");
+        }
+    }
+
+    private void deletePlan() {
+        System.out.println();
+        System.out.println("**** DELETE PLAN TEST ****");
+        System.out.println();
+        int newSize = lenCC;
+        final int[][] deletePlan = new int[PLAN_LENGTH][3];
+        for (int j = 0; j < deletePlan.length; ++j) {
+            deletePlan[j][0] = PerformanceTest.random.nextInt(newSize);
+            deletePlan[j][1] = PerformanceTest.random.nextInt(Math.min(100, newSize - deletePlan[j][0]));
+            deletePlan[j][2] = (newSize - deletePlan[j][1]);
+            newSize = deletePlan[j][2];
         }
 
-        System.out.println();
-        System.out.println("**** TRAVERSAL TEST 2 (COMPLEXLY-CONSTRUCTED DATASTRUCTURES) ****");
-        System.out.println("* A traversal test wherein the datastructures are complexly\n" +
-                "* constructed, meaning constructed through hundreds of insertions,\n" +
-                "* substrings, and deletions (deletions not yet implemented). In\n" +
-                "* this case, we expect rope performance to suffer, with the\n" +
-                "* iterator version performing better than the charAt version.");
-        System.out.println();
-
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT], stats4 = new long[ITERATION_COUNT];
-            for (int j = 0; j < 3; ++j) {
-                stats0[j] = PerformanceTest.stringTraverseTest2(complexString);
-                stats1[j] = PerformanceTest.stringBufferTraverseTest2(complexStringBuffer);
-                stats2[j] = PerformanceTest.ropeTraverseTest2_1(complexRope);
-                stats3[j] = PerformanceTest.ropeTraverseTest2_2(complexRope);
-                stats4[j] = PerformanceTest.textTraverseTest2(complexText);
+        for (int k = 20; k <= deletePlan.length; k += 20) {
+            System.out.println("Delete plan length: " + k);
+            {
+                long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
+                for (int j = 0; j < ITERATION_COUNT; ++j) {
+                    stats0[j] = PerformanceTest.stringDeleteTest(aChristmasCarol, deletePlan);
+                    stats1[j] = PerformanceTest.stringBufferDeleteTest(aChristmasCarol, deletePlan);
+                    stats2[j] = PerformanceTest.ropeDeleteTest(aChristmasCarol, deletePlan);
+                }
+                stat(stats0, "[String]");
+                stat(stats1, "[StringBuffer]");
+                stat(stats2, "[Rope]");
             }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope/charAt]");
-            stat(stats3, "[Rope/itr]");
-            stat(stats4, "[Text/charAt]");
         }
-
-        System.out.println();
-        System.out.println("**** REGULAR EXPRESSION TEST (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****");
-        System.out.println("* Using a simply-constructed rope and the pattern 'Crachit'.");
-
-        Pattern p1 = Pattern.compile("Cratchit");
-
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT], stats4 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarolRaw, p1);
-                stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarolRaw, p1);
-                stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarolRaw, p1);
-                stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarolRaw, p1);
-                stats4[j] = PerformanceTest.textRegexpTest(aChristmasCarolRaw, p1);
-            }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope]");
-            stat(stats3, "[Rope.matcher]");
-            stat(stats4, "[Text]");
-        }
-
-        System.out.println();
-        System.out.println("**** REGULAR EXPRESSION TEST (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****");
-        System.out.println("* Using a simply-constructed rope and the pattern 'plea.*y'.");
-
-        p1 = Pattern.compile("plea.*y");
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringRegexpTest(aChristmasCarolRaw, p1);
-                stats1[j] = PerformanceTest.stringBufferRegexpTest(aChristmasCarolRaw, p1);
-                stats2[j] = PerformanceTest.ropeRegexpTest(aChristmasCarolRaw, p1);
-                stats3[j] = PerformanceTest.ropeMatcherRegexpTest(aChristmasCarolRaw, p1);
-            }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope]");
-            stat(stats3, "[Rope.matcher]");
-        }
-
-        System.out.println();
-        System.out.println("**** REGULAR EXPRESSION TEST (COMPLEXLY-CONSTRUCTED DATASTRUCTURES) ****");
-        System.out.println("* Using a complexly-constructed rope and the pattern 'Crachit'.");
-
-        p1 = Pattern.compile("Cratchit");
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT], stats3 = new long[ITERATION_COUNT], stats4 = new long[ITERATION_COUNT], stats5 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringRegexpTest2(complexString, p1);
-                stats1[j] = PerformanceTest.stringBufferRegexpTest2(complexStringBuffer, p1);
-                stats2[j] = PerformanceTest.ropeRegexpTest2(complexRope, p1);
-                stats3[j] = PerformanceTest.ropeRebalancedRegexpTest2(complexRope, p1);
-                stats4[j] = PerformanceTest.ropeMatcherRegexpTest2(complexRope, p1);
-                stats5[j] = PerformanceTest.textRegexpTest2(complexText, p1);
-            }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope]");
-            stat(stats3, "[Reblncd Rope]");
-            stat(stats4, "[Rope.matcher]");
-            stat(stats5, "[Text]");
-        }
-
-        System.out.println();
-        System.out.println("**** STRING SEARCH TEST ****");
-        System.out.println("* Using a simply constructed rope and the pattern 'Bob was very\n" +
-                "* cheerful with them, and spoke pleasantly to'.");
-
-        String toFind = "consumes faster than Labor wears; while the used key is always bright,";
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringFindTest(bensAutoRaw, toFind);
-                stats1[j] = PerformanceTest.stringBufferFindTest(bensAutoRaw, toFind);
-                stats2[j] = PerformanceTest.ropeFindTest(bensAutoRaw, toFind);
-            }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope]");
-        }
-
-        System.out.println();
-        System.out.println("**** STRING SEARCH TEST (COMPLEXLY-CONSTRUCTED DATASTRUCTURES)****");
-        System.out.println("* Using a complexly constructed rope and the pattern 'consumes faster\n" +
-                "* than Labor wears; while the used key is always bright,'.");
-
-        toFind = "Bob was very cheerful with them, and spoke pleasantly to";
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT], stats2 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.stringFindTest2(complexString, toFind);
-                stats1[j] = PerformanceTest.stringBufferFindTest2(complexStringBuffer, toFind);
-                stats2[j] = PerformanceTest.ropeFindTest2(complexRope, toFind);
-            }
-            stat(stats0, "[String]");
-            stat(stats1, "[StringBuffer]");
-            stat(stats2, "[Rope]");
-        }
-
-
-        System.out.println();
-        System.out.println("**** WRITE TEST ****");
-        System.out.println("* Illustrates how to write a Rope to a stream efficiently.");
-
-        {
-            long[] stats0 = new long[ITERATION_COUNT], stats1 = new long[ITERATION_COUNT];
-            for (int j = 0; j < ITERATION_COUNT; ++j) {
-                stats0[j] = PerformanceTest.ropeWriteBad(complexRope);
-                stats1[j] = PerformanceTest.ropeWriteGood(complexRope);
-            }
-            stat(stats0, "[Out.write]");
-            stat(stats1, "[Rope.write]");
-        }
-
     }
 
     /**
