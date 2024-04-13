@@ -53,8 +53,8 @@ public class PerformanceTest {
         long x, y;
 
         x = System.nanoTime();
-        final char[] aChristmasCarol_RAW = PerformanceTest.readCC();
-        final char[] bensAuto_RAW = PerformanceTest.readBF();
+        final char[] aChristmasCarol_RAW = readpath("test-files/AChristmasCarol_CharlesDickens.txt");
+        final char[] bensAuto_RAW = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt");
         final String aChristmasCarol = new String(aChristmasCarol_RAW);
         final String bensAuto = new String(bensAuto_RAW);
         y = System.nanoTime();
@@ -453,12 +453,8 @@ public class PerformanceTest {
         return (y - x);
     }
 
-    private static char[] readBF() throws Exception {
-        return Files.readString(Path.of("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt")).toCharArray();
-    }
-
-    private static char[] readCC() throws Exception {
-        return Files.readString(Path.of("test-files/AChristmasCarol_CharlesDickens.txt")).toCharArray();
+    private static char[] readpath(String path) throws Exception {
+        return Files.readString(Path.of(path)).toCharArray();
     }
 
     private static long ropeAppendTest(final String aChristmasCarol, final int[][] appendPlan, final int planLength) {
