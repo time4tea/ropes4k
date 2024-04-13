@@ -10,6 +10,8 @@ import net.ropes4k.Rope;
 import net.ropes4k.impl.AbstractRope;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.regex.Matcher;
@@ -452,29 +454,11 @@ public class PerformanceTest {
     }
 
     private static char[] readBF() throws Exception {
-        final CharArrayWriter out = new CharArrayWriter(467196);
-        final BufferedReader in = new BufferedReader(new FileReader("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt"));
-
-        final char[] c = new char[256];
-        int x = -1;
-        while (-1 != (x = in.read(c))) {
-            out.write(c, 0, x);
-        }
-        out.close();
-        return out.toCharArray();
+        return Files.readString(Path.of("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt")).toCharArray();
     }
 
     private static char[] readCC() throws Exception {
-        final CharArrayWriter out = new CharArrayWriter(182029);
-        final BufferedReader in = new BufferedReader(new FileReader("test-files/AChristmasCarol_CharlesDickens.txt"));
-
-        final char[] c = new char[256];
-        int x = -1;
-        while (-1 != (x = in.read(c))) {
-            out.write(c, 0, x);
-        }
-        out.close();
-        return out.toCharArray();
+        return Files.readString(Path.of("test-files/AChristmasCarol_CharlesDickens.txt")).toCharArray();
     }
 
     private static long ropeAppendTest(final String aChristmasCarol, final int[][] appendPlan, final int planLength) {
