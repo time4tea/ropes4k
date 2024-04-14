@@ -147,20 +147,23 @@ class PerformanceTest {
     """.trimIndent()
         )
 
-        val insertPlan2 = Array(PLAN_LENGTH) { IntArray(3) }
-        for (j in insertPlan2.indices) {
-            insertPlan2[j][0] = random.nextInt(aChristmasCarol.length) //location to insert
-            insertPlan2[j][1] = random.nextInt(bensAuto.length) //clip from
-            insertPlan2[j][2] = random.nextInt(bensAuto.length - insertPlan2[j][1]) //clip length
+
+        val inserts = (0 until PLAN_LENGTH).map {
+            val clipFrom = random.nextInt(bensAuto.length)
+            Insert(
+                random.nextInt(aChristmasCarol.length),
+                clipFrom,
+                random.nextInt(bensAuto.length - clipFrom)
+            )
         }
 
         val stats0 = LongArray(ITERATION_COUNT)
         val stats1 = LongArray(ITERATION_COUNT)
         val stats2 = LongArray(ITERATION_COUNT)
         for (j in 0 until ITERATION_COUNT) {
-            stats0[j] = stringInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
-            stats1[j] = stringBufferInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
-            stats2[j] = ropeInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
+            stats0[j] = stringInsertTest2(aChristmasCarol, bensAuto, inserts)
+            stats1[j] = stringBufferInsertTest2(aChristmasCarol, bensAuto, inserts)
+            stats2[j] = ropeInsertTest2(aChristmasCarol, bensAuto, inserts)
         }
         stat(stats0, "[String]")
         stat(stats1, "[StringBuffer]")
@@ -575,15 +578,12 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun ropeInsertTest2(aChristmasCarol: String, bensAuto: String, insertPlan: Array<IntArray>): Long {
+        private fun ropeInsertTest2(aChristmasCarol: String, bensAuto: String, inserts: List<Insert>): Long {
             val x = System.nanoTime()
             var result = Rope.BUILDER.build(aChristmasCarol)
 
-            for (ints in insertPlan) {
-                val into = ints[0]
-                val offset = ints[1]
-                val length = ints[2]
-                result = result.insert(into, bensAuto.subSequence(offset, offset + length))
+            inserts.forEach {
+                result = result.insert(it.location, bensAuto.subSequence(it.offset, it.offset + it.length))
             }
             val y = System.nanoTime()
             System.out.printf(
@@ -736,17 +736,15 @@ class PerformanceTest {
         private fun stringBufferInsertTest2(
             aChristmasCarol: String,
             bensAuto: String,
-            insertPlan: Array<IntArray>
+            inserts: List<Insert>
         ): Long {
             val x = System.nanoTime()
             val result = StringBuilder(aChristmasCarol)
 
-            for (ints in insertPlan) {
-                val into = ints[0]
-                val offset = ints[1]
-                val length = ints[2]
-                result.insert(into, bensAuto.subSequence(offset, offset + length))
+            inserts.forEach {
+                result.insert(it.location, bensAuto.subSequence(it.offset, it.offset + it.length))
             }
+
             val y = System.nanoTime()
             System.out.printf(
                 "[StringBuffer] Executed insert plan in % ,18d ns. Result has length: %d\n",
@@ -842,17 +840,18 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringInsertTest2(aChristmasCarol: String, bensAuto: String, insertPlan: Array<IntArray>): Long {
+        private fun stringInsertTest2(aChristmasCarol: String, bensAuto: String, inserts: List<Insert>): Long {
             val x = System.nanoTime()
             var result = aChristmasCarol
 
-            for (ints in insertPlan) {
-                val into = ints[0]
-                val offset = ints[1]
-                val length = ints[2]
+            inserts.forEach {
                 result =
-                    result.substring(0, into) + bensAuto.substring(offset, offset + length) + result.substring(into)
+                    result.substring(0, it.location) + bensAuto.substring(
+                        it.offset,
+                        it.offset + it.length
+                    ) + result.substring(it.location)
             }
+
             val y = System.nanoTime()
             System.out.printf(
                 "[String]       Executed insert plan in % ,18d ns. Result has length: %d\n",
