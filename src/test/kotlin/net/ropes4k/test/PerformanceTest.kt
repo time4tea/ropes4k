@@ -35,7 +35,7 @@ class PerformanceTest {
     @Test
     fun `inserts and things that depend on them`() {
         insertPlan()
-        traveral1()
+        traversal1()
         traversal2()
         regexComplex()
         search2()
@@ -121,7 +121,7 @@ class PerformanceTest {
         }
     }
 
-    private fun traveral1() {
+    private fun traversal1() {
         println()
         println("**** TRAVERSAL TEST 1 (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****")
         println(
