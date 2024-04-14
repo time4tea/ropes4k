@@ -12,6 +12,7 @@ import net.ropes4k.impl.ReverseRope
 import net.ropes4k.impl.SubstringRope
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
+import strikt.api.Assertion
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
 import java.io.*
@@ -22,6 +23,10 @@ class RopeTest {
         val out = StringWriter(end - start)
         write(out, start, end - start)
         return out.toString()
+    }
+
+    private fun Assertion.Builder<Rope>.isString(s: String): Assertion.Builder<String> {
+        return get { this.toString() }.isEqualTo(s)
     }
 
     @Test
@@ -94,11 +99,11 @@ class RopeTest {
         var r1 = Rope.BUILDER.build("alpha")
         val r2 = Rope.BUILDER.build("beta")
         var r3 = r1.append(r2)
-        expectThat(r3.toString()).isEqualTo("alphabeta")
+        expectThat(r3).isString("alphabeta")
 
         r1 = Rope.BUILDER.build("The quick brown fox jumped over")
         r3 = r1.append(r1)
-        expectThat(r3.toString()).isEqualTo("The quick brown fox jumped overThe quick brown fox jumped over")
+        expectThat(r3).isString("The quick brown fox jumped overThe quick brown fox jumped over")
     }
 
     @Test
@@ -122,13 +127,11 @@ class RopeTest {
         val z4: Rope = ConcatenationRope(z3, SubstringRope(z1, 6, 2)) // 2367
 
         i = z2.iterator()
-        Assertions.assertTrue(!i.hasNext())
+        Assertions.assertFalse(i.hasNext())
         i = z3.iterator()
-        Assertions.assertTrue(i.hasNext())
         expectThat(i.next()).isEqualTo('2')
-        Assertions.assertTrue(i.hasNext())
         expectThat(i.next()).isEqualTo('3')
-        Assertions.assertTrue(!i.hasNext())
+        Assertions.assertFalse(i.hasNext())
         for (j in 0..z3.length) {
             try {
                 z3.iterator(j)
@@ -145,13 +148,11 @@ class RopeTest {
             }
         }
         i = z4.iterator(4)
-        Assertions.assertTrue(!i.hasNext())
+        Assertions.assertFalse(i.hasNext())
         i = z4.iterator(2)
-        Assertions.assertTrue(i.hasNext())
         expectThat(i.next()).isEqualTo('6')
-        Assertions.assertTrue(i.hasNext())
         expectThat(i.next()).isEqualTo('7')
-        Assertions.assertTrue(!i.hasNext())
+        Assertions.assertFalse(i.hasNext())
     }
 
     @Test
@@ -160,10 +161,10 @@ class RopeTest {
         val x2: Rope = FlatCharSequenceRope("67")
         val x3: Rope = ConcatenationRope(x1, x2)
 
-        expectThat(x1.reverse().toString()).isEqualTo("543210")
-        expectThat(x3.reverse().toString()).isEqualTo("76543210")
+        expectThat(x1.reverse()).isString("543210")
+        expectThat(x3.reverse()).isString("76543210")
         expectThat(x3.reverse().reverse().reverse()).isEqualTo(x3.reverse())
-        expectThat(x3.reverse().subSequence(1, 7).toString()).isEqualTo("654321")
+        expectThat(x3.reverse().subSequence(1, 7)).isString("654321")
     }
 
     @Test
@@ -172,14 +173,14 @@ class RopeTest {
         val x2: Rope = FlatCharSequenceRope("\u0002 67	       \u0007")
         val x3: Rope = ConcatenationRope(x1, x2)
 
-        expectThat(x1.trimStart().toString()).isEqualTo("012345")
-        expectThat(x2.trimStart().toString()).isEqualTo("67	       \u0007")
-        expectThat(x3.trimStart().toString()).isEqualTo("012345\u0002 67	       \u0007")
+        expectThat(x1.trimStart()).isString("012345")
+        expectThat(x2.trimStart()).isString("67	       \u0007")
+        expectThat(x3.trimStart()).isString("012345\u0002 67	       \u0007")
 
-        expectThat(x1.trimEnd().toString()).isEqualTo("\u0012  012345")
-        expectThat(x2.trimEnd().toString()).isEqualTo("\u0002 67")
-        expectThat(x3.trimEnd().toString()).isEqualTo("\u0012  012345\u0002 67")
-        expectThat(x3.trimEnd().reverse().trimEnd().reverse().toString()).isEqualTo("012345\u0002 67")
+        expectThat(x1.trimEnd()).isString("\u0012  012345")
+        expectThat(x2.trimEnd()).isString("\u0002 67")
+        expectThat(x3.trimEnd()).isString("\u0012  012345\u0002 67")
+        expectThat(x3.trimEnd().reverse().trimEnd().reverse()).isString("012345\u0002 67")
 
         expectThat(x3.trimEnd().trimStart()).isEqualTo(x3.trimStart().trimEnd())
         expectThat(x3.trimStart().reverse().trimStart().reverse()).isEqualTo(x3.trimStart().trimEnd())
@@ -268,18 +269,18 @@ class RopeTest {
     @Test
     fun testInsert() {
         val r1 = Rope.BUILDER.build("alpha")
-        expectThat(r1.insert(0, "beta").toString()).isEqualTo("betaalpha")
-        expectThat(r1.insert(r1.length, "beta").toString()).isEqualTo("alphabeta")
-        expectThat(r1.insert(1, "beta").toString()).isEqualTo("abetalpha")
+        expectThat(r1.insert(0, "beta")).isString("betaalpha")
+        expectThat(r1.insert(r1.length, "beta")).isString("alphabeta")
+        expectThat(r1.insert(1, "beta")).isString("abetalpha")
     }
 
     @Test
     fun testPrepend() {
         var r1 = Rope.BUILDER.build("alphabeta")
         for (j in 0..1) r1 = r1.subSequence(0, 5).append(r1)
-        expectThat(r1.toString()).isEqualTo("alphaalphaalphabeta")
+        expectThat(r1).isString("alphaalphaalphabeta")
         r1 = r1.append(r1.subSequence(5, 15))
-        expectThat(r1.toString()).isEqualTo("alphaalphaalphabetaalphaalpha")
+        expectThat(r1).isString("alphaalphaalphabetaalphaalpha")
     }
 
     @Test
@@ -315,103 +316,67 @@ class RopeTest {
         val r4 = ConcatenationRope(ConcatenationRope(r1, r2), r3) //0123443210012
 
         var x = r1.reverseIterator()
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('4')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('3')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('2')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('4')
+        expectThat(x.next()).isEqualTo('3')
+        expectThat(x.next()).isEqualTo('2')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('0')
         Assertions.assertFalse(x.hasNext())
 
         x = r1.reverseIterator(4)
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('0')
         Assertions.assertFalse(x.hasNext())
 
         x = r2.reverseIterator()
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('2')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('3')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('4')
+        expectThat(x.next()).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('2')
+        expectThat(x.next()).isEqualTo('3')
+        expectThat(x.next()).isEqualTo('4')
         Assertions.assertFalse(x.hasNext())
 
         x = r2.reverseIterator(4)
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('4')
+        expectThat(x.next()).isEqualTo('4')
         Assertions.assertFalse(x.hasNext())
 
         x = r3.reverseIterator()
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('2')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('2')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('0')
         Assertions.assertFalse(x.hasNext())
 
         x = r3.reverseIterator(1)
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('0')
         Assertions.assertFalse(x.hasNext())
 
         x = r4.reverseIterator() //0123443210012
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('2')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('2')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('3')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('4')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('4')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('3')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('2')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('2')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('2')
+        expectThat(x.next()).isEqualTo('3')
+        expectThat(x.next()).isEqualTo('4')
+        expectThat(x.next()).isEqualTo('4')
+        expectThat(x.next()).isEqualTo('3')
+        expectThat(x.next()).isEqualTo('2')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('0')
         Assertions.assertFalse(x.hasNext())
 
         x = r4.reverseIterator(7)
-        expectThat(x.next() as Char).isEqualTo('4')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('4')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('3')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('2')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('1')
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('4')
+        expectThat(x.next()).isEqualTo('4')
+        expectThat(x.next()).isEqualTo('3')
+        expectThat(x.next()).isEqualTo('2')
+        expectThat(x.next()).isEqualTo('1')
+        expectThat(x.next()).isEqualTo('0')
         Assertions.assertFalse(x.hasNext())
 
         x = r4.reverseIterator(12)
-        Assertions.assertTrue(x.hasNext())
-        expectThat(x.next() as Char).isEqualTo('0')
+        expectThat(x.next()).isEqualTo('0')
         Assertions.assertFalse(x.hasNext())
 
         x = r4.reverseIterator(13)
@@ -442,27 +407,27 @@ class RopeTest {
     @Test
     fun testPadStart() {
         val r = Rope.BUILDER.build("hello")
-        expectThat(r.padStart(5).toString()).isEqualTo("hello")
-        expectThat(r.padStart(0).toString()).isEqualTo("hello")
-        expectThat(r.padStart(-1).toString()).isEqualTo("hello")
-        expectThat(r.padStart(6).toString()).isEqualTo(" hello")
-        expectThat(r.padStart(7).toString()).isEqualTo("  hello")
-        expectThat(r.padStart(6, '~').toString()).isEqualTo("~hello")
-        expectThat(r.padStart(7, '~').toString()).isEqualTo("~~hello")
-        expectThat(r.padStart(30, '~').toString()).isEqualTo("~~~~~~~~~~~~~~~~~~~~~~~~~hello")
+        expectThat(r.padStart(5)).isString("hello")
+        expectThat(r.padStart(0)).isString("hello")
+        expectThat(r.padStart(-1)).isString("hello")
+        expectThat(r.padStart(6)).isString(" hello")
+        expectThat(r.padStart(7)).isString("  hello")
+        expectThat(r.padStart(6, '~')).isString("~hello")
+        expectThat(r.padStart(7, '~')).isString("~~hello")
+        expectThat(r.padStart(30, '~')).isString("~~~~~~~~~~~~~~~~~~~~~~~~~hello")
     }
 
     @Test
     fun testPadEnd() {
         val r = Rope.BUILDER.build("hello")
-        expectThat(r.padEnd(5).toString()).isEqualTo("hello")
-        expectThat(r.padEnd(0).toString()).isEqualTo("hello")
-        expectThat(r.padEnd(-1).toString()).isEqualTo("hello")
-        expectThat(r.padEnd(6).toString()).isEqualTo("hello ")
-        expectThat(r.padEnd(7).toString()).isEqualTo("hello  ")
-        expectThat(r.padEnd(6, '~').toString()).isEqualTo("hello~")
-        expectThat(r.padEnd(7, '~').toString()).isEqualTo("hello~~")
-        expectThat(r.padEnd(30, '~').toString()).isEqualTo("hello~~~~~~~~~~~~~~~~~~~~~~~~~")
+        expectThat(r.padEnd(5)).isString("hello")
+        expectThat(r.padEnd(0)).isString("hello")
+        expectThat(r.padEnd(-1)).isString("hello")
+        expectThat(r.padEnd(6)).isString("hello ")
+        expectThat(r.padEnd(7)).isString("hello  ")
+        expectThat(r.padEnd(6, '~')).isString("hello~")
+        expectThat(r.padEnd(7, '~')).isString("hello~~")
+        expectThat(r.padEnd(30, '~')).isString("hello~~~~~~~~~~~~~~~~~~~~~~~~~")
     }
 
     @Test
@@ -482,11 +447,11 @@ class RopeTest {
     fun testAppend() {
         var r = Rope.BUILDER.build("")
         r = r.append('a')
-        expectThat(r.toString()).isEqualTo("a")
+        expectThat(r).isString("a")
         r = r.append("boy")
-        expectThat(r.toString()).isEqualTo("aboy")
+        expectThat(r).isString("aboy")
         r = r.append("test", 0, 4)
-        expectThat(r.toString()).isEqualTo("aboytest")
+        expectThat(r).isString("aboytest")
     }
 
     @Test
