@@ -9,8 +9,6 @@ import net.ropes4k.Rope
 import net.ropes4k.impl.AbstractRope
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
-import strikt.api.expectThat
-import strikt.assertions.isEqualTo
 import java.io.StringWriter
 import java.io.Writer
 import java.nio.file.Files
@@ -275,37 +273,49 @@ class PerformanceTest {
         }
     }
 
+    data class Delete(val offset: Int, val length: Int, val expected: Int)
+
     @Test
     fun deletePlan() {
         println()
         println("**** DELETE PLAN TEST ****")
         println()
         var newSize = aChristmasCarol.length
-        val deletePlan = Array(PLAN_LENGTH) { IntArray(3) }
-        for (j in deletePlan.indices) {
-            deletePlan[j][0] = random.nextInt(newSize)
-            deletePlan[j][1] = random.nextInt(
-                min(100.0, (newSize - deletePlan[j][0]).toDouble()).toInt()
+
+        val deletes = (0 until PLAN_LENGTH).map {
+            val offset = random.nextInt(newSize)
+            val length = random.nextInt(
+                min(100, (newSize - offset))
             )
-            deletePlan[j][2] = (newSize - deletePlan[j][1])
-            newSize = deletePlan[j][2]
+            val expected = newSize - length
+            newSize = expected
+            Delete(offset, length, expected)
         }
 
-        var k = 20
-        while (k <= deletePlan.size) {
-            println("Delete plan length: $k")
+        (0..deletes.size step 20).forEach {
             val stats0 = LongArray(ITERATION_COUNT)
             val stats1 = LongArray(ITERATION_COUNT)
             val stats2 = LongArray(ITERATION_COUNT)
             for (j in 0 until ITERATION_COUNT) {
-                stats0[j] = stringDeleteTest(aChristmasCarol, deletePlan)
-                stats1[j] = stringBufferDeleteTest(aChristmasCarol, deletePlan)
-                stats2[j] = ropeDeleteTest(aChristmasCarol, deletePlan)
+                stats0[j] = timeit("delete") {
+                    deletes.fold(aChristmasCarol) { acc, it ->
+                        acc.substring(0, it.offset) + acc.substring(it.offset + it.length)
+                    }
+                }
+                stats1[j] = timeit("delete") {
+                    deletes.fold(StringBuilder(aChristmasCarol)) { acc, it ->
+                        acc.delete(it.offset, it.offset + it.length)
+                    }
+                }
+                stats2[j] = timeit("delete") {
+                    deletes.fold(Rope.BUILDER.build(aChristmasCarol)) { acc, it ->
+                        acc.delete(it.offset, it.offset + it.length)
+                    }
+                }
             }
             stat(stats0, "[String]")
             stat(stats1, "[StringBuffer]")
             stat(stats2, "[Rope]")
-            k += 20
         }
     }
 
@@ -539,21 +549,23 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun ropeDeleteTest(aChristmasCarol: String, prependPlan: Array<IntArray>): Long {
+        private fun timeit(name: String, f: () -> CharSequence): Long {
             val x = System.nanoTime()
-            var result = Rope.BUILDER.build(aChristmasCarol)
-
-            for (ints in prependPlan) {
-                val offset = ints[0]
-                val length = ints[1]
-                result = result.delete(offset, offset + length)
-            }
+            val result = f()
             val y = System.nanoTime()
+
+            val variant = result.javaClass.simpleName
+
+            val depth = when (result) {
+                is Rope -> (result as AbstractRope).depth()
+                else -> null
+            }
+
             System.out.printf(
-                "[Rope]         Executed delete plan in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
+                "[${variant.padEnd(20)}]         Executed ${name} in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
                 (y - x),
                 result.length,
-                (result as AbstractRope).depth()
+                depth
             )
             return (y - x)
         }
@@ -695,22 +707,14 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringBufferDeleteTest(aChristmasCarol: String, deletePlan: Array<IntArray>): Long {
-            val x = System.nanoTime()
+        private fun stringBufferDeleteTest(aChristmasCarol: String, deletes: List<Delete>): CharSequence {
             val result = StringBuilder(aChristmasCarol)
 
-            for (ints in deletePlan) {
-                val offset = ints[0]
-                val length = ints[1]
-                result.delete(offset, offset + length)
+            deletes.forEach {
+                result.delete(it.offset, it.offset + it.length)
             }
-            val y = System.nanoTime()
-            System.out.printf(
-                "[StringBuffer] Executed delete plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
-            return (y - x)
+
+            return result
         }
 
         private fun stringBufferInsertTest(aChristmasCarol: CharArray, inserts: List<Insert>): Long {
@@ -796,25 +800,6 @@ class PerformanceTest {
             for (j in 0 until aChristmasCarol!!.length) r += aChristmasCarol[j].code
             val y = System.nanoTime()
             System.out.printf("[StringBuffer] Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), r)
-            return (y - x)
-        }
-
-        private fun stringDeleteTest(string: String, deletePlan: Array<IntArray>): Long {
-            val x = System.nanoTime()
-            var result = string
-
-            for (ints in deletePlan) {
-                val offset = ints[0]
-                val length = ints[1]
-                result = result.substring(0, offset) + result.substring(offset + length)
-                expectThat(result.length).isEqualTo(ints[2])
-            }
-            val y = System.nanoTime()
-            System.out.printf(
-                "[String]       Executed delete plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
             return (y - x)
         }
 
