@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test
 import strikt.api.Assertion
 import strikt.api.expectThat
 import strikt.assertions.isEqualTo
+import strikt.assertions.matches
 import java.io.*
 import java.util.regex.Pattern
 
@@ -119,7 +120,7 @@ class RopeTest {
             Assertions.assertTrue(i.hasNext(), "Has next (" + j + "/" + c2.length + ")")
             i.next()
         }
-        Assertions.assertTrue(!i.hasNext())
+        Assertions.assertFalse(i.hasNext())
 
         val z1 = FlatCharSequenceRope("0123456789")
         val z2: Rope = SubstringRope(z1, 2, 0)
