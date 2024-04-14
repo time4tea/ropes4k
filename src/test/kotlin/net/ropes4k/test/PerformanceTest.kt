@@ -29,18 +29,7 @@ class PerformanceTest {
     private val bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt")
     private val aChristmasCarol = String(aChristmasCarolRaw)
     private val bensAuto = String(bensAutoRaw)
-    private val lenCC = aChristmasCarol.length
-    private val lenBF = bensAuto.length
 
-    @Test
-    fun `inserts and things that depend on them`() {
-        insertPlan()
-        traversal1()
-        traversal2()
-        regexComplex()
-        search2()
-        write()
-    }
 
     @Test
     fun search() {
@@ -54,19 +43,17 @@ class PerformanceTest {
         )
 
         val toFind = "consumes faster than Labor wears; while the used key is always bright,"
-        run {
-            val stats0 = LongArray(ITERATION_COUNT)
-            val stats1 = LongArray(ITERATION_COUNT)
-            val stats2 = LongArray(ITERATION_COUNT)
-            for (j in 0 until ITERATION_COUNT) {
-                stats0[j] = stringFindTest(bensAutoRaw, toFind)
-                stats1[j] = stringBufferFindTest(bensAutoRaw, toFind)
-                stats2[j] = ropeFindTest(bensAutoRaw, toFind)
-            }
-            stat(stats0, "[String]")
-            stat(stats1, "[StringBuffer]")
-            stat(stats2, "[Rope]")
+        val stats0 = LongArray(ITERATION_COUNT)
+        val stats1 = LongArray(ITERATION_COUNT)
+        val stats2 = LongArray(ITERATION_COUNT)
+        for (j in 0 until ITERATION_COUNT) {
+            stats0[j] = stringFindTest(bensAutoRaw, toFind)
+            stats1[j] = stringBufferFindTest(bensAutoRaw, toFind)
+            stats2[j] = ropeFindTest(bensAutoRaw, toFind)
         }
+        stat(stats0, "[String]")
+        stat(stats1, "[StringBuffer]")
+        stat(stats2, "[Rope]")
     }
 
     @Test
@@ -102,23 +89,20 @@ class PerformanceTest {
 
         val p1 = Pattern.compile("Cratchit")
 
-        run {
-            val stats0 = LongArray(ITERATION_COUNT)
-            val stats1 = LongArray(ITERATION_COUNT)
-            val stats2 = LongArray(ITERATION_COUNT)
-            val stats3 = LongArray(ITERATION_COUNT)
-            val stats4 = LongArray(ITERATION_COUNT)
-            for (j in 0 until ITERATION_COUNT) {
-                stats0[j] = stringRegexpTest(aChristmasCarolRaw, p1)
-                stats1[j] = stringBufferRegexpTest(aChristmasCarolRaw, p1)
-                stats2[j] = ropeRegexpTest(aChristmasCarolRaw, p1)
-                stats3[j] = ropeMatcherRegexpTest(aChristmasCarolRaw, p1)
-            }
-            stat(stats0, "[String]")
-            stat(stats1, "[StringBuffer]")
-            stat(stats2, "[Rope]")
-            stat(stats3, "[Rope.matcher]")
+        val stats0 = LongArray(ITERATION_COUNT)
+        val stats1 = LongArray(ITERATION_COUNT)
+        val stats2 = LongArray(ITERATION_COUNT)
+        val stats3 = LongArray(ITERATION_COUNT)
+        for (j in 0 until ITERATION_COUNT) {
+            stats0[j] = stringRegexpTest(aChristmasCarolRaw, p1)
+            stats1[j] = stringBufferRegexpTest(aChristmasCarolRaw, p1)
+            stats2[j] = ropeRegexpTest(aChristmasCarolRaw, p1)
+            stats3[j] = ropeMatcherRegexpTest(aChristmasCarolRaw, p1)
         }
+        stat(stats0, "[String]")
+        stat(stats1, "[StringBuffer]")
+        stat(stats2, "[Rope]")
+        stat(stats3, "[Rope.matcher]")
     }
 
     private fun traversal1() {
@@ -165,24 +149,32 @@ class PerformanceTest {
 
         val insertPlan2 = Array(PLAN_LENGTH) { IntArray(3) }
         for (j in insertPlan2.indices) {
-            insertPlan2[j][0] = random.nextInt(lenCC) //location to insert
-            insertPlan2[j][1] = random.nextInt(lenBF) //clip from
-            insertPlan2[j][2] = random.nextInt(lenBF - insertPlan2[j][1]) //clip length
+            insertPlan2[j][0] = random.nextInt(aChristmasCarol.length) //location to insert
+            insertPlan2[j][1] = random.nextInt(bensAuto.length) //clip from
+            insertPlan2[j][2] = random.nextInt(bensAuto.length - insertPlan2[j][1]) //clip length
         }
 
-        run {
-            val stats0 = LongArray(ITERATION_COUNT)
-            val stats1 = LongArray(ITERATION_COUNT)
-            val stats2 = LongArray(ITERATION_COUNT)
-            for (j in 0 until ITERATION_COUNT) {
-                stats0[j] = stringInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
-                stats1[j] = stringBufferInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
-                stats2[j] = ropeInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
-            }
-            stat(stats0, "[String]")
-            stat(stats1, "[StringBuffer]")
-            stat(stats2, "[Rope]")
+        val stats0 = LongArray(ITERATION_COUNT)
+        val stats1 = LongArray(ITERATION_COUNT)
+        val stats2 = LongArray(ITERATION_COUNT)
+        for (j in 0 until ITERATION_COUNT) {
+            stats0[j] = stringInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
+            stats1[j] = stringBufferInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
+            stats2[j] = ropeInsertTest2(aChristmasCarol, bensAuto, insertPlan2)
         }
+        stat(stats0, "[String]")
+        stat(stats1, "[StringBuffer]")
+        stat(stats2, "[Rope]")
+    }
+
+    @Test
+    fun `inserts and things that depend on them`() {
+        insertPlan()
+        traversal1()
+        traversal2()
+        regexComplex()
+        search2()
+        write()
     }
 
     private data class Insert(val location: Int, val offset: Int, val length: Int)
@@ -192,32 +184,33 @@ class PerformanceTest {
         println("**** INSERT PLAN TEST ****")
         println("* Insert fragments of A Christmas Carol back into itself.\n")
 
+        val length = aChristmasCarol.length
         val inserts = (0 until PLAN_LENGTH).map {
-            val clipFrom = random.nextInt(lenCC)
+            val clipFrom = random.nextInt(length)
             Insert(
-                random.nextInt(lenCC),
+                random.nextInt(length),
                 clipFrom,
-                random.nextInt(lenCC - clipFrom)
+                random.nextInt(length - clipFrom)
             )
         }
 
         (0..inserts.size step 20).forEach {
             println("Insert plan length: ${inserts.size}")
-            run {
-                val stats0 = LongArray(ITERATION_COUNT)
-                val stats1 = LongArray(ITERATION_COUNT)
-                val stats2 = LongArray(ITERATION_COUNT)
-                for (j in 0 until 2) { // 7 takes too long!
-                    stats0[j] = stringInsertTest(aChristmasCarolRaw, inserts)
-                    stats1[j] = stringBufferInsertTest(aChristmasCarolRaw, inserts)
-                    stats2[j] = ropeInsertTest(aChristmasCarolRaw, inserts)
-                }
-                stat(stats0, "[String]")
-                stat(stats1, "[StringBuffer]")
-                stat(stats2, "[Rope]")
+            val stats0 = LongArray(ITERATION_COUNT)
+            val stats1 = LongArray(ITERATION_COUNT)
+            val stats2 = LongArray(ITERATION_COUNT)
+            for (j in 0 until 2) { // 7 takes too long!
+                stats0[j] = stringInsertTest(aChristmasCarolRaw, inserts)
+                stats1[j] = stringBufferInsertTest(aChristmasCarolRaw, inserts)
+                stats2[j] = ropeInsertTest(aChristmasCarolRaw, inserts)
             }
+            stat(stats0, "[String]")
+            stat(stats1, "[StringBuffer]")
+            stat(stats2, "[Rope]")
         }
     }
+
+    data class Append(val offset: Int, val length: Int)
 
     @Test
     fun appendPlan() {
@@ -225,30 +218,27 @@ class PerformanceTest {
         println("**** APPEND PLAN TEST ****")
         println()
 
-        val appendPlan = Array(PLAN_LENGTH) { IntArray(2) }
-        for (j in appendPlan.indices) {
-            appendPlan[j][0] = random.nextInt(lenCC)
-            appendPlan[j][1] = random.nextInt(lenCC - appendPlan[j][0])
+        val length = aChristmasCarol.length
+        val appends = (0 until PLAN_LENGTH).map {
+            val offset = random.nextInt(length)
+            Append(
+                offset,
+                random.nextInt(length - offset)
+            )
         }
 
-
-        var k = 20
-        while (k <= appendPlan.size) {
-            println("Append plan length: $k")
-            run {
-                val stats0 = LongArray(ITERATION_COUNT)
-                val stats1 = LongArray(ITERATION_COUNT)
-                val stats2 = LongArray(ITERATION_COUNT)
-                for (j in 0 until ITERATION_COUNT) {
-                    stats0[j] = stringAppendTest(aChristmasCarol, appendPlan, k)
-                    stats1[j] = stringBufferAppendTest(aChristmasCarol, appendPlan, k)
-                    stats2[j] = ropeAppendTest(aChristmasCarol, appendPlan, k)
-                }
-                stat(stats0, "[String]")
-                stat(stats1, "[StringBuffer]")
-                stat(stats2, "[Rope]")
+        (0..appends.size step 20).forEach {
+            val stats0 = LongArray(ITERATION_COUNT)
+            val stats1 = LongArray(ITERATION_COUNT)
+            val stats2 = LongArray(ITERATION_COUNT)
+            for (j in 0 until ITERATION_COUNT) {
+                stats0[j] = stringAppendTest(aChristmasCarol, appends)
+                stats1[j] = stringBufferAppendTest(aChristmasCarol, appends)
+                stats2[j] = ropeAppendTest(aChristmasCarol, appends)
             }
-            k += 20
+            stat(stats0, "[String]")
+            stat(stats1, "[StringBuffer]")
+            stat(stats2, "[Rope]")
         }
     }
 
@@ -260,27 +250,24 @@ class PerformanceTest {
 
         val prependPlan = Array(PLAN_LENGTH) { IntArray(2) }
         for (j in prependPlan.indices) {
-            prependPlan[j][0] = random.nextInt(lenCC)
-            prependPlan[j][1] = random.nextInt(lenCC - prependPlan[j][0])
+            prependPlan[j][0] = random.nextInt(aChristmasCarol.length)
+            prependPlan[j][1] = random.nextInt(aChristmasCarol.length - prependPlan[j][0])
         }
 
         var k = 20
         while (k <= prependPlan.size) {
             println("Prepend plan length: $k")
-            run {
-                val stats0 = LongArray(ITERATION_COUNT)
-                val stats1 = LongArray(ITERATION_COUNT)
-                val stats2 = LongArray(ITERATION_COUNT)
-                val stats3 = LongArray(ITERATION_COUNT)
-                for (j in 0 until ITERATION_COUNT) {
-                    stats0[j] = stringPrependTest(aChristmasCarol, prependPlan, k)
-                    stats1[j] = stringBufferPrependTest(aChristmasCarol, prependPlan, k)
-                    stats2[j] = ropePrependTest(aChristmasCarol, prependPlan, k)
-                }
-                stat(stats0, "[String]")
-                stat(stats1, "[StringBuffer]")
-                stat(stats2, "[Rope]")
+            val stats0 = LongArray(ITERATION_COUNT)
+            val stats1 = LongArray(ITERATION_COUNT)
+            val stats2 = LongArray(ITERATION_COUNT)
+            for (j in 0 until ITERATION_COUNT) {
+                stats0[j] = stringPrependTest(aChristmasCarol, prependPlan, k)
+                stats1[j] = stringBufferPrependTest(aChristmasCarol, prependPlan, k)
+                stats2[j] = ropePrependTest(aChristmasCarol, prependPlan, k)
             }
+            stat(stats0, "[String]")
+            stat(stats1, "[StringBuffer]")
+            stat(stats2, "[Rope]")
             k += 20
         }
     }
@@ -290,7 +277,7 @@ class PerformanceTest {
         println()
         println("**** DELETE PLAN TEST ****")
         println()
-        var newSize = lenCC
+        var newSize = aChristmasCarol.length
         val deletePlan = Array(PLAN_LENGTH) { IntArray(3) }
         for (j in deletePlan.indices) {
             deletePlan[j][0] = random.nextInt(newSize)
@@ -304,19 +291,17 @@ class PerformanceTest {
         var k = 20
         while (k <= deletePlan.size) {
             println("Delete plan length: $k")
-            run {
-                val stats0 = LongArray(ITERATION_COUNT)
-                val stats1 = LongArray(ITERATION_COUNT)
-                val stats2 = LongArray(ITERATION_COUNT)
-                for (j in 0 until ITERATION_COUNT) {
-                    stats0[j] = stringDeleteTest(aChristmasCarol, deletePlan)
-                    stats1[j] = stringBufferDeleteTest(aChristmasCarol, deletePlan)
-                    stats2[j] = ropeDeleteTest(aChristmasCarol, deletePlan)
-                }
-                stat(stats0, "[String]")
-                stat(stats1, "[StringBuffer]")
-                stat(stats2, "[Rope]")
+            val stats0 = LongArray(ITERATION_COUNT)
+            val stats1 = LongArray(ITERATION_COUNT)
+            val stats2 = LongArray(ITERATION_COUNT)
+            for (j in 0 until ITERATION_COUNT) {
+                stats0[j] = stringDeleteTest(aChristmasCarol, deletePlan)
+                stats1[j] = stringBufferDeleteTest(aChristmasCarol, deletePlan)
+                stats2[j] = ropeDeleteTest(aChristmasCarol, deletePlan)
             }
+            stat(stats0, "[String]")
+            stat(stats1, "[StringBuffer]")
+            stat(stats2, "[Rope]")
             k += 20
         }
     }
@@ -344,19 +329,17 @@ class PerformanceTest {
 
 
             val toFind = "Bob was very cheerful with them, and spoke pleasantly to"
-            run {
-                val stats0 = LongArray(ITERATION_COUNT)
-                val stats1 = LongArray(ITERATION_COUNT)
-                val stats2 = LongArray(ITERATION_COUNT)
-                for (j in 0 until ITERATION_COUNT) {
-                    stats0[j] = stringFindTest2(complexString, toFind)
-                    stats1[j] = stringBufferFindTest2(complexStringBuffer, toFind)
-                    stats2[j] = ropeFindTest2(complexRope, toFind)
-                }
-                stat(stats0, "[String]")
-                stat(stats1, "[StringBuffer]")
-                stat(stats2, "[Rope]")
+            val stats0 = LongArray(ITERATION_COUNT)
+            val stats1 = LongArray(ITERATION_COUNT)
+            val stats2 = LongArray(ITERATION_COUNT)
+            for (j in 0 until ITERATION_COUNT) {
+                stats0[j] = stringFindTest2(complexString, toFind)
+                stats1[j] = stringBufferFindTest2(complexStringBuffer, toFind)
+                stats2[j] = ropeFindTest2(complexRope, toFind)
             }
+            stat(stats0, "[String]")
+            stat(stats1, "[StringBuffer]")
+            stat(stats2, "[Rope]")
         }
 
         private fun write() {
@@ -386,7 +369,6 @@ class PerformanceTest {
             val stats2 = LongArray(ITERATION_COUNT)
             val stats3 = LongArray(ITERATION_COUNT)
             val stats4 = LongArray(ITERATION_COUNT)
-            val stats5 = LongArray(ITERATION_COUNT)
             for (j in 0 until ITERATION_COUNT) {
                 stats0[j] = stringRegexpTest2(complexString, p1)
                 stats1[j] = stringBufferRegexpTest2(complexStringBuffer, p1)
@@ -419,7 +401,6 @@ class PerformanceTest {
             val stats1 = LongArray(ITERATION_COUNT)
             val stats2 = LongArray(ITERATION_COUNT)
             val stats3 = LongArray(ITERATION_COUNT)
-            val stats4 = LongArray(ITERATION_COUNT)
             for (j in 0..2) {
                 stats0[j] = stringTraverseTest2(complexString)
                 stats1[j] = stringBufferTraverseTest2(complexStringBuffer)
@@ -536,15 +517,15 @@ class PerformanceTest {
             return Files.readString(Path.of(path)).toCharArray()
         }
 
-        private fun ropeAppendTest(aChristmasCarol: String, appendPlan: Array<IntArray>, planLength: Int): Long {
+        private fun ropeAppendTest(aChristmasCarol: String, appends: List<Append>): Long {
             val x = System.nanoTime()
             var result = Rope.BUILDER.build(aChristmasCarol)
 
-            for (j in 0 until planLength) {
-                val offset = appendPlan[j][0]
-                val length = appendPlan[j][1]
-                result = result.append(result.subSequence(offset, offset + length))
+            appends.forEach {
+                result = result.append(result.subSequence(it.offset, it.offset + it.length))
+
             }
+
             val y = System.nanoTime()
             System.out.printf(
                 "[Rope]         Executed append plan in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
@@ -677,15 +658,14 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringAppendTest(aChristmasCarol: String, appendPlan: Array<IntArray>, planLength: Int): Long {
+        private fun stringAppendTest(aChristmasCarol: String, appends: List<Append>): Long {
             val x = System.nanoTime()
             var result = aChristmasCarol
 
-            for (j in 0 until planLength) {
-                val offset = appendPlan[j][0]
-                val length = appendPlan[j][1]
-                result = result + result.substring(offset, offset + length)
+            appends.forEach {
+                result = result + result.substring(it.offset, it.offset + it.length)
             }
+
             val y = System.nanoTime()
             System.out.printf(
                 "[String]       Executed append plan in % ,18d ns. Result has length: %d\n",
@@ -697,17 +677,15 @@ class PerformanceTest {
 
         private fun stringBufferAppendTest(
             aChristmasCarol: String,
-            appendPlan: Array<IntArray>,
-            planLength: Int
+            appends: List<Append>,
         ): Long {
             val x = System.nanoTime()
             val result = StringBuilder(aChristmasCarol)
 
-            for (j in 0 until planLength) {
-                val offset = appendPlan[j][0]
-                val length = appendPlan[j][1]
-                result.append(result.subSequence(offset, offset + length))
+            appends.forEach {
+                result.append(result.subSequence(it.offset, it.offset + it.length))
             }
+
             val y = System.nanoTime()
             System.out.printf(
                 "[StringBuffer] Executed append plan in % ,18d ns. Result has length: %d\n",
