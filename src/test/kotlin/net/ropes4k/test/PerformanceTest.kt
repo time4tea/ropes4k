@@ -8,6 +8,8 @@ package net.ropes4k.test
 import net.ropes4k.Rope
 import net.ropes4k.impl.AbstractRope
 import org.junit.jupiter.api.Assertions
+import strikt.api.expectThat
+import strikt.assertions.isEqualTo
 import java.io.IOException
 import java.io.StringWriter
 import java.io.Writer
@@ -864,7 +866,7 @@ class PerformanceTest {
                 val offset = ints[0]
                 val length = ints[1]
                 result = result.substring(0, offset) + result.substring(offset + length)
-                Assertions.assertEquals(ints[2], result.length)
+                expectThat(result.length).isEqualTo(ints[2])
             }
             val y = System.nanoTime()
             System.out.printf(
