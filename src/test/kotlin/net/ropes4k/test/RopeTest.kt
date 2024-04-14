@@ -16,15 +16,10 @@ import java.io.*
 import java.util.regex.Pattern
 
 class RopeTest {
-    private fun fromRope(rope: Rope, start: Int, end: Int): String? {
-        try {
-            val out: Writer = StringWriter(end - start)
-            rope.write(out, start, end - start)
-            return out.toString()
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-            return null
-        }
+    private fun Rope.fromRope(start: Int, end: Int): String {
+        val out = StringWriter(end - start)
+        write(out, start, end - start)
+        return out.toString()
     }
 
     @Test
@@ -34,16 +29,16 @@ class RopeTest {
         var rope = Rope.BUILDER.build(s.toCharArray()) // bugs
 
         rope = rope.delete(0, 1)
-        Assertions.assertEquals("23", fromRope(rope, 0, 2))
-        Assertions.assertEquals("", fromRope(rope, 0, 0))
-        Assertions.assertEquals("902", fromRope(rope, 7, 10))
+        Assertions.assertEquals("23", rope.fromRope(0, 2))
+        Assertions.assertEquals("", rope.fromRope(0, 0))
+        Assertions.assertEquals("902", rope.fromRope(7, 10))
 
 
         rope = Rope.BUILDER.build(s) // no bugs
         rope = rope.delete(0, 1)
-        Assertions.assertEquals("23", fromRope(rope, 0, 2))
-        Assertions.assertEquals("", fromRope(rope, 0, 0))
-        Assertions.assertEquals("902", fromRope(rope, 7, 10))
+        Assertions.assertEquals("23", rope.fromRope(0, 2))
+        Assertions.assertEquals("", rope.fromRope(0, 0))
+        Assertions.assertEquals("902", rope.fromRope(7, 10))
     }
 
     /**
@@ -56,13 +51,13 @@ class RopeTest {
         r = r.append(0.toString())
         r = r.append(" 1234567890")
 
-        Assertions.assertEquals("round ", fromRope(r, 0, 6))
-        Assertions.assertEquals("round 0", fromRope(r, 0, 7))
-        Assertions.assertEquals("round 0 ", fromRope(r, 0, 8))
-        Assertions.assertEquals("round 0 1", fromRope(r, 0, 9))
-        Assertions.assertEquals("round 0 12", fromRope(r, 0, 10))
-        Assertions.assertEquals("round 0 1234567890", fromRope(r, 0, 18))
-        Assertions.assertEquals("round 0 1234567890", fromRope(r, 0, r.length))
+        Assertions.assertEquals("round ", r.fromRope(0, 6))
+        Assertions.assertEquals("round 0", r.fromRope(0, 7))
+        Assertions.assertEquals("round 0 ", r.fromRope(0, 8))
+        Assertions.assertEquals("round 0 1", r.fromRope(0, 9))
+        Assertions.assertEquals("round 0 12", r.fromRope(0, 10))
+        Assertions.assertEquals("round 0 1234567890", r.fromRope(0, 18))
+        Assertions.assertEquals("round 0 1234567890", r.fromRope(0, r.length))
     }
 
 
