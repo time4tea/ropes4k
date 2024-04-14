@@ -11,7 +11,7 @@ import net.ropes4k.Rope;
  * A rope that is directly backed by a data source.
  * @author Amin Ahmad
  */
-interface FlatRope extends Rope {
+public interface FlatRope extends Rope {
 	/**
 	 * Returns a <code>String</code> representation of a range
 	 * in this rope.
