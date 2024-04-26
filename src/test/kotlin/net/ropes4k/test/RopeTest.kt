@@ -16,7 +16,11 @@ import strikt.api.Assertion
 import strikt.api.expectThat
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.ObjectInputStream
+import java.io.ObjectOutputStream
+import java.io.StringWriter
 import java.util.regex.Pattern
 
 class RopeTest {
@@ -515,27 +519,21 @@ class RopeTest {
         Assertions.assertTrue(r.endsWith("you do", 1))
     }
 
-    /**
-     * Reported by Blake Watkins <blakewatkins></blakewatkins>@gmail.com> on
-     * 21 Mar 2009.
-     */
     @Test
-    fun testIndexOfBug() {
-        run {
-            // original test, bwatkins
-            val s1 = "CCCCCCPIFPCFFP"
-            val s2 = "IFPCFFP"
+    fun `index of same index as string 1`() {
+        val s = "CCCCCCPIFPCFFP"
+        val r = Rope.BUILDER.build(s)
+        val find = "IFPCFFP"
 
-            val r1 = Rope.BUILDER.build(s1)
-            expectThat(r1.indexOf(s2)).isEqualTo(s1.indexOf(s2))
-        }
-        run {
-            // extra test, aahmad
-            val s1 = "ABABAABBABABBAAABBBAAABABABABBBBAA"
-            val s2 = "ABABAB"
+        expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))
+    }
 
-            val r1 = Rope.BUILDER.build(s1)
-            expectThat(r1.indexOf(s2)).isEqualTo(s1.indexOf(s2))
-        }
+    @Test
+    fun `index of same as string 2`() {
+        val s = "ABABAABBABABBAAABBBAAABABABABBBBAA"
+        val r = Rope.BUILDER.build(s)
+        val find = "ABABAB"
+
+        expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))
     }
 }
