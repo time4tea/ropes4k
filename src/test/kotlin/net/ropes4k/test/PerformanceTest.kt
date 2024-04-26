@@ -24,54 +24,6 @@ import kotlin.math.min
 @Tag("Performance")
 class PerformanceTest {
 
-    @Test
-    fun regex2() {
-        println()
-        println("**** REGULAR EXPRESSION TEST (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****")
-        println("* Using a simply-constructed rope and the pattern 'plea.*y'.")
-
-
-        val p1 = Pattern.compile("plea.*y")
-        val stats0 = LongArray(ITERATION_COUNT)
-        val stats1 = LongArray(ITERATION_COUNT)
-        val stats2 = LongArray(ITERATION_COUNT)
-        val stats3 = LongArray(ITERATION_COUNT)
-        for (j in 0 until ITERATION_COUNT) {
-            stats0[j] = stringRegexpTest(aChristmasCarolRaw, p1)
-            stats1[j] = stringBufferRegexpTest(aChristmasCarolRaw, p1)
-            stats2[j] = ropeRegexpTest(aChristmasCarolRaw, p1)
-            stats3[j] = ropeMatcherRegexpTest(aChristmasCarolRaw, p1)
-        }
-        stat(stats0, "[String]")
-        stat(stats1, "[StringBuffer]")
-        stat(stats2, "[Rope]")
-        stat(stats3, "[Rope.matcher]")
-    }
-
-    @Test
-    fun regex1() {
-        println()
-        println("**** REGULAR EXPRESSION TEST (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****")
-        println("* Using a simply-constructed rope and the pattern 'Crachit'.")
-
-
-        val p1 = Pattern.compile("Cratchit")
-
-        val stats0 = LongArray(ITERATION_COUNT)
-        val stats1 = LongArray(ITERATION_COUNT)
-        val stats2 = LongArray(ITERATION_COUNT)
-        val stats3 = LongArray(ITERATION_COUNT)
-        for (j in 0 until ITERATION_COUNT) {
-            stats0[j] = stringRegexpTest(aChristmasCarolRaw, p1)
-            stats1[j] = stringBufferRegexpTest(aChristmasCarolRaw, p1)
-            stats2[j] = ropeRegexpTest(aChristmasCarolRaw, p1)
-            stats3[j] = ropeMatcherRegexpTest(aChristmasCarolRaw, p1)
-        }
-        stat(stats0, "[String]")
-        stat(stats1, "[StringBuffer]")
-        stat(stats2, "[Rope]")
-        stat(stats3, "[Rope.matcher]")
-    }
 
     private fun traversal1() {
         println()
@@ -635,16 +587,6 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringBufferDeleteTest(aChristmasCarol: String, deletes: List<Delete>): CharSequence {
-            val result = StringBuilder(aChristmasCarol)
-
-            deletes.forEach {
-                result.delete(it.offset, it.offset + it.length)
-            }
-
-            return result
-        }
-
         private fun stringBufferInsertTest(aChristmasCarol: CharArray, inserts: List<Insert>): Long {
             val result = StringBuffer(aChristmasCarol.size)
             result.append(aChristmasCarol)
@@ -814,63 +756,6 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringRegexpTest(aChristmasCarol: CharArray, pattern: Pattern): Long {
-            val s = String(aChristmasCarol)
-
-            val x = System.nanoTime()
-
-            var result = 0
-            val m = pattern.matcher(s)
-            while (m.find()) ++result
-
-            val y = System.nanoTime()
-            System.out.printf("[String]       Executed regexp test in % ,18d ns. Found %d matches.\n", (y - x), result)
-            return (y - x)
-        }
-
-        private fun stringBufferRegexpTest(aChristmasCarol: CharArray, pattern: Pattern): Long {
-            val buffer = StringBuffer(aChristmasCarol.size)
-            buffer.append(aChristmasCarol)
-
-            val x = System.nanoTime()
-
-            var result = 0
-            val m = pattern.matcher(buffer)
-            while (m.find()) ++result
-
-            val y = System.nanoTime()
-            System.out.printf("[StringBuffer] Executed regexp test in % ,18d ns. Found %d matches.\n", (y - x), result)
-            return (y - x)
-        }
-
-        private fun ropeRegexpTest(aChristmasCarol: CharArray, pattern: Pattern): Long {
-            val rope = Rope.BUILDER.build(aChristmasCarol)
-
-            val x = System.nanoTime()
-
-            var result = 0
-            val m = pattern.matcher(rope)
-            while (m.find()) ++result
-
-            val y = System.nanoTime()
-            System.out.printf("[Rope]         Executed regexp test in % ,18d ns. Found %d matches.\n", (y - x), result)
-            return (y - x)
-        }
-
-        private fun ropeMatcherRegexpTest(aChristmasCarol: CharArray, pattern: Pattern): Long {
-            val rope = Rope.BUILDER.build(aChristmasCarol)
-
-            val x = System.nanoTime()
-
-            var result = 0
-            val m = rope.matcher(pattern)
-            while (m.find()) ++result
-
-            val y = System.nanoTime()
-            System.out.printf("[Rope.matcher] Executed regexp test in % ,18d ns. Found %d matches.\n", (y - x), result)
-            return (y - x)
-        }
-
 
         private fun stringRegexpTest2(aChristmasCarol: String?, pattern: Pattern): Long {
             val x = System.nanoTime()
@@ -953,7 +838,7 @@ class PerformanceTest {
             System.out.printf("%-14s Average=% ,16.0f %s Median=% ,16.0f%s\n", prefix, average, "ns", median, "ns")
         }
 
-        private val aChristmasCarolRaw = readpath("test-files/AChristmasCarol_CharlesDickens.txt")
+        val aChristmasCarolRaw = readpath("test-files/AChristmasCarol_CharlesDickens.txt")
         val bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt")
         val aChristmasCarol = String(aChristmasCarolRaw)
         private val bensAuto = String(bensAutoRaw)

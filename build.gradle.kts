@@ -30,7 +30,7 @@ benchmark {
     benchmark {
         configurations {
             register("single") {
-                include(".*.\\.SearchBenchmark")
+                include(".*.\\.RegexSimpleBenchmark")
             }
         }
     }
