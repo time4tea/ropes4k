@@ -23,12 +23,6 @@ import kotlin.math.min
  */
 @Tag("Performance")
 class PerformanceTest {
-    private val aChristmasCarolRaw = readpath("test-files/AChristmasCarol_CharlesDickens.txt")
-    private val bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt")
-    private val aChristmasCarol = String(aChristmasCarolRaw)
-    private val bensAuto = String(bensAutoRaw)
-
-
     @Test
     fun search() {
         println()
@@ -321,10 +315,10 @@ class PerformanceTest {
 
     companion object {
         private var seed = 342342
-        private val random = Random(seed.toLong())
+        val random = Random(seed.toLong())
 
-        private const val ITERATION_COUNT = 7
-        private const val PLAN_LENGTH = 500
+        const val ITERATION_COUNT = 7
+        const val PLAN_LENGTH = 500
 
         private var complexString: String? = null
         private var complexStringBuffer: StringBuffer? = null
@@ -1024,5 +1018,10 @@ class PerformanceTest {
             average /= (stats.size - 2).toDouble()
             System.out.printf("%-14s Average=% ,16.0f %s Median=% ,16.0f%s\n", prefix, average, "ns", median, "ns")
         }
+
+        private val aChristmasCarolRaw = readpath("test-files/AChristmasCarol_CharlesDickens.txt")
+        val bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt")
+        val aChristmasCarol = String(aChristmasCarolRaw)
+        private val bensAuto = String(bensAutoRaw)
     }
 }
