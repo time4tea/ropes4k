@@ -27,4 +27,11 @@ benchmark {
     targets {
         register("test")
     }
+    benchmark {
+        configurations {
+            register("single") {
+                include(".*.\\.SearchBenchmark")
+            }
+        }
+    }
 }

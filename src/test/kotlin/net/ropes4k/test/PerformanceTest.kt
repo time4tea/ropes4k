@@ -23,30 +23,6 @@ import kotlin.math.min
  */
 @Tag("Performance")
 class PerformanceTest {
-    @Test
-    fun search() {
-        println()
-        println("**** STRING SEARCH TEST ****")
-        println(
-            """
-    * Using a simply constructed rope and the pattern 'Bob was very
-    * cheerful with them, and spoke pleasantly to'.
-    """.trimIndent()
-        )
-
-        val toFind = "consumes faster than Labor wears; while the used key is always bright,"
-        val stats0 = LongArray(ITERATION_COUNT)
-        val stats1 = LongArray(ITERATION_COUNT)
-        val stats2 = LongArray(ITERATION_COUNT)
-        for (j in 0 until ITERATION_COUNT) {
-            stats0[j] = stringFindTest(bensAutoRaw, toFind)
-            stats1[j] = stringBufferFindTest(bensAutoRaw, toFind)
-            stats2[j] = ropeFindTest(bensAutoRaw, toFind)
-        }
-        stat(stats0, "[String]")
-        stat(stats1, "[StringBuffer]")
-        stat(stats2, "[Rope]")
-    }
 
     @Test
     fun regex2() {
@@ -420,48 +396,6 @@ class PerformanceTest {
             stat(stats3, "[Rope/itr]")
         }
 
-        private fun stringFindTest(aChristmasCarol: CharArray, toFind: String): Long {
-            val b = String(aChristmasCarol)
-            val x = System.nanoTime()
-            val loc = b.indexOf(toFind)
-            val y = System.nanoTime()
-            System.out.printf(
-                "[String.find]       indexOf needle length %d found at index %d in % ,18d ns.\n",
-                toFind.length,
-                loc,
-                (y - x)
-            )
-            return (y - x)
-        }
-
-        private fun stringBufferFindTest(aChristmasCarol: CharArray, toFind: String): Long {
-            val b = StringBuilder(aChristmasCarol.size)
-            b.append(aChristmasCarol)
-            val x = System.nanoTime()
-            val loc = b.indexOf(toFind)
-            val y = System.nanoTime()
-            System.out.printf(
-                "[StringBuffer.find] indexOf needle length %d found at index %d in % ,18d ns.\n",
-                toFind.length,
-                loc,
-                (y - x)
-            )
-            return (y - x)
-        }
-
-        private fun ropeFindTest(aChristmasCarol: CharArray, toFind: String): Long {
-            val b = Rope.BUILDER.build(aChristmasCarol)
-            val x = System.nanoTime()
-            val loc = b.indexOf(toFind)
-            val y = System.nanoTime()
-            System.out.printf(
-                "[Rope.find]         indexOf needle length %d found at index %d in % ,18d ns.\n",
-                toFind.length,
-                loc,
-                (y - x)
-            )
-            return (y - x)
-        }
 
         private fun stringFindTest2(aChristmasCarol: String?, toFind: String): Long {
             val x = System.nanoTime()
