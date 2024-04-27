@@ -51,7 +51,7 @@ class RopeUtilities {
     Rope concatenate(Rope left, Rope right) {
         if (left.isEmpty())
             return right;
-        if (right.length() == 0)
+        if (right.isEmpty())
             return left;
         if ((long) left.length() + right.length() > Integer.MAX_VALUE)
             throw new IllegalArgumentException(
