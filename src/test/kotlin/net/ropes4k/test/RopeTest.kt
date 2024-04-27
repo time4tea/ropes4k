@@ -318,6 +318,19 @@ class RopeTest {
     }
 
     @Test
+    fun reverse() {
+        val orig = PerformanceTest.aChristmasCarol
+        val r = Rope.of(orig)
+        val rev = orig.reversed()
+
+        val pairs = r.reverseIterator().asSequence().zip(rev.iterator().asSequence())
+
+        for (pair in pairs) {
+            expectThat(pair.first).isEqualTo(pair.second)
+        }
+    }
+
+    @Test
     fun testReverseIterator() {
         val r1 = FlatCharSequenceRope("01234")
         val r2 = ReverseRope(r1)
