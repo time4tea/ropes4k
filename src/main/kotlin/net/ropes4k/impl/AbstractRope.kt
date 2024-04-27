@@ -6,7 +6,6 @@
 package net.ropes4k.impl
 
 import net.ropes4k.Rope
-import net.ropes4k.Rope.Companion.of
 import net.ropes4k.impl.RopeUtilities.Companion.concatenate
 import java.io.IOException
 import java.io.ObjectStreamException
@@ -26,15 +25,15 @@ abstract class AbstractRope : Rope {
     private var hashCode = 0
 
     override fun append(c: Char): Rope {
-        return concatenate(this, of(c.toString()))
+        return concatenate(this, Rope.of(c.toString()))
     }
 
     override fun append(suffix: CharSequence): Rope {
-        return concatenate(this, of(suffix))
+        return concatenate(this, Rope.of(suffix))
     }
 
     override fun append(csq: CharSequence, start: Int, end: Int): Rope {
-        return concatenate(this, of(csq).subSequence(start, end))
+        return concatenate(this, Rope.of(csq).subSequence(start, end))
     }
 
     override fun compareTo(other: CharSequence): Int {
@@ -184,7 +183,7 @@ abstract class AbstractRope : Rope {
     }
 
     override fun insert(dstOffset: Int, s: CharSequence): Rope {
-        val r = of(s)
+        val r = Rope.of(s)
 
         if (dstOffset == 0) return r.append(this)
         else if (dstOffset == length) return append(r)
@@ -268,7 +267,7 @@ abstract class AbstractRope : Rope {
         val toPad = toLength - length
         if (toPad < 1) return this
         return concatenate(
-            of(RepeatedCharacterSequence(padChar, toPad)),
+            Rope.of(RepeatedCharacterSequence(padChar, toPad)),
             this
         )
     }
@@ -282,7 +281,7 @@ abstract class AbstractRope : Rope {
         if (toPad < 1) return this
         return concatenate(
             this,
-            of(RepeatedCharacterSequence(padChar, toPad))
+            Rope.of(RepeatedCharacterSequence(padChar, toPad))
         )
     }
 }

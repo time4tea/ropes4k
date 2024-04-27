@@ -14,20 +14,16 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 
 /**
+ * A rope represents character strings. Ropes are immutable.
  *
- *
- * A rope represents character strings. Ropes are immutable which
- * means that once they are created, they cannot be changed. This
- * makes them suitable for sharing in multithreaded environments.
- *
- *
- * Rope operations, unlike string operations, scale well to very
+ * Rope operations scale well to very
  * long character strings. Most mutation operations run in O(log n)
- * time or better. However, random-access character retrieval is
+ * time or better.
+ *
+ * However, random-access character retrieval is
  * generally slower than for a String. By traversing consecutive
  * characters with an iterator instead, performance improves to
  * O(1).
- *
  *
  * This rope implementation implements all performance optimizations
  * outlined in "[Ropes: an Alternative to Strings](http://www.cs.ubc.ca/local/reading/proceedings/spe91-95/spe/vol25/issue12/spe986.pdf)"
