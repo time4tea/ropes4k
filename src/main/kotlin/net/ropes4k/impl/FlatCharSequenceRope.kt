@@ -3,141 +3,100 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package net.ropes4k.impl;
+package net.ropes4k.impl
 
-import net.ropes4k.Rope;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.ropes4k.Rope
+import java.io.IOException
+import java.io.Writer
+import java.util.regex.Matcher
+import java.util.regex.Pattern
 
 /**
  * A rope constructed from an underlying character sequence.
  *
  * @author Amin Ahmad
  */
-public final class FlatCharSequenceRope extends AbstractRope implements FlatRope {
-
-    private final CharSequence sequence;
-
-    /**
-     * Constructs a new rope from an underlying character sequence.
-     */
-    public FlatCharSequenceRope(CharSequence sequence) {
-        this.sequence = sequence;
+class FlatCharSequenceRope(private val sequence: CharSequence) : AbstractRope(), FlatRope {
+    override fun get(index: Int): Char {
+        return sequence[index]
     }
 
-    @Override
-    public char charAt(int index) {
-        return sequence.charAt(index);
+    override fun depth(): Byte {
+        return 0
     }
 
-    @Override
-    public byte depth() {
-        return 0;
-    }
+    override fun iterator(start: Int): Iterator<Char> {
+        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
+        return object : Iterator<Char> {
+            var current: Int = start
 
-    @Override
-    public Iterator<Character> iterator(int start) {
-        if (start < 0 || start > length())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        return new Iterator<>() {
-            int current = start;
-
-            @Override
-            public boolean hasNext() {
-                return current < length();
+            override fun hasNext(): Boolean {
+                return current < length
             }
 
-            @Override
-            public Character next() {
-                return sequence.charAt(current++);
+            override fun next(): Char {
+                return sequence[current++]
             }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("Rope iterator is read-only.");
-            }
-        };
+        }
     }
 
-    @Override
-    public int length() {
-        return sequence.length();
-    }
+    override val length: Int
+        get() = sequence.length
 
-    @Override
-    public Matcher matcher(Pattern pattern) {
+    override fun matcher(pattern: Pattern): Matcher {
         // optimized to return a matcher directly on the underlying sequence.
-        return pattern.matcher(sequence);
+        return pattern.matcher(sequence)
     }
 
-    @Override
-    public Rope reverse() {
-        return new ReverseRope(this);
+    override fun reverse(): Rope {
+        return ReverseRope(this)
     }
 
-    @Override
-    public Iterator<Character> reverseIterator(int start) {
-        if (start < 0 || start > length())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        return new Iterator<>() {
-            int current = length() - start;
+    override fun reverseIterator(start: Int): Iterator<Char> {
+        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
+        return object : Iterator<Char> {
+            var current: Int = length - start
 
-            @Override
-            public boolean hasNext() {
-                return current > 0;
+            override fun hasNext(): Boolean {
+                return current > 0
             }
 
-            @Override
-            public Character next() {
-                return sequence.charAt(--current);
+            override fun next(): Char {
+                return sequence[--current]
             }
-
-            @Override
-            public void remove() {
-                throw new UnsupportedOperationException("Rope iterator is read-only.");
-            }
-        };
+        }
     }
 
-    @Override
-    public Rope subSequence(int start, int end) {
-        if (start == 0 && end == length())
-            return this;
-        if (end - start < 8 || sequence instanceof String /* special optimization for String */) {
-            return new FlatCharSequenceRope(sequence.subSequence(start, end));
+    override fun subSequence(start: Int, end: Int): Rope {
+        if (start == 0 && end == length) return this
+        return if (end - start < 8 || sequence is String /* special optimization for String */) {
+            FlatCharSequenceRope(sequence.subSequence(start, end))
         } else {
-            return new SubstringRope(this, start, end - start);
+            SubstringRope(this, start, end - start)
         }
     }
 
-	@Override
-    public String toString() {
-        return sequence.toString();
+    override fun toString(): String {
+        return sequence.toString()
     }
 
-    public String toString(int offset, int length) {
-        return sequence.subSequence(offset, offset + length).toString();
+    override fun toString(offset: Int, length: Int): String {
+        return sequence.subSequence(offset, offset + length).toString()
     }
 
-    @Override
-    public void write(Writer out) throws IOException {
-        write(out, 0, length());
+    @Throws(IOException::class)
+    override fun write(out: Writer) {
+        write(out, 0, length)
     }
 
-    @Override
-    public void write(Writer out, int offset, int length) throws IOException {
-        if (offset < 0 || offset + length > length())
-            throw new IndexOutOfBoundsException("Rope index out of bounds:" + (offset < 0 ? offset : offset + length));
+    @Throws(IOException::class)
+    override fun write(out: Writer, offset: Int, length: Int) {
+        if (offset < 0 || offset + length > this.length) throw IndexOutOfBoundsException("Rope index out of bounds:" + (if (offset < 0) offset else offset + length))
 
-        if (sequence instanceof String) {    // optimization for String
-            out.write(((String) sequence).substring(offset, offset + length));
-            return;
+        if (sequence is String) {    // optimization for String
+            out.write(sequence.substring(offset, offset + length))
+            return
         }
-        for (int j = offset; j < offset + length; ++j)
-            out.write(sequence.charAt(j));
+        for (j in offset until offset + length) out.write(sequence[j].code)
     }
 }
