@@ -38,22 +38,22 @@ open class DeleteBenchmark {
     }
 
     @Benchmark
-    fun string() {
-        deletes.fold(PerformanceTest.aChristmasCarol) { acc, it ->
+    fun string(): String {
+        return deletes.fold(PerformanceTest.aChristmasCarol) { acc, it ->
             acc.substring(0, it.offset) + acc.substring(it.offset + it.length)
         }
     }
 
     @Benchmark
-    fun stringBuilder() {
-        deletes.fold(StringBuilder(PerformanceTest.aChristmasCarol)) { acc, it ->
+    fun stringBuilder(): StringBuilder {
+        return deletes.fold(StringBuilder(PerformanceTest.aChristmasCarol)) { acc, it ->
             acc.delete(it.offset, it.offset + it.length)
         }
     }
 
     @Benchmark
-    fun rope() {
-        deletes.fold(Rope.BUILDER.build(PerformanceTest.aChristmasCarol)) { acc, it ->
+    fun rope(): Rope? {
+        return deletes.fold(Rope.BUILDER.build(PerformanceTest.aChristmasCarol)) { acc, it ->
             acc.delete(it.offset, it.offset + it.length)
         }
     }

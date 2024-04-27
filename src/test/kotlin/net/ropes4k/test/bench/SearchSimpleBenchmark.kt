@@ -24,17 +24,17 @@ open class SearchSimpleBenchmark {
     val rope = Rope.BUILDER.build(bensAutoRaw)
 
     @Benchmark
-    fun string() {
-        string.indexOf(toFind)
+    fun string(): Int {
+        return string.indexOf(toFind)
     }
 
     @Benchmark
-    fun stringbuilder() {
-        stringBuilder.indexOf(toFind)
+    fun stringbuilder(): Int {
+        return stringBuilder.indexOf(toFind)
     }
 
     @Benchmark
-    fun rope() {
-        rope.indexOf(toFind)
+    fun rope(): Int {
+        return rope.indexOf(toFind)
     }
 }
