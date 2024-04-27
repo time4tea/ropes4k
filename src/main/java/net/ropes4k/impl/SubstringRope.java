@@ -46,10 +46,6 @@ public class SubstringRope extends AbstractRope {
         return RopeUtilities.INSTANCE.depth(getRope());
     }
 
-    int getOffset() {
-        return offset;
-    }
-
     /**
      * Returns the rope underlying this one.
      *
@@ -63,9 +59,9 @@ public class SubstringRope extends AbstractRope {
     public Iterator<Character> iterator(int start) {
         if (start < 0 || start > length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        return new Iterator<Character>() {
+        return new Iterator<>() {
 
-            final Iterator<Character> u = getRope().iterator(getOffset() + start);
+            final Iterator<Character> u = getRope().iterator(offset + start);
             int position = start;
 
             @Override
@@ -101,8 +97,8 @@ public class SubstringRope extends AbstractRope {
     public Iterator<Character> reverseIterator(int start) {
         if (start < 0 || start > length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        return new Iterator<Character>() {
-            final Iterator<Character> u = getRope().reverseIterator(getRope().length() - getOffset() - length() + start);
+        return new Iterator<>() {
+            final Iterator<Character> u = getRope().reverseIterator(getRope().length() - offset - length() + start);
             int position = length() - start;
 
             @Override
@@ -123,6 +119,7 @@ public class SubstringRope extends AbstractRope {
         };
     }
 
+    @NotNull
     @Override
     public Rope subSequence(int start, int end) {
         if (start == 0 && end == length())
