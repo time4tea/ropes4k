@@ -67,35 +67,6 @@ class PerformanceTest {
     }
 
 
-    @Test
-    fun prependPlan() {
-        println()
-        println("**** PREPEND PLAN TEST ****")
-        println()
-
-        val prependPlan = Array(PLAN_LENGTH) { IntArray(2) }
-        for (j in prependPlan.indices) {
-            prependPlan[j][0] = random.nextInt(aChristmasCarol.length)
-            prependPlan[j][1] = random.nextInt(aChristmasCarol.length - prependPlan[j][0])
-        }
-
-        var k = 20
-        while (k <= prependPlan.size) {
-            println("Prepend plan length: $k")
-            val stats0 = LongArray(ITERATION_COUNT)
-            val stats1 = LongArray(ITERATION_COUNT)
-            val stats2 = LongArray(ITERATION_COUNT)
-            for (j in 0 until ITERATION_COUNT) {
-                stats0[j] = stringPrependTest(aChristmasCarol, prependPlan, k)
-                stats1[j] = stringBufferPrependTest(aChristmasCarol, prependPlan, k)
-                stats2[j] = ropePrependTest(aChristmasCarol, prependPlan, k)
-            }
-            stat(stats0, "[String]")
-            stat(stats1, "[StringBuffer]")
-            stat(stats2, "[Rope]")
-            k += 20
-        }
-    }
 
     data class Delete(val offset: Int, val length: Int, val expected: Int)
 
@@ -355,24 +326,6 @@ class PerformanceTest {
         }
 
 
-        private fun ropePrependTest(aChristmasCarol: String, prependPlan: Array<IntArray>, planLength: Int): Long {
-            val x = System.nanoTime()
-            var result = Rope.BUILDER.build(aChristmasCarol)
-
-            for (j in 0 until planLength) {
-                val offset = prependPlan[j][0]
-                val length = prependPlan[j][1]
-                result = result.subSequence(offset, offset + length).append(result)
-            }
-            val y = System.nanoTime()
-            System.out.printf(
-                "[Rope]         Executed prepend plan in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
-                (y - x),
-                result.length,
-                (result as AbstractRope).depth()
-            )
-            return (y - x)
-        }
 
 
 
@@ -417,27 +370,6 @@ class PerformanceTest {
         }
 
 
-        private fun stringBufferPrependTest(
-            aChristmasCarol: String,
-            prependPlan: Array<IntArray>,
-            planLength: Int
-        ): Long {
-            val x = System.nanoTime()
-            val result = StringBuilder(aChristmasCarol)
-
-            for (j in 0 until planLength) {
-                val offset = prependPlan[j][0]
-                val length = prependPlan[j][1]
-                result.insert(0, result.subSequence(offset, offset + length))
-            }
-            val y = System.nanoTime()
-            System.out.printf(
-                "[StringBuffer] Executed prepend plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
-            return (y - x)
-        }
 
 
         private fun stringBufferTraverseTest2(aChristmasCarol: StringBuffer?): Long {
@@ -471,23 +403,6 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringPrependTest(aChristmasCarol: String, prependPlan: Array<IntArray>, planLength: Int): Long {
-            val x = System.nanoTime()
-            var result = aChristmasCarol
-
-            for (j in 0 until planLength) {
-                val offset = prependPlan[j][0]
-                val length = prependPlan[j][1]
-                result = result.substring(offset, offset + length) + result
-            }
-            val y = System.nanoTime()
-            System.out.printf(
-                "[String]       Executed prepend plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
-            return (y - x)
-        }
 
 
         private fun stringTraverseTest2(aChristmasCarol: String?): Long {
