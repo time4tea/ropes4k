@@ -17,8 +17,8 @@ import kotlin.math.max
  * A rope that represents the concatenation of two other ropes.
  */
 internal class ConcatenationRope(
-    @JvmField val left: Rope,
-    @JvmField val right: Rope
+    val left: Rope,
+    val right: Rope
 ) : AbstractRope() {
     private val depth = max(depth(left), depth(right)) + 1
 
@@ -107,8 +107,7 @@ internal class ConcatenationRope(
         if (endIndex <= l) return left.subSequence(startIndex, endIndex)
         if (startIndex >= l) return right.subSequence(startIndex - l, endIndex - l)
         return concatenate(
-            left.subSequence(startIndex, l),
-            right.subSequence(0, endIndex - l)
+            left.subSequence(startIndex, l), right.subSequence(0, endIndex - l)
         )
     }
 

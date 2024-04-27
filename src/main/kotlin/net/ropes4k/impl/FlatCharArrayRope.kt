@@ -8,11 +8,8 @@ package net.ropes4k.impl
 import net.ropes4k.Rope
 import java.io.IOException
 import java.io.Writer
-import java.util.Arrays
-import kotlin.math.min
 
-internal class FlatCharArrayRope @JvmOverloads
-constructor(
+internal class FlatCharArrayRope(
     sequence: CharArray,
     offset: Int = 0,
     length: Int = sequence.size
