@@ -342,8 +342,10 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
         }
 
         public fun of(sequence: CharSequence): Rope {
-            if (sequence is Rope) return sequence
-            return FlatCharSequenceRope(sequence)
+            return when (sequence) {
+                is Rope -> sequence
+                else -> FlatCharSequenceRope(sequence)
+            }
         }
     }
 }
