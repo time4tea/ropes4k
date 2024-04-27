@@ -27,12 +27,8 @@ public class ConcatenationRopeIteratorImpl implements Iterator<Character> {
     private int currentAbsolutePos;
 
 
-    public ConcatenationRopeIteratorImpl(Rope rope) {
-        this(rope, 0);
-    }
-
     public ConcatenationRopeIteratorImpl(Rope rope, int start) {
-        toTraverse = new ArrayDeque<Rope>();
+        toTraverse = new ArrayDeque<>();
         toTraverse.push(rope);
         currentRope = null;
         initialize();
@@ -122,9 +118,6 @@ public class ConcatenationRopeIteratorImpl implements Iterator<Character> {
         throw new UnsupportedOperationException("Rope iterator is read-only.");
     }
 
-    /* (non-Javadoc)
-     * @see org.ahmadsoft.ropes.impl.RopeIterators#skip(int)
-     */
     public void skip(int skip) {
         this.skip = skip;
     }
