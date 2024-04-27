@@ -35,7 +35,7 @@ class ReverseRope
 
     override fun iterator(start: Int): Iterator<Char> {
         if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
-        return object : MutableIterator<Char> {
+        return object : Iterator<Char> {
             var current: Int = start
 
             override fun hasNext(): Boolean {
@@ -44,10 +44,6 @@ class ReverseRope
 
             override fun next(): Char {
                 return get(current++)
-            }
-
-            override fun remove() {
-                throw UnsupportedOperationException("Rope iterator is read-only.")
             }
         }
     }
@@ -60,7 +56,7 @@ class ReverseRope
 
     override fun reverseIterator(start: Int): Iterator<Char> {
         if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
-        return object : MutableIterator<Char> {
+        return object : Iterator<Char> {
             var current: Int = length - start
 
             override fun hasNext(): Boolean {
@@ -69,10 +65,6 @@ class ReverseRope
 
             override fun next(): Char {
                 return get(--current)
-            }
-
-            override fun remove() {
-                throw UnsupportedOperationException("Rope iterator is read-only.")
             }
         }
     }
