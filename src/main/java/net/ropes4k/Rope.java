@@ -284,7 +284,7 @@ import java.util.regex.Pattern;
 	//@ ensures \result.length() <= length();
 	Rope trimEnd();
 
-    @Override
+	@Override
 	Rope subSequence(int start, int end);
 
     /**
@@ -351,14 +351,7 @@ import java.util.regex.Pattern;
      * @see #padStart(int, char)
      */
     Rope padEnd(int toLength, char padChar);
-    
-    /**
-     * Returns true if and only if the length of this rope is zero.
-     * @return <code>true</code> if and only if the length of this
-     * rope is zero, and <code>false</code> otherwise.
-     */
-    boolean isEmpty();
-    
+
     /**
      * Returns <code>true</code> if this rope starts with the specified 
      * prefix.

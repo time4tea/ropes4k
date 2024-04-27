@@ -6,7 +6,6 @@
 package net.ropes4k.impl;
 
 import net.ropes4k.Rope;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
@@ -225,7 +224,6 @@ public abstract class AbstractRope implements Rope {
         return subSequence(0, dstOffset).append(r).append(subSequence(dstOffset, length()));
     }
 
-    @NotNull
     @Override
     public Iterator<Character> iterator() {
         return iterator(0);
@@ -285,7 +283,6 @@ public abstract class AbstractRope implements Rope {
             return subSequence(0, index);
     }
 
-    @NotNull
     @Override
     public String toString() {
         StringWriter out = new StringWriter(length());

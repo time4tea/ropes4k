@@ -6,7 +6,6 @@
 package net.ropes4k.impl;
 
 import net.ropes4k.Rope;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -119,7 +118,6 @@ public class SubstringRope extends AbstractRope {
         };
     }
 
-    @NotNull
     @Override
     public Rope subSequence(int start, int end) {
         if (start == 0 && end == length())
@@ -127,7 +125,6 @@ public class SubstringRope extends AbstractRope {
         return new SubstringRope(rope, offset + start, end - start);
     }
 
-    @NotNull
 	@Override
     public String toString() {
         return rope.toString(offset, length);

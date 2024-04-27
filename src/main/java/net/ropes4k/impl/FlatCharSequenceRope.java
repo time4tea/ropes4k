@@ -6,7 +6,6 @@
 package net.ropes4k.impl;
 
 import net.ropes4k.Rope;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -104,7 +103,6 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
         };
     }
 
-    @NotNull
     @Override
     public Rope subSequence(int start, int end) {
         if (start == 0 && end == length())
@@ -116,7 +114,6 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
         }
     }
 
-    @NotNull
 	@Override
     public String toString() {
         return sequence.toString();
