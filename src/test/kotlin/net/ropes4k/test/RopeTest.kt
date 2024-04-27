@@ -7,6 +7,7 @@ package net.ropes4k.test
 
 import net.ropes4k.Rope
 import net.ropes4k.impl.ConcatenationRope
+import net.ropes4k.impl.FlatCharArrayRope
 import net.ropes4k.impl.FlatCharSequenceRope
 import net.ropes4k.impl.ReverseRope
 import net.ropes4k.impl.SubstringRope
@@ -533,18 +534,44 @@ class RopeTest {
     }
 
     @Test
-    fun `index of same index as string 1`() {
+    fun `index of same index as string 1 flat char sequence`() {
         val s = "CCCCCCPIFPCFFP"
         val r = Rope.of(s)
+
+        expectThat(r).isA<FlatCharSequenceRope>()
         val find = "IFPCFFP"
 
         expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))
     }
 
     @Test
-    fun `index of same as string 2`() {
+    fun `index of same index as string 1 flat char array`() {
+        val s = "CCCCCCPIFPCFFP"
+        val r = Rope.of(s.toCharArray())
+
+        expectThat(r).isA<FlatCharArrayRope>()
+        val find = "IFPCFFP"
+
+        expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))
+    }
+
+    @Test
+    fun `index of same as string 2 flat char sequence`() {
         val s = "ABABAABBABABBAAABBBAAABABABABBBBAA"
         val r = Rope.of(s)
+
+        expectThat(r).isA<FlatCharSequenceRope>()
+        val find = "ABABAB"
+
+        expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))
+    }
+
+    @Test
+    fun `index of same as string 2 flat char array`() {
+        val s = "ABABAABBABABBAAABBBAAABABABABBBBAA"
+        val r = Rope.of(s.toCharArray())
+
+        expectThat(r).isA<FlatCharArrayRope>()
         val find = "ABABAB"
 
         expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))

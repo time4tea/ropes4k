@@ -9,6 +9,7 @@ import net.ropes4k.Rope
 import java.io.IOException
 import java.io.Writer
 import java.util.Arrays
+import kotlin.math.min
 
 /**
  * A rope constructed from a character array. This rope is even
@@ -76,34 +77,36 @@ constructor(
      * indexOf implementation. Calls to charAt have been replaced
      * with direct array access to improve speed.
      */
-    override fun indexOf(sequence: CharSequence, fromIndex: Int): Int {
+    public override fun indexOf(sequence: CharSequence, fromIndex: Int): Int {
+        val me = getForSequentialAccess()
+
         // Implementation of Boyer-Moore-Horspool algorithm with
         // special support for unicode.
 
         // step 0. sanity check.
-
-        val length = sequence.length
-        if (length == 0) return -1
-        if (length == 1) return indexOf(sequence[0], fromIndex)
+        val sequenceLength = sequence.length
+        if (sequenceLength == 0) return -1
+        if (sequenceLength == 1) return indexOf(sequence[0], fromIndex)
 
         val bcs = IntArray(256) // bad character shift
-        Arrays.fill(bcs, length)
+        Arrays.fill(bcs, sequenceLength)
 
         // step 1. preprocessing.
-        for (j in 0 until length - 1) {
+        for (j in 0 until sequenceLength - 1) {
             val c = sequence[j]
             val l = (c.code and 0xFF)
-            bcs[l] = kotlin.math.min((length - j - 1).toDouble(), bcs[l].toDouble()).toInt()
+            bcs[l] = min((sequenceLength - j - 1), bcs[l])
         }
 
         // step 2. search.
-        var j = fromIndex + length - 1
+        var j = fromIndex + sequenceLength - 1
         while (j < length) {
             var x = j
-            var y = length - 1
+            var y = sequenceLength - 1
             while (true) {
-                if (sequence[y] != this.sequence[x]) {
-                    j += bcs[this.sequence[x].code and 0xFF]
+                val c = me[x]
+                if (sequence[y] != c) {
+                    j += bcs[me[j].code and 0xFF]
                     break
                 }
                 if (y == 0) return x

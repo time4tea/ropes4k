@@ -176,25 +176,25 @@ public abstract class AbstractRope implements Rope {
         // special support for unicode.
 
         // step 0. sanity check.
-        int length = sequence.length();
-        if (length == 0)
+        int sequenceLength = sequence.length();
+        if (sequenceLength == 0)
             return -1;
-        if (length == 1)
+        if (sequenceLength == 1)
             return indexOf(sequence.charAt(0), fromIndex);
 
         int[] bcs = new int[256]; // bad character shift
-        Arrays.fill(bcs, length);
+        Arrays.fill(bcs, sequenceLength);
 
         // step 1. preprocessing.
-        for (int j = 0; j < length - 1; ++j) {
+        for (int j = 0; j < sequenceLength - 1; ++j) {
             char c = sequence.charAt(j);
             int l = (c & 0xFF);
-            bcs[l] = Math.min(length - j - 1, bcs[l]);
+            bcs[l] = Math.min(sequenceLength - j - 1, bcs[l]);
         }
 
         // step 2. search.
-        for (int j = fromIndex + length - 1; j < length(); ) {
-            int x = j, y = length - 1;
+        for (int j = fromIndex + sequenceLength - 1; j < length(); ) {
+            int x = j, y = sequenceLength - 1;
             while (true) {
                 char c = me.charAt(x);
                 if (sequence.charAt(y) != c) {
