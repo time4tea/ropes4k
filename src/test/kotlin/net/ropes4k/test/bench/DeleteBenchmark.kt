@@ -57,5 +57,4 @@ open class DeleteBenchmark {
             acc.delete(it.offset, it.offset + it.length)
         }
     }
-
 }
