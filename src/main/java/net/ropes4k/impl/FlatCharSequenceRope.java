@@ -44,7 +44,7 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
     public Iterator<Character> iterator(int start) {
         if (start < 0 || start > length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        return new Iterator<Character>() {
+        return new Iterator<>() {
             int current = start;
 
             @Override
@@ -84,7 +84,7 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
     public Iterator<Character> reverseIterator(int start) {
         if (start < 0 || start > length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        return new Iterator<Character>() {
+        return new Iterator<>() {
             int current = length() - start;
 
             @Override
@@ -104,6 +104,7 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
         };
     }
 
+    @NotNull
     @Override
     public Rope subSequence(int start, int end) {
         if (start == 0 && end == length())
