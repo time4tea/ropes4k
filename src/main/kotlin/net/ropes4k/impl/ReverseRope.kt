@@ -70,9 +70,9 @@ class ReverseRope(private val rope: Rope) : AbstractRope() {
         }
     }
 
-    override fun subSequence(start: Int, end: Int): Rope {
-        if (start == 0 && end == length) return this
-        return rope.subSequence(length - end, length - start).reverse()
+    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+        if (startIndex == 0 && endIndex == length) return this
+        return rope.subSequence(length - endIndex, length - startIndex).reverse()
     }
 
     @Throws(IOException::class)

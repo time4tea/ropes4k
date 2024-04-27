@@ -158,7 +158,7 @@ internal class RopeUtilities {
         }
 
         fun isBalanced(r: Rope): Boolean {
-            val depth = Companion.depth(r)
+            val depth = depth(r)
             if (depth >= FIBONACCI.size - 2) return false
             return (FIBONACCI[depth + 2] <= r.length) // TODO: not necessarily valid w/e.g. padding char sequences.
         }
@@ -227,7 +227,7 @@ internal class RopeUtilities {
             }
             if (left !is ConcatenationRope) {
                 if (right is ConcatenationRope) {
-                    if (left.length + right.left.length < combineLength) return Companion.autoRebalance(
+                    if (left.length + right.left.length < combineLength) return autoRebalance(
                         ConcatenationRope(
                             FlatCharSequenceRope(left.toString() + right.left),
                             right.right
@@ -237,7 +237,7 @@ internal class RopeUtilities {
             }
             if (right !is ConcatenationRope) {
                 if (left is ConcatenationRope) {
-                    if (right.length + left.right.length < combineLength) return Companion.autoRebalance(
+                    if (right.length + left.right.length < combineLength) return autoRebalance(
                         ConcatenationRope(
                             left.left,
                             FlatCharSequenceRope(left.right.toString() + right)
@@ -246,7 +246,7 @@ internal class RopeUtilities {
                 }
             }
 
-            return Companion.autoRebalance(ConcatenationRope(left, right))
+            return autoRebalance(ConcatenationRope(left, right))
         }
 
         fun stats(r: Rope, out: PrintStream) {
