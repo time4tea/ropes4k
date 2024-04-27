@@ -25,7 +25,7 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	 * Constructs a new rope from a character array.
 	 * @param sequence the character array.
 	 */
-	public FlatCharArrayRope(final char[] sequence) {
+	public FlatCharArrayRope(char[] sequence) {
 		this(sequence, 0, sequence.length);
 	}
 
@@ -35,7 +35,7 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	 * @param offset the offset in the array.
 	 * @param length the length of the array.
 	 */
-	public FlatCharArrayRope(final char[] sequence, final int offset, final int length) {
+	public FlatCharArrayRope(char[] sequence, int offset, int length) {
 		if (length > sequence.length)
 			throw new IllegalArgumentException("Length must be less than " + sequence.length);
 		this.sequence = new char[length];
@@ -43,8 +43,8 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	}
 
 	@Override
-	public char charAt(final int index) {
-		return this.sequence[index];
+	public char charAt(int index) {
+		return sequence[index];
 	}
 
 	@Override
@@ -58,9 +58,9 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	 * with direct array access to improve speed.
 	 */
 	@Override
-	public int indexOf(final char ch) {
-		for (int j=0; j<this.sequence.length; ++j)
-			if (this.sequence[j] == ch)
+	public int indexOf(char ch) {
+		for (int j = 0; j< sequence.length; ++j)
+			if (sequence[j] == ch)
 				return j;
 		return -1;
 	}
@@ -71,11 +71,11 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	 * with direct array access to improve speed.
 	 */
 	@Override
-	public int indexOf(final char ch, final int fromIndex) {
-		if (fromIndex < 0 || fromIndex >= this.length())
+	public int indexOf(char ch, int fromIndex) {
+		if (fromIndex < 0 || fromIndex >= length())
 			throw new IndexOutOfBoundsException("Rope index out of range: " + fromIndex);
-		for (int j=fromIndex; j<this.sequence.length; ++j)
-			if (this.sequence[j] == ch)
+		for (int j = fromIndex; j< sequence.length; ++j)
+			if (sequence[j] == ch)
 				return j;
 		return -1;
 	}
@@ -86,29 +86,29 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	 * with direct array access to improve speed.
 	 */
 	@Override
-	public int indexOf(final CharSequence sequence, final int fromIndex) {
+	public int indexOf(CharSequence sequence, int fromIndex) {
 		// Implementation of Boyer-Moore-Horspool algorithm with
 		// special support for unicode.
 
 		// step 0. sanity check.
-		final int length = sequence.length();
+		int length = sequence.length();
 		if (length == 0)
 			return -1;
 		if (length == 1)
-			return this.indexOf(sequence.charAt(0), fromIndex);
+			return indexOf(sequence.charAt(0), fromIndex);
 
-		final int[] bcs = new int[256]; // bad character shift
+		int[] bcs = new int[256]; // bad character shift
 		Arrays.fill(bcs, length);
 
 		// step 1. preprocessing.
 		for (int j=0; j<length-1; ++j) {
-			final char c = sequence.charAt(j);
-			final int l = (c & 0xFF);
+			char c = sequence.charAt(j);
+			int l = (c & 0xFF);
 			bcs[l] = Math.min(length - j - 1, bcs[l]);
 		}
 
 		// step 2. search.
-		for (int j=fromIndex+length-1; j<this.length();) {
+		for (int j=fromIndex+length-1; j< length();) {
 			int x=j, y=length-1;
 			while (true) {
 				if (sequence.charAt(y) != this.sequence[x]) {
@@ -126,19 +126,19 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	}
 
 	@Override
-	public Iterator<Character> iterator(final int start) {
-		if (start < 0 || start > this.length())
+	public Iterator<Character> iterator(int start) {
+		if (start < 0 || start > length())
 			throw new IndexOutOfBoundsException("Rope index out of range: " + start);
 		return new Iterator<Character>() {
 			int current = start;
 			@Override
 			public boolean hasNext() {
-				return this.current < FlatCharArrayRope.this.length();
+				return current < length();
 			}
 
 			@Override
 			public Character next() {
-				return FlatCharArrayRope.this.sequence[this.current++];
+				return sequence[current++];
 			}
 
 			@Override
@@ -150,7 +150,7 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 
 	@Override
 	public int length() {
-		return this.sequence.length;
+		return sequence.length;
 	}
 
 	@Override
@@ -159,19 +159,19 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	}
 
 	@Override
-	public Iterator<Character> reverseIterator(final int start) {
-		if (start < 0 || start > this.length())
+	public Iterator<Character> reverseIterator(int start) {
+		if (start < 0 || start > length())
 			throw new IndexOutOfBoundsException("Rope index out of range: " + start);
 		return new Iterator<Character>() {
-			int current = FlatCharArrayRope.this.length() - start;
+			int current = length() - start;
 			@Override
 			public boolean hasNext() {
-				return this.current > 0;
+				return current > 0;
 			}
 
 			@Override
 			public Character next() {
-				return FlatCharArrayRope.this.sequence[--this.current];
+				return sequence[--current];
 			}
 
 			@Override
@@ -182,11 +182,11 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 	}
 
 	@Override
-	public Rope subSequence(final int start, final int end) {
-		if (start == 0 && end == this.length())
+	public Rope subSequence(int start, int end) {
+		if (start == 0 && end == length())
 			return this;
 		if (end - start < 16) {
-			return new FlatCharArrayRope(this.sequence, start, end-start);
+			return new FlatCharArrayRope(sequence, start, end-start);
 		} else {
 			return new SubstringRope(this, start, end-start);
 		}
@@ -194,21 +194,21 @@ public final class FlatCharArrayRope extends AbstractRope implements FlatRope {
 
 	@Override
 	public String toString() {
-		return new String(this.sequence);
+		return new String(sequence);
 	}
 
 
-	public String toString(final int offset, final int length) {
-		return new String(this.sequence, offset, length);
-	}
-
-	@Override
-	public void write(final Writer out) throws IOException {
-		this.write(out, 0, this.length());
+	public String toString(int offset, int length) {
+		return new String(sequence, offset, length);
 	}
 
 	@Override
-	public void write(final Writer out, final int offset, final int length) throws IOException {
-		out.write(this.sequence, offset, length);
+	public void write(Writer out) throws IOException {
+		write(out, 0, length());
+	}
+
+	@Override
+	public void write(Writer out, int offset, int length) throws IOException {
+		out.write(sequence, offset, length);
 	}
 }

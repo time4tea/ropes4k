@@ -5,13 +5,13 @@
  */
 package net.ropes4k.impl;
 
+import net.ropes4k.Rope;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.ropes4k.Rope;
 
 /**
  * A rope constructed from an underlying character sequence.
@@ -24,13 +24,13 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 	/**
 	 * Constructs a new rope from an underlying character sequence.
 	 */
-	public FlatCharSequenceRope(final CharSequence sequence) {
+	public FlatCharSequenceRope(CharSequence sequence) {
 		this.sequence = sequence;
 	}
 
 	@Override
-	public char charAt(final int index) {
-		return this.sequence.charAt(index);
+	public char charAt(int index) {
+		return sequence.charAt(index);
 	}
 
 	@Override
@@ -39,19 +39,19 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 	}
 
 	@Override
-	public Iterator<Character> iterator(final int start) {
-		if (start < 0 || start > this.length())
+	public Iterator<Character> iterator(int start) {
+		if (start < 0 || start > length())
 			throw new IndexOutOfBoundsException("Rope index out of range: " + start);
 		return new Iterator<Character>() {
 			int current = start;
 			@Override
 			public boolean hasNext() {
-				return this.current < FlatCharSequenceRope.this.length();
+				return current < length();
 			}
 
 			@Override
 			public Character next() {
-				return FlatCharSequenceRope.this.sequence.charAt(this.current++);
+				return sequence.charAt(current++);
 			}
 
 			@Override
@@ -63,13 +63,13 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 
 	@Override
 	public int length() {
-		return this.sequence.length();
+		return sequence.length();
 	}
 
 	@Override
-	public Matcher matcher(final Pattern pattern) {
+	public Matcher matcher(Pattern pattern) {
 		// optimized to return a matcher directly on the underlying sequence.
-		return pattern.matcher(this.sequence);
+		return pattern.matcher(sequence);
 	}
 
 	@Override
@@ -78,19 +78,19 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 	}
 
 	@Override
-	public Iterator<Character> reverseIterator(final int start) {
-		if (start < 0 || start > this.length())
+	public Iterator<Character> reverseIterator(int start) {
+		if (start < 0 || start > length())
 			throw new IndexOutOfBoundsException("Rope index out of range: " + start);
 		return new Iterator<Character>() {
-			int current = FlatCharSequenceRope.this.length() - start;
+			int current = length() - start;
 			@Override
 			public boolean hasNext() {
-				return this.current > 0;
+				return current > 0;
 			}
 
 			@Override
 			public Character next() {
-				return FlatCharSequenceRope.this.sequence.charAt(--this.current);
+				return sequence.charAt(--current);
 			}
 
 			@Override
@@ -101,11 +101,11 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 	}
 
 	@Override
-	public Rope subSequence(final int start, final int end) {
-		if (start == 0 && end == this.length())
+	public Rope subSequence(int start, int end) {
+		if (start == 0 && end == length())
 			return this;
-		if (end - start < 8 || this.sequence instanceof String /* special optimization for String */) {
-			return new FlatCharSequenceRope(this.sequence.subSequence(start, end));
+		if (end - start < 8 || sequence instanceof String /* special optimization for String */) {
+			return new FlatCharSequenceRope(sequence.subSequence(start, end));
 		} else {
 			return new SubstringRope(this, start, end-start);
 		}
@@ -113,28 +113,28 @@ public final class FlatCharSequenceRope extends AbstractRope implements FlatRope
 
 	@Override
 	public String toString() {
-		return this.sequence.toString();
+		return sequence.toString();
 	}
 
-	public String toString(final int offset, final int length) {
-		return this.sequence.subSequence(offset, offset + length).toString();
-	}
-
-	@Override
-	public void write(final Writer out) throws IOException {
-		this.write(out, 0, this.length());
+	public String toString(int offset, int length) {
+		return sequence.subSequence(offset, offset + length).toString();
 	}
 
 	@Override
-	public void write(final Writer out, final int offset, final int length) throws IOException {
-		if (offset < 0 || offset + length > this.length())
+	public void write(Writer out) throws IOException {
+		write(out, 0, length());
+	}
+
+	@Override
+	public void write(Writer out, int offset, int length) throws IOException {
+		if (offset < 0 || offset + length > length())
 			throw new IndexOutOfBoundsException("Rope index out of bounds:" + (offset < 0 ? offset: offset + length));
 
-		if (this.sequence instanceof String) {	// optimization for String
-			out.write(((String) this.sequence).substring(offset, offset+length));
+		if (sequence instanceof String) {	// optimization for String
+			out.write(((String) sequence).substring(offset, offset+length));
 			return;
 		}
 		for (int j=offset; j<offset + length; ++j)
-			out.write(this.sequence.charAt(j));
+			out.write(sequence.charAt(j));
 	}
 }

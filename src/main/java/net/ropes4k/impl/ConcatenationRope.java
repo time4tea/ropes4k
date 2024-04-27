@@ -27,29 +27,29 @@ public final class ConcatenationRope extends AbstractRope {
      * @param left the first rope.
      * @param right the second rope.
      */
-    public ConcatenationRope(final Rope left, final Rope right) {
+    public ConcatenationRope(Rope left, Rope right) {
         this.left   = left;
         this.right  = right;
-        this.depth  = (byte) (Math.max(RopeUtilities.INSTANCE.depth(left), RopeUtilities.INSTANCE.depth(right)) + 1);
-        this.length = left.length() + right.length();
+        depth  = (byte) (Math.max(RopeUtilities.INSTANCE.depth(left), RopeUtilities.INSTANCE.depth(right)) + 1);
+        length = left.length() + right.length();
     }
 
     @Override
-    public char charAt(final int index) {
-        if (index >= this.length())
+    public char charAt(int index) {
+        if (index >= length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + index);
 
-        return (index < this.left.length() ? this.left.charAt(index): this.right.charAt(index - this.left.length()));
+        return (index < left.length() ? left.charAt(index): right.charAt(index - left.length()));
     }
 
     @Override
     public byte depth() {
-        return this.depth;
+        return depth;
     }
 
     @Override
     public CharSequence getForSequentialAccess() {
-        return this.getForSequentialAccess(this);
+        return getForSequentialAccess(this);
     }
 
     /*
@@ -59,26 +59,26 @@ public final class ConcatenationRope extends AbstractRope {
      * <emph>This method is public only to facilitate unit
      * testing.</emph>
      */
-    private CharSequence getForSequentialAccess(final Rope rope) {
+    private CharSequence getForSequentialAccess(Rope rope) {
         return new CharSequence() {
 
             private final ConcatenationRopeIteratorImpl iterator = (ConcatenationRopeIteratorImpl) rope.iterator(0);
 
             @Override
-            public char charAt(final int index) {
-                if (index > this.iterator.getPos()) {
-                    this.iterator.skip(index-this.iterator.getPos()-1);
+            public char charAt(int index) {
+                if (index > iterator.getPos()) {
+                    iterator.skip(index- iterator.getPos()-1);
                     try {
-                        return this.iterator.next();
-                    } catch (final IllegalArgumentException e) {
+                        return iterator.next();
+                    } catch (IllegalArgumentException e) {
                         System.out.println("Rope length is: " + rope.length() + " charAt is " + index);
                         throw e;
                     }
                 } else { /* if (index <= lastIndex) */
-                    final int toMoveBack = this.iterator.getPos() - index + 1;
-                    if (this.iterator.canMoveBackwards(toMoveBack)) {
-                        this.iterator.moveBackwards(toMoveBack);
-                        return this.iterator.next();
+                    int toMoveBack = iterator.getPos() - index + 1;
+                    if (iterator.canMoveBackwards(toMoveBack)) {
+                        iterator.moveBackwards(toMoveBack);
+                        return iterator.next();
                     } else {
                         return rope.charAt(index);
                     }
@@ -91,7 +91,7 @@ public final class ConcatenationRope extends AbstractRope {
             }
 
             @Override
-            public CharSequence subSequence(final int start, final int end) {
+            public CharSequence subSequence(int start, int end) {
                 return rope.subSequence(start, end);
             }
 
@@ -103,7 +103,7 @@ public final class ConcatenationRope extends AbstractRope {
      * @return the left-hand rope.
      */
     public Rope getLeft() {
-        return this.left;
+        return left;
     }
 
     /**
@@ -111,15 +111,15 @@ public final class ConcatenationRope extends AbstractRope {
      * @return the right-hand rope.
      */
     public Rope getRight() {
-        return this.right;
+        return right;
     }
 
     @Override
-    public Iterator<Character> iterator(final int start) {
-        if (start < 0 || start > this.length())
+    public Iterator<Character> iterator(int start) {
+        if (start < 0 || start > length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        if (start >= this.left.length()) {
-            return this.right.iterator(start - this.left.length());
+        if (start >= left.length()) {
+            return right.iterator(start - left.length());
         } else {
             return new ConcatenationRopeIteratorImpl(this, start);
         }
@@ -127,7 +127,7 @@ public final class ConcatenationRope extends AbstractRope {
 
     @Override
     public int length() {
-        return this.length;
+        return length;
     }
 
     @Override
@@ -137,52 +137,52 @@ public final class ConcatenationRope extends AbstractRope {
 
     @Override
     public Rope reverse() {
-        return RopeUtilities.INSTANCE.concatenate(this.getRight().reverse(), this.getLeft().reverse());
+        return RopeUtilities.INSTANCE.concatenate(getRight().reverse(), getLeft().reverse());
     }
 
     @Override
-    public Iterator<Character> reverseIterator(final int start) {
-        if (start < 0 || start > this.length())
+    public Iterator<Character> reverseIterator(int start) {
+        if (start < 0 || start > length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        if (start >= this.right.length()) {
-            return this.left.reverseIterator(start - this.right.length());
+        if (start >= right.length()) {
+            return left.reverseIterator(start - right.length());
         } else {
             return new ConcatenationRopeReverseIteratorImpl(this, start);
         }
     }
 
     @Override
-    public Rope subSequence(final int start, final int end) {
-        if (start < 0 || end > this.length())
+    public Rope subSequence(int start, int end) {
+        if (start < 0 || end > length())
             throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");
-        if (start == 0 && end == this.length())
+        if (start == 0 && end == length())
             return this;
-        final int l = this.left.length();
+        int l = left.length();
         if (end <= l)
-            return this.left.subSequence(start, end);
+            return left.subSequence(start, end);
         if (start >= l)
-            return this.right.subSequence(start - l, end - l);
+            return right.subSequence(start - l, end - l);
         return RopeUtilities.INSTANCE.concatenate(
-            this.left.subSequence(start, l),
-            this.right.subSequence(0, end - l));
+            left.subSequence(start, l),
+            right.subSequence(0, end - l));
     }
 
     @Override
-    public void write(final Writer out) throws IOException {
-        this.left.write(out);
-        this.right.write(out);
+    public void write(Writer out) throws IOException {
+        left.write(out);
+        right.write(out);
     }
 
     @Override
-    public void write(final Writer out, final int offset, final int length) throws IOException {
-        if (offset + length <= this.left.length()) {
-            this.left.write(out, offset, length);
-        } else if (offset >= this.left.length()) {
-            this.right.write(out, offset - this.left.length(), length);
+    public void write(Writer out, int offset, int length) throws IOException {
+        if (offset + length <= left.length()) {
+            left.write(out, offset, length);
+        } else if (offset >= left.length()) {
+            right.write(out, offset - left.length(), length);
         } else {
-            final int writeLeft = this.left.length() - offset;
-            this.left.write(out, offset, writeLeft);
-            this.right.write(out, 0, length - writeLeft);
+            int writeLeft = left.length() - offset;
+            left.write(out, offset, writeLeft);
+            right.write(out, 0, length - writeLeft);
         }
     }
 }

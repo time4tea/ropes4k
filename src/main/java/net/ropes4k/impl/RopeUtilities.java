@@ -17,7 +17,7 @@ import net.ropes4k.Rope;
  */
 class RopeUtilities {
 
-	private static final long[] FIBONACCI = { 0l, 1l, 1l, 2l, 3l, 5l, 8l, 13l, 21l, 34l, 55l, 89l, 144l, 233l, 377l, 610l, 987l, 1597l, 2584l, 4181l, 6765l, 10946l, 17711l, 28657l, 46368l, 75025l, 121393l, 196418l, 317811l, 514229l, 832040l, 1346269l, 2178309l, 3524578l, 5702887l, 9227465l, 14930352l, 24157817l, 39088169l, 63245986l, 102334155l, 165580141l, 267914296l, 433494437l, 701408733l, 1134903170l, 1836311903l, 2971215073l, 4807526976l, 7778742049l, 12586269025l, 20365011074l, 32951280099l, 53316291173l, 86267571272l, 139583862445l, 225851433717l, 365435296162l, 591286729879l, 956722026041l, 1548008755920l, 2504730781961l, 4052739537881l, 6557470319842l, 10610209857723l, 17167680177565l, 27777890035288l, 44945570212853l, 72723460248141l, 117669030460994l, 190392490709135l, 308061521170129l, 498454011879264l, 806515533049393l, 1304969544928657l, 2111485077978050l, 3416454622906707l, 5527939700884757l, 8944394323791464l, 14472334024676221l, 23416728348467685l, 37889062373143906l, 61305790721611591l, 99194853094755497l, 160500643816367088l, 259695496911122585l, 420196140727489673l, 679891637638612258l, 1100087778366101931l, 1779979416004714189l, 2880067194370816120l, 4660046610375530309l, 7540113804746346429l};
+	private static final long[] FIBONACCI = {0L, 1L, 1L, 2L, 3L, 5L, 8L, 13L, 21L, 34L, 55L, 89L, 144L, 233L, 377L, 610L, 987L, 1597L, 2584L, 4181L, 6765L, 10946L, 17711L, 28657L, 46368L, 75025L, 121393L, 196418L, 317811L, 514229L, 832040L, 1346269L, 2178309L, 3524578L, 5702887L, 9227465L, 14930352L, 24157817L, 39088169L, 63245986L, 102334155L, 165580141L, 267914296L, 433494437L, 701408733L, 1134903170L, 1836311903L, 2971215073L, 4807526976L, 7778742049L, 12586269025L, 20365011074L, 32951280099L, 53316291173L, 86267571272L, 139583862445L, 225851433717L, 365435296162L, 591286729879L, 956722026041L, 1548008755920L, 2504730781961L, 4052739537881L, 6557470319842L, 10610209857723L, 17167680177565L, 27777890035288L, 44945570212853L, 72723460248141L, 117669030460994L, 190392490709135L, 308061521170129L, 498454011879264L, 806515533049393L, 1304969544928657L, 2111485077978050L, 3416454622906707L, 5527939700884757L, 8944394323791464L, 14472334024676221L, 23416728348467685L, 37889062373143906L, 61305790721611591L, 99194853094755497L, 160500643816367088L, 259695496911122585L, 420196140727489673L, 679891637638612258L, 1100087778366101931L, 1779979416004714189L, 2880067194370816120L, 4660046610375530309L, 7540113804746346429L};
 	private static final short MAX_ROPE_DEPTH = 96;
 	private static final String SPACES = "                                                                                                                                                                                                        ";
 
@@ -30,9 +30,9 @@ class RopeUtilities {
 	 * @param r the rope to rebalance.
 	 * @return a rebalanced copy of the specified rope.
 	 */
-	public Rope autoRebalance(final Rope r) {
+	public Rope autoRebalance(Rope r) {
 		if (r instanceof AbstractRope && ((AbstractRope) r).depth() > RopeUtilities.MAX_ROPE_DEPTH) {
-			return this.rebalance(r);
+			return rebalance(r);
 		} else {
 			return r;
 		}
@@ -45,7 +45,7 @@ class RopeUtilities {
 	 * @param right the second rope.
 	 * @return the concatenation of the specified ropes.
 	 */
-	Rope concatenate(final Rope left, final Rope right) {	
+	Rope concatenate(Rope left, Rope right) {
 		if (left.length() == 0)
 			return right;
 		if (right.length() == 0)
@@ -56,24 +56,22 @@ class RopeUtilities {
 				+ ". Concatenation would overflow length field.");
 		final int combineLength = 17;
 		if (left.length() + right.length() < combineLength) {
-			return new FlatCharSequenceRope(left.toString() + right.toString());
+			return new FlatCharSequenceRope(left.toString() + right);
 		}
 		if (!(left instanceof ConcatenationRope)) {
-			if (right instanceof ConcatenationRope) {
-				final ConcatenationRope cRight  = (ConcatenationRope) right;
-				if (left.length() + cRight.getLeft().length() < combineLength)
-					return this.autoRebalance(new ConcatenationRope(new FlatCharSequenceRope(left.toString() + cRight.getLeft().toString()), cRight.getRight()));
+			if (right instanceof ConcatenationRope cRight) {
+                if (left.length() + cRight.getLeft().length() < combineLength)
+					return autoRebalance(new ConcatenationRope(new FlatCharSequenceRope(left.toString() + cRight.getLeft()), cRight.getRight()));
 			}
 		}
 		if (!(right instanceof ConcatenationRope)) {
-			if (left instanceof ConcatenationRope) {
-				final ConcatenationRope cLeft = (ConcatenationRope) left;
-				if (right.length() + cLeft.getRight().length() < combineLength)
-					return this.autoRebalance(new ConcatenationRope(cLeft.getLeft(), new FlatCharSequenceRope(cLeft.getRight().toString() + right.toString())));
+			if (left instanceof ConcatenationRope cLeft) {
+                if (right.length() + cLeft.getRight().length() < combineLength)
+					return autoRebalance(new ConcatenationRope(cLeft.getLeft(), new FlatCharSequenceRope(cLeft.getRight().toString() + right)));
 			}
 		}
 		
-		return this.autoRebalance(new ConcatenationRope(left, right));
+		return autoRebalance(new ConcatenationRope(left, right));
 	}
 
 	/**
@@ -81,7 +79,7 @@ class RopeUtilities {
 	 * @param r the rope.
 	 * @return the depth of the specified rope.
 	 */
-	byte depth(final Rope r) {
+	byte depth(Rope r) {
 		if (r instanceof AbstractRope) {
 			return ((AbstractRope)r).depth();
 		} else {
@@ -90,21 +88,21 @@ class RopeUtilities {
 		}
 	}
 
-	boolean isBalanced(final Rope r) {
-		final byte depth = this.depth(r);
+	boolean isBalanced(Rope r) {
+		byte depth = depth(r);
 		if (depth >= RopeUtilities.FIBONACCI.length - 2)
 			return false;
 		return (RopeUtilities.FIBONACCI[depth + 2] <= r.length());	// TODO: not necessarily valid w/e.g. padding char sequences.
 	}
-	public Rope rebalance(final Rope r) {
+	public Rope rebalance(Rope r) {
 		// get all the nodes into a list
 		
-		final ArrayList<Rope> leafNodes = new ArrayList<Rope>();
-		final ArrayDeque<Rope> toExamine = new ArrayDeque<Rope>();
+		ArrayList<Rope> leafNodes = new ArrayList<Rope>();
+		ArrayDeque<Rope> toExamine = new ArrayDeque<Rope>();
 		// begin a depth first loop.
 		toExamine.add(r);
 		while (toExamine.size() > 0) {
-			final Rope x = toExamine.pop();
+			Rope x = toExamine.pop();
 			if (x instanceof ConcatenationRope) {
 				toExamine.push(((ConcatenationRope) x).getRight());
 				toExamine.push(((ConcatenationRope) x).getLeft());
@@ -134,11 +132,11 @@ class RopeUtilities {
 	 * @param r
 	 * @param out
 	 */
-	void visualize(final Rope r, final PrintStream out) {
-		this.visualize(r, out, (byte) 0);
+	void visualize(Rope r, PrintStream out) {
+		visualize(r, out, (byte) 0);
 	}
 
-	public void visualize(final Rope r, final PrintStream out, final int depth) {
+	public void visualize(Rope r, PrintStream out, int depth) {
 		if (r instanceof FlatRope) {
 			out.print(RopeUtilities.SPACES.substring(0,depth*2));
 			out.println("\"" + r + "\"");
@@ -152,21 +150,21 @@ class RopeUtilities {
 		if (r instanceof ConcatenationRope) {
 			out.print(RopeUtilities.SPACES.substring(0,depth*2));
 			out.println("concat[left]");
-			this.visualize(((ConcatenationRope)r).getLeft(), out, depth+1);
+			visualize(((ConcatenationRope)r).getLeft(), out, depth+1);
 			out.print(RopeUtilities.SPACES.substring(0,depth*2));
 			out.println("concat[right]");
-			this.visualize(((ConcatenationRope)r).getRight(), out, depth+1);
+			visualize(((ConcatenationRope)r).getRight(), out, depth+1);
 		}
 	}
 	
-	public void stats(final Rope r, final PrintStream out) {
+	public void stats(Rope r, PrintStream out) {
 		int nonLeaf=0;
-		final ArrayList<Rope> leafNodes = new ArrayList<Rope>();
-		final ArrayDeque<Rope> toExamine = new ArrayDeque<Rope>();
+		ArrayList<Rope> leafNodes = new ArrayList<Rope>();
+		ArrayDeque<Rope> toExamine = new ArrayDeque<Rope>();
 		// begin a depth first loop.
 		toExamine.add(r);
 		while (toExamine.size() > 0) {
-			final Rope x = toExamine.pop();
+			Rope x = toExamine.pop();
 			if (x instanceof ConcatenationRope) {
 				++nonLeaf;
 				toExamine.push(((ConcatenationRope) x).getRight());
