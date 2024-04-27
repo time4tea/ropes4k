@@ -20,8 +20,8 @@ import java.util.regex.Pattern
 
 @State(Scope.Benchmark)
 @Fork(1)
-@Warmup(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
-@Measurement(iterations = 10, time = 1, timeUnit = TimeUnit.SECONDS)
+@Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
+@Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 open class RegexSimpleBenchmark {
     val pattern1 = Pattern.compile("plea.*y")
     val pattern2 = Pattern.compile("Cratchit")

@@ -1,6 +1,7 @@
 plugins {
     kotlin("jvm") version "1.9.23"
     id("org.jetbrains.kotlinx.benchmark") version "0.4.10"
+    id("io.morethan.jmhreport") version "0.9.0"
 }
 
 repositories {
@@ -30,8 +31,24 @@ benchmark {
     benchmark {
         configurations {
             register("single") {
-                include(".*.\\.RegexSimpleBenchmark")
+                include(".*.\\.Insert2Benchmark")
             }
         }
     }
+}
+
+fun findMostRecentJmhReportIn(d: File): String {
+    return d.walkBottomUp()
+        .filter { it.name == "test.json" }
+        .sortedByDescending { it.lastModified() }
+        .first()
+        .absolutePath
+        .also {
+            println("Selected JMH Report is $it")
+        }
+}
+
+jmhReport {
+    jmhResultPath = findMostRecentJmhReportIn(project.file("build/reports/benchmarks"))
+    jmhReportOutput = project.file("build/reports/benchmarks").absolutePath
 }

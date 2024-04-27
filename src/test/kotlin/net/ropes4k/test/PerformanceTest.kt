@@ -55,40 +55,6 @@ class PerformanceTest {
         stat(stats3, "[Rope/itr]")
     }
 
-    @Test
-    fun insertPlan2() {
-        println()
-        println("**** INSERT PLAN TEST 2 ****")
-        println(
-            """
-    * Insert fragments of Benjamin Franklin's Autobiography into
-    * A Christmas Carol.
-    
-    """.trimIndent()
-        )
-
-
-        val inserts = (0 until PLAN_LENGTH).map {
-            val clipFrom = random.nextInt(bensAuto.length)
-            Insert(
-                random.nextInt(aChristmasCarol.length),
-                clipFrom,
-                random.nextInt(bensAuto.length - clipFrom)
-            )
-        }
-
-        val stats0 = LongArray(ITERATION_COUNT)
-        val stats1 = LongArray(ITERATION_COUNT)
-        val stats2 = LongArray(ITERATION_COUNT)
-        for (j in 0 until ITERATION_COUNT) {
-            stats0[j] = stringInsertTest2(aChristmasCarol, bensAuto, inserts)
-            stats1[j] = stringBufferInsertTest2(aChristmasCarol, bensAuto, inserts)
-            stats2[j] = ropeInsertTest2(aChristmasCarol, bensAuto, inserts)
-        }
-        stat(stats0, "[String]")
-        stat(stats1, "[StringBuffer]")
-        stat(stats2, "[Rope]")
-    }
 
     @Test
     fun `inserts and things that depend on them`() {
@@ -100,7 +66,7 @@ class PerformanceTest {
         write()
     }
 
-    private data class Insert(val location: Int, val offset: Int, val length: Int)
+    data class Insert(val location: Int, val offset: Int, val length: Int)
 
     private fun insertPlan() {
         println()
@@ -470,22 +436,6 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun ropeInsertTest2(aChristmasCarol: String, bensAuto: String, inserts: List<Insert>): Long {
-            val x = System.nanoTime()
-            var result = Rope.BUILDER.build(aChristmasCarol)
-
-            inserts.forEach {
-                result = result.insert(it.location, bensAuto.subSequence(it.offset, it.offset + it.length))
-            }
-            val y = System.nanoTime()
-            System.out.printf(
-                "[Rope]         Executed insert plan in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
-                (y - x),
-                result.length,
-                (result as AbstractRope).depth()
-            )
-            return (y - x)
-        }
 
         private fun ropePrependTest(aChristmasCarol: String, prependPlan: Array<IntArray>, planLength: Int): Long {
             val x = System.nanoTime()
@@ -607,26 +557,6 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringBufferInsertTest2(
-            aChristmasCarol: String,
-            bensAuto: String,
-            inserts: List<Insert>
-        ): Long {
-            val x = System.nanoTime()
-            val result = StringBuilder(aChristmasCarol)
-
-            inserts.forEach {
-                result.insert(it.location, bensAuto.subSequence(it.offset, it.offset + it.length))
-            }
-
-            val y = System.nanoTime()
-            System.out.printf(
-                "[StringBuffer] Executed insert plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
-            return (y - x)
-        }
 
         private fun stringBufferPrependTest(
             aChristmasCarol: String,
@@ -692,27 +622,6 @@ class PerformanceTest {
                 result.length
             )
             complexString = result
-            return (y - x)
-        }
-
-        private fun stringInsertTest2(aChristmasCarol: String, bensAuto: String, inserts: List<Insert>): Long {
-            val x = System.nanoTime()
-            var result = aChristmasCarol
-
-            inserts.forEach {
-                result =
-                    result.substring(0, it.location) + bensAuto.substring(
-                        it.offset,
-                        it.offset + it.length
-                    ) + result.substring(it.location)
-            }
-
-            val y = System.nanoTime()
-            System.out.printf(
-                "[String]       Executed insert plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
             return (y - x)
         }
 
@@ -841,6 +750,6 @@ class PerformanceTest {
         val aChristmasCarolRaw = readpath("test-files/AChristmasCarol_CharlesDickens.txt")
         val bensAutoRaw = readpath("test-files/AutobiographyOfBenjaminFranklin_BenjaminFranklin.txt")
         val aChristmasCarol = String(aChristmasCarolRaw)
-        private val bensAuto = String(bensAutoRaw)
+        val bensAuto = String(bensAutoRaw)
     }
 }
