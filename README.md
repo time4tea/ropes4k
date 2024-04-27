@@ -1,9 +1,7 @@
 
 # Ropes4k
 
-An implementation of a Rope data structure in Kotlin
-
-I'm refactoring the original implementation to Kotlin...
+An implementation of a Rope data structure in Kotlin.
 
 # Original Implementation
 
