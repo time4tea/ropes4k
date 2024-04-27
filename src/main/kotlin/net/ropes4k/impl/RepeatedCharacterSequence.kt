@@ -3,56 +3,32 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package net.ropes4k.impl;
+package net.ropes4k.impl
 
-import java.util.Arrays;
+import java.util.Arrays
 
 /**
  * A character sequence defined by a character
  * and a repeat count.
- *
- * @author Amin Ahmad
  */
-public class RepeatedCharacterSequence implements CharSequence {
-
-    private final char character;
-    private final int repeat;
-
-    public RepeatedCharacterSequence(char character, int repeat) {
-        super();
-        this.character = character;
-        this.repeat = repeat;
+class RepeatedCharacterSequence(
+    val character: Char,
+    private val repeat: Int
+) : CharSequence {
+    override fun get(index: Int): Char {
+        return character
     }
 
-    @Override
-    public char charAt(int index) {
-        return getCharacter();
+    override val length: Int get() = repeat
+
+
+    override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
+        return RepeatedCharacterSequence(character, endIndex - startIndex)
     }
 
-    @Override
-    public int length() {
-        return repeat;
+    override fun toString(): String {
+        val result = CharArray(repeat)
+        Arrays.fill(result, character)
+        return String(result)
     }
-
-    @Override
-    public CharSequence subSequence(int start, int end) {
-        return new RepeatedCharacterSequence(getCharacter(), end - start);
-    }
-
-    @Override
-    public String toString() {
-        char[] result = new char[repeat];
-        Arrays.fill(result, character);
-        return new String(result);
-    }
-
-    /**
-     * Returns the character used to construct this sequence.
-     *
-     * @return the character used to construct this sequence.
-     */
-    public char getCharacter() {
-        return character;
-    }
-
 }
