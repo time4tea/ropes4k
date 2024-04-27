@@ -237,27 +237,6 @@ class PerformanceTest {
         }
 
 
-        private fun timeit(name: String, f: () -> CharSequence): Long {
-            val x = System.nanoTime()
-            val result = f()
-            val y = System.nanoTime()
-
-            val variant = result.javaClass.simpleName
-
-            val depth = when (result) {
-                is Rope -> (result as AbstractRope).depth()
-                else -> null
-            }
-
-            System.out.printf(
-                "[${variant.padEnd(20)}]         Executed ${name} in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
-                (y - x),
-                result.length,
-                depth
-            )
-            return (y - x)
-        }
-
         private fun ropeInsertTest(aChristmasCarol: CharArray, inserts: List<Insert>): Long {
             var result = Rope.BUILDER.build(aChristmasCarol)
 
@@ -421,10 +400,6 @@ class PerformanceTest {
             val y = System.nanoTime()
             System.out.printf("[Rope.matcher] Executed regexp test in % ,18d ns. Found %d matches.\n", (y - x), result)
             return (y - x)
-        }
-
-        private fun time(x: Long, y: Long): String {
-            return (y - x).toString() + "ns"
         }
 
         private fun stat(stats: LongArray, prefix: String) {
