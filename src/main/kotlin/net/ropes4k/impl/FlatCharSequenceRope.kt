@@ -67,12 +67,12 @@ class FlatCharSequenceRope(private val sequence: CharSequence) : AbstractRope(),
         }
     }
 
-    override fun subSequence(start: Int, end: Int): Rope {
-        if (start == 0 && end == length) return this
-        return if (end - start < 8 || sequence is String /* special optimization for String */) {
-            FlatCharSequenceRope(sequence.subSequence(start, end))
+    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+        if (startIndex == 0 && endIndex == length) return this
+        return if (endIndex - startIndex < 8 || sequence is String /* special optimization for String */) {
+            FlatCharSequenceRope(sequence.subSequence(startIndex, endIndex))
         } else {
-            SubstringRope(this, start, end - start)
+            SubstringRope(this, startIndex, endIndex - startIndex)
         }
     }
 

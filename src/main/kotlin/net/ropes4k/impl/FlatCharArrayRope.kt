@@ -34,8 +34,6 @@ constructor(
      */
     /**
      * Constructs a new rope from a character array.
-     *
-     * @param sequence the character array.
      */
     init {
         require(length <= sequence.size) { "Length must be less than " + sequence.size }
@@ -77,7 +75,7 @@ constructor(
      * indexOf implementation. Calls to charAt have been replaced
      * with direct array access to improve speed.
      */
-    public override fun indexOf(sequence: CharSequence, fromIndex: Int): Int {
+    override fun indexOf(sequence: CharSequence, fromIndex: Int): Int {
         val me = getForSequentialAccess()
 
         // Implementation of Boyer-Moore-Horspool algorithm with

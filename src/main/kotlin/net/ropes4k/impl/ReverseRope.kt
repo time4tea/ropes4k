@@ -16,7 +16,7 @@ import java.io.Writer
  *
  * @author Amin Ahmad
  */
-class ReverseRope
+
 /**
  * Constructs a new rope from an underlying rope.
  *
@@ -24,7 +24,8 @@ class ReverseRope
  * Balancing algorithm works optimally when only FlatRopes or
  * SubstringRopes are supplied. Framework must guarantee this
  * as no runtime check is performed.
- */(private val rope: Rope) : AbstractRope() {
+ */
+class ReverseRope(private val rope: Rope) : AbstractRope() {
     override fun get(index: Int): Char {
         return rope[length - index - 1]
     }
