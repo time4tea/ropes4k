@@ -66,37 +66,6 @@ class PerformanceTest {
         }
     }
 
-    data class Append(val offset: Int, val length: Int)
-
-    @Test
-    fun appendPlan() {
-        println()
-        println("**** APPEND PLAN TEST ****")
-        println()
-
-        val length = aChristmasCarol.length
-        val appends = (0 until PLAN_LENGTH).map {
-            val offset = random.nextInt(length)
-            Append(
-                offset,
-                random.nextInt(length - offset)
-            )
-        }
-
-        (0..appends.size step 20).forEach {
-            val stats0 = LongArray(ITERATION_COUNT)
-            val stats1 = LongArray(ITERATION_COUNT)
-            val stats2 = LongArray(ITERATION_COUNT)
-            for (j in 0 until ITERATION_COUNT) {
-                stats0[j] = stringAppendTest(aChristmasCarol, appends)
-                stats1[j] = stringBufferAppendTest(aChristmasCarol, appends)
-                stats2[j] = ropeAppendTest(aChristmasCarol, appends)
-            }
-            stat(stats0, "[String]")
-            stat(stats1, "[StringBuffer]")
-            stat(stats2, "[Rope]")
-        }
-    }
 
     @Test
     fun prependPlan() {
@@ -343,24 +312,6 @@ class PerformanceTest {
             return Files.readString(Path.of(path)).toCharArray()
         }
 
-        private fun ropeAppendTest(aChristmasCarol: String, appends: List<Append>): Long {
-            val x = System.nanoTime()
-            var result = Rope.BUILDER.build(aChristmasCarol)
-
-            appends.forEach {
-                result = result.append(result.subSequence(it.offset, it.offset + it.length))
-
-            }
-
-            val y = System.nanoTime()
-            System.out.printf(
-                "[Rope]         Executed append plan in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
-                (y - x),
-                result.length,
-                (result as AbstractRope).depth()
-            )
-            return (y - x)
-        }
 
         private fun timeit(name: String, f: () -> CharSequence): Long {
             val x = System.nanoTime()
@@ -443,42 +394,7 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringAppendTest(aChristmasCarol: String, appends: List<Append>): Long {
-            val x = System.nanoTime()
-            var result = aChristmasCarol
 
-            appends.forEach {
-                result = result + result.substring(it.offset, it.offset + it.length)
-            }
-
-            val y = System.nanoTime()
-            System.out.printf(
-                "[String]       Executed append plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
-            return (y - x)
-        }
-
-        private fun stringBufferAppendTest(
-            aChristmasCarol: String,
-            appends: List<Append>,
-        ): Long {
-            val x = System.nanoTime()
-            val result = StringBuilder(aChristmasCarol)
-
-            appends.forEach {
-                result.append(result.subSequence(it.offset, it.offset + it.length))
-            }
-
-            val y = System.nanoTime()
-            System.out.printf(
-                "[StringBuffer] Executed append plan in % ,18d ns. Result has length: %d\n",
-                (y - x),
-                result.length
-            )
-            return (y - x)
-        }
 
         private fun stringBufferInsertTest(aChristmasCarol: CharArray, inserts: List<Insert>): Long {
             val result = StringBuffer(aChristmasCarol.size)

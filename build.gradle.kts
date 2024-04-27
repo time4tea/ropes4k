@@ -31,7 +31,7 @@ benchmark {
     benchmark {
         configurations {
             register("single") {
-                include(".*.\\.TraversalBenchmark")
+                include(".*.\\.AppendBenchmark")
             }
         }
     }
