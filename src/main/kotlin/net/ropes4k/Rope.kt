@@ -149,10 +149,6 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * The characters of the `CharSequence` argument are inserted,
      * in order, into this rope at the indicated offset.
      *
-     *
-     * If `s` is `null`, then the four characters
-     * `"null"` are inserted into this sequence.
-     *
      * @param      dstOffset the offset.
      * @param      s the sequence to be inserted
      * @return     a reference to the new Rope.
