@@ -50,9 +50,8 @@ internal class ConcatenationRope(
                 iterator.skip(index - iterator.pos - 1)
                 try {
                     return iterator.next()
-                } catch (e: IllegalArgumentException) {
-                    println("Rope length is: " + rope.length + " charAt is " + index)
-                    throw e
+                } catch (e: NoSuchElementException) {
+                    throw IndexOutOfBoundsException()
                 }
             } else { /* if (index <= lastIndex) */
                 val toMoveBack = iterator.pos - index + 1
