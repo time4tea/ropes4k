@@ -21,7 +21,7 @@ import kotlin.math.min
  *
  * @author Amin Ahmad
  */
-abstract class AbstractRope : Rope {
+internal abstract class AbstractRope : Rope {
     private var hashCode = 0
 
     override fun append(c: Char): Rope {

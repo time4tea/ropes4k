@@ -14,7 +14,7 @@ import java.io.Writer
  * Represents a lazily-evaluated substring of another rope. For performance
  * reasons, the target rope must be a `FlatRope`.
  */
-class SubstringRope(val rope: FlatRope, val offset: Int, override val length: Int) : AbstractRope() {
+internal class SubstringRope(val rope: FlatRope, val offset: Int, override val length: Int) : AbstractRope() {
 
     init {
         if (length < 0 || offset < 0 || offset + length > rope.length) throw IndexOutOfBoundsException("Invalid substring offset (" + offset + ") and length (" + length + ") for underlying rope with length " + rope.length)

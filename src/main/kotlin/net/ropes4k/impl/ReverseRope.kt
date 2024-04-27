@@ -25,7 +25,7 @@ import java.io.Writer
  * SubstringRopes are supplied. Framework must guarantee this
  * as no runtime check is performed.
  */
-class ReverseRope(private val rope: Rope) : AbstractRope() {
+internal class ReverseRope(private val rope: Rope) : AbstractRope() {
     override fun get(index: Int): Char {
         return rope[length - index - 1]
     }

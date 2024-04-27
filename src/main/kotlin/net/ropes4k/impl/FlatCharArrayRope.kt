@@ -17,7 +17,7 @@ import kotlin.math.min
  *
  * @author Amin Ahmad
  */
-class FlatCharArrayRope @JvmOverloads
+internal class FlatCharArrayRope @JvmOverloads
 constructor(
     sequence: CharArray,
     offset: Int = 0,

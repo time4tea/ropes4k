@@ -11,7 +11,7 @@ import java.util.Arrays
  * A character sequence defined by a character
  * and a repeat count.
  */
-class RepeatedCharacterSequence(
+internal class RepeatedCharacterSequence(
     val character: Char,
     private val repeat: Int
 ) : CharSequence {

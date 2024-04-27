@@ -18,7 +18,7 @@ import kotlin.math.max
  *
  * @author Amin Ahmad
  */
-class ConcatenationRope(
+internal class ConcatenationRope(
     @JvmField val left: Rope,
     @JvmField val right: Rope
 ) : AbstractRope() {

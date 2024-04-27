@@ -8,6 +8,10 @@ repositories {
     mavenCentral()
 }
 
+kotlin {
+    explicitApi()
+}
+
 dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-benchmark-runtime:0.4.10")
 

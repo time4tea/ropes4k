@@ -14,7 +14,7 @@ import java.util.ArrayDeque
  * well-balanced. Compare this to O(nlogn) for iteration using
  * `charAt`.
  */
-class ConcatenationRopeIteratorImpl(rope: Rope, start: Int) : Iterator<Char> {
+internal class ConcatenationRopeIteratorImpl(rope: Rope, start: Int) : Iterator<Char> {
     private val toTraverse = ArrayDeque<Rope>()
     private var currentRope: Rope?
     private var currentRopePos = 0

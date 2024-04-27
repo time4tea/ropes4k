@@ -12,7 +12,7 @@ import net.ropes4k.Rope
  *
  * @author Amin Ahmad
  */
-interface FlatRope : Rope {
+internal interface FlatRope : Rope {
     /**
      * Returns a `String` representation of a range
      * in this rope.

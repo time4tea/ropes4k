@@ -16,7 +16,7 @@ import java.util.ArrayDeque
  *
  * @author aahmad
  */
-class ConcatenationRopeReverseIteratorImpl(private val rope: Rope, start: Int) : MutableIterator<Char> {
+internal class ConcatenationRopeReverseIteratorImpl(private val rope: Rope, start: Int) : MutableIterator<Char> {
     private val toTraverse = ArrayDeque<Rope>()
     private var currentRope: Rope?
     private var currentRopePos = 0

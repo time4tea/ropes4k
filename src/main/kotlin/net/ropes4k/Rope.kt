@@ -40,24 +40,24 @@ import java.util.regex.Pattern
  * <emph>guarantees will not change</emph>. Failure to do so will result in
  * logic errors.
  */
-interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Serializable {
+public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Serializable {
     /**
      * Returns a new rope created by appending the specified character to
      * this rope.
      */
-    fun append(c: Char): Rope
+    public fun append(c: Char): Rope
 
     /**
      * Returns a new rope created by appending the specified character sequence to
      * this rope.
      */
-    fun append(suffix: CharSequence): Rope
+    public fun append(suffix: CharSequence): Rope
 
     /**
      * Returns a new rope created by appending the specified character range to
      * this rope.
      */
-    fun append(csq: CharSequence, start: Int, end: Int): Rope
+    public fun append(csq: CharSequence, start: Int, end: Int): Rope
 
     /**
      * Creats a new rope by delete the specified character substring.
@@ -69,7 +69,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @param      start  The beginning index, inclusive.
      * @param      end    The ending index, exclusive.
      */
-    fun delete(start: Int, end: Int): Rope
+    public fun delete(start: Int, end: Int): Rope
 
     /**
      * Returns the index within this rope of the first occurrence of the
@@ -89,7 +89,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * sequence represented by this object, or `-1` if the character
      * does not occur.
      */
-    fun indexOf(ch: Char): Int
+    public fun indexOf(ch: Char): Int
 
     /**
      * Returns the index within this rope of the first occurrence of the
@@ -110,7 +110,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return the index of the first occurrence of the character in the character
      * sequence represented by this object, or -1 if the character does not occur.
      */
-    fun indexOf(ch: Char, fromIndex: Int): Int
+    public fun indexOf(ch: Char, fromIndex: Int): Int
 
     /**
      * Returns the index within this rope of the first occurrence of the
@@ -124,7 +124,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return the index of the first occurrence of the specified string, or
      * -1 if the specified string does not occur.
      */
-    fun indexOf(sequence: CharSequence): Int
+    public fun indexOf(sequence: CharSequence): Int
 
     /**
      * Returns the index within this rope of the first occurrence of the
@@ -139,7 +139,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return the index of the first occurrence of the specified string, or
      * -1 if the specified string does not occur.
      */
-    fun indexOf(sequence: CharSequence, fromIndex: Int): Int
+    public fun indexOf(sequence: CharSequence, fromIndex: Int): Int
 
     /**
      * Creates a new rope by inserting the specified `CharSequence`
@@ -158,21 +158,21 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return     a reference to the new Rope.
      * @throws     IndexOutOfBoundsException  if the offset is invalid.
      */
-    fun insert(dstOffset: Int, s: CharSequence): Rope
+    public fun insert(dstOffset: Int, s: CharSequence): Rope
 
     /**
      * Returns an iterator positioned to start at the specified index.
      * @param start the start position.
      * @return an iterator positioned to start at the specified index.
      */
-    fun iterator(start: Int): Iterator<Char>
+    public fun iterator(start: Int): Iterator<Char>
 
     /**
      * Trims all whitespace as well as characters less than 0x20 from
      * the beginning of this string.
      * @return a rope with all leading whitespace trimmed.
      */
-    fun trimStart(): Rope
+    public fun trimStart(): Rope
 
     /**
      * Creates a matcher that will match this rope against the
@@ -185,7 +185,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @param pattern the pattern to match this rope against.
      * @return a matcher.
      */
-    fun matcher(pattern: Pattern): Matcher
+    public fun matcher(pattern: Pattern): Matcher
 
     /**
      * Returns `true` if this rope matches the specified
@@ -196,7 +196,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return `true` if this rope matches the specified
      * `Pattern`, or `false` otherwise.
      */
-    fun matches(regex: Pattern): Boolean
+    public fun matches(regex: Pattern): Boolean
 
     /**
      * Returns `true` if this rope matches the specified
@@ -207,7 +207,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return `true` if this rope matches the specified
      * regular expression, or `false` otherwise.
      */
-    fun matches(regex: String): Boolean
+    public fun matches(regex: String): Boolean
 
 
     /**
@@ -217,13 +217,13 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      *
      * @return a rebalanced rope.
      */
-    fun rebalance(): Rope
+    public fun rebalance(): Rope
 
     /**
      * Reverses this rope.
      * @return a reversed copy of this rope.
      */
-    fun reverse(): Rope
+    public fun reverse(): Rope
 
     /**
      * Returns a reverse iterator positioned to start at the end of this
@@ -232,7 +232,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return A reverse iterator positioned at the end of this rope.
      * @see Rope.reverseIterator
      */
-    fun reverseIterator(): Iterator<Char>
+    public fun reverseIterator(): Iterator<Char>
 
     /**
      * Returns a reverse iterator positioned to start at the specified index.
@@ -243,14 +243,14 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * should start 1 character before the end of the rope.
      * @see Rope.reverseIterator
      */
-    fun reverseIterator(start: Int): Iterator<Char>
+    public fun reverseIterator(start: Int): Iterator<Char>
 
     /**
      * Trims all whitespace as well as characters less than `0x20` from
      * the end of this rope.
      * @return a rope with all trailing whitespace trimmed.
      */
-    fun trimEnd(): Rope
+    public fun trimEnd(): Rope
 
     override fun subSequence(startIndex: Int, endIndex: Int): Rope
 
@@ -259,23 +259,19 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * the beginning and end of this string.
      * @return a rope with all leading and trailing whitespace trimmed.
      */
-    fun trim(): Rope
+    public fun trim(): Rope
 
     /**
      * Write this rope to a `Writer`.
-     * @param out the writer object.
      */
     @Throws(IOException::class)
-    fun write(out: Writer)
+    public fun write(out: Writer)
 
     /**
      * Write a range of this rope to a `Writer`.
-     * @param out the writer object.
-     * @param offset the range offset.
-     * @param length the range length.
      */
     @Throws(IOException::class)
-    fun write(out: Writer, offset: Int, length: Int)
+    public fun write(out: Writer, offset: Int, length: Int)
 
     /**
      * Increase the length of this rope to the specified length by prepending
@@ -285,61 +281,42 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return the padded rope.
      * @see .padStart
      */
-    fun padStart(toLength: Int): Rope
+    public fun padStart(toLength: Int): Rope
 
     /**
      * Increase the length of this rope to the specified length by repeatedly
      * prepending the specified character to this rope. If the specified length
      * is less than or equal to the current length of the rope, the rope is
      * returned unmodified.
-     * @param toLength the desired length.
-     * @param padChar the character to use for padding.
-     * @return the padded rope.
-     * @see .padStart
      */
-    fun padStart(toLength: Int, padChar: Char): Rope
+    public fun padStart(toLength: Int, padChar: Char): Rope
 
     /**
      * Increase the length of this rope to the specified length by appending
      * spaces to this rope. If the specified length is less than or equal to
      * the current length of the rope, the rope is returned unmodified.
-     * @param toLength the desired length.
-     * @return the padded rope.
-     * @see .padStart
      */
-    fun padEnd(toLength: Int): Rope
+    public fun padEnd(toLength: Int): Rope
 
     /**
      * Increase the length of this rope to the specified length by repeatedly
      * appending the specified character to this rope. If the specified length
      * is less than or equal to the current length of the rope, the rope is
      * returned unmodified.
-     * @param toLength the desired length.
-     * @param padChar the character to use for padding.
-     * @return the padded rope.
-     * @see .padStart
      */
-    fun padEnd(toLength: Int, padChar: Char): Rope
+    public fun padEnd(toLength: Int, padChar: Char): Rope
 
     /**
      * Returns `true` if this rope starts with the specified
      * prefix.
-     * @param prefix the prefix to test.
-     * @return `true` if this rope starts with the
-     * specified prefix and `false` otherwise.
-     * @see .startsWith
      */
-    fun startsWith(prefix: CharSequence): Boolean
+    public fun startsWith(prefix: CharSequence): Boolean
 
     /**
      * Returns `true` if this rope, beginning from a specified
      * offset, starts with the specified prefix.
-     * @param prefix the prefix to test.
-     * @param offset the start offset.
-     * @return `true` if this rope starts with the
-     * specified prefix and `false` otherwise.
      */
-    fun startsWith(prefix: CharSequence, offset: Int): Boolean
+    public fun startsWith(prefix: CharSequence, offset: Int): Boolean
 
     /**
      * Returns `true` if this rope ends with the specified
@@ -349,7 +326,7 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * specified suffix and `false` otherwise.
      * @see .endsWith
      */
-    fun endsWith(suffix: CharSequence): Boolean
+    public fun endsWith(suffix: CharSequence): Boolean
 
     /**
      * Returns `true` if this rope, terminated at a specified
@@ -360,17 +337,15 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
      * @return `true` if this rope starts with the
      * specified prefix and `false` otherwise.
      */
-    fun endsWith(suffix: CharSequence, offset: Int): Boolean
+    public fun endsWith(suffix: CharSequence, offset: Int): Boolean
 
-    companion object {
+    public companion object {
 
-        @JvmName("ofCharArray")
-        fun of(sequence: CharArray): Rope {
+        public fun of(sequence: CharArray): Rope {
             return FlatCharArrayRope(sequence)
         }
 
-        @JvmName("ofCharSequence")
-        fun of(sequence: CharSequence): Rope {
+        public fun of(sequence: CharSequence): Rope {
             if (sequence is Rope) return sequence
             return FlatCharSequenceRope(sequence)
         }

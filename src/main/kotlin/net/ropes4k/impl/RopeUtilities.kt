@@ -153,7 +153,6 @@ internal class RopeUtilities {
                 r.depth()
             } else {
                 0
-                //throw new IllegalArgumentException("Bad rope");
             }
         }
 

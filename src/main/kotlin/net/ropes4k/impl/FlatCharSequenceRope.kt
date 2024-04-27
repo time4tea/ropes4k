@@ -16,7 +16,7 @@ import java.util.regex.Pattern
  *
  * @author Amin Ahmad
  */
-class FlatCharSequenceRope(private val sequence: CharSequence) : AbstractRope(), FlatRope {
+internal class FlatCharSequenceRope(private val sequence: CharSequence) : AbstractRope(), FlatRope {
     override fun get(index: Int): Char {
         return sequence[index]
     }
