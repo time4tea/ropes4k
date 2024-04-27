@@ -42,7 +42,7 @@ public class SubstringRope extends AbstractRope {
 
     @Override
     public byte depth() {
-        return RopeUtilities.INSTANCE.depth(getRope());
+        return RopeUtilities.Companion.depth(getRope());
     }
 
     /**

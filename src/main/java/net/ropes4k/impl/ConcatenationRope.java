@@ -32,7 +32,7 @@ public final class ConcatenationRope extends AbstractRope {
     public ConcatenationRope(Rope left, Rope right) {
         this.left = left;
         this.right = right;
-        depth = (byte) (Math.max(RopeUtilities.INSTANCE.depth(left), RopeUtilities.INSTANCE.depth(right)) + 1);
+        depth = (byte) (Math.max(RopeUtilities.Companion.depth(left), RopeUtilities.Companion.depth(right)) + 1);
         length = left.length() + right.length();
     }
 
@@ -134,12 +134,12 @@ public final class ConcatenationRope extends AbstractRope {
 
     @Override
     public Rope rebalance() {
-        return RopeUtilities.INSTANCE.rebalance(this);
+        return RopeUtilities.Companion.rebalance(this);
     }
 
     @Override
     public Rope reverse() {
-        return RopeUtilities.INSTANCE.concatenate(getRight().reverse(), getLeft().reverse());
+        return RopeUtilities.Companion.concatenate(getRight().reverse(), getLeft().reverse());
     }
 
     @Override
@@ -164,7 +164,7 @@ public final class ConcatenationRope extends AbstractRope {
             return left.subSequence(start, end);
         if (start >= l)
             return right.subSequence(start - l, end - l);
-        return RopeUtilities.INSTANCE.concatenate(
+        return RopeUtilities.Companion.concatenate(
                 left.subSequence(start, l),
                 right.subSequence(0, end - l));
     }

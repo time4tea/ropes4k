@@ -27,17 +27,17 @@ public abstract class AbstractRope implements Rope {
 
     @Override
     public Rope append(char c) {
-        return RopeUtilities.INSTANCE.concatenate(this, Companion.ofCharSequence(String.valueOf(c)));
+        return RopeUtilities.Companion.concatenate(this, Companion.ofCharSequence(String.valueOf(c)));
     }
 
     @Override
     public Rope append(CharSequence suffix) {
-        return RopeUtilities.INSTANCE.concatenate(this, Companion.ofCharSequence(suffix));
+        return RopeUtilities.Companion.concatenate(this, Companion.ofCharSequence(suffix));
     }
 
     @Override
     public Rope append(CharSequence csq, int start, int end) {
-        return RopeUtilities.INSTANCE.concatenate(this, Companion.ofCharSequence(csq).subSequence(start, end));
+        return RopeUtilities.Companion.concatenate(this, Companion.ofCharSequence(csq).subSequence(start, end));
     }
 
     @Override
@@ -317,7 +317,7 @@ public abstract class AbstractRope implements Rope {
         int toPad = toWidth - length();
         if (toPad < 1)
             return this;
-        return RopeUtilities.INSTANCE.concatenate(
+        return RopeUtilities.Companion.concatenate(
                 Companion.ofCharSequence(new RepeatedCharacterSequence(padChar, toPad)),
                 this);
     }
@@ -332,7 +332,7 @@ public abstract class AbstractRope implements Rope {
         int toPad = toWidth - length();
         if (toPad < 1)
             return this;
-        return RopeUtilities.INSTANCE.concatenate(
+        return RopeUtilities.Companion.concatenate(
                 this,
                 Companion.ofCharSequence(new RepeatedCharacterSequence(padChar, toPad)));
     }
