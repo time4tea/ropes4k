@@ -5,11 +5,11 @@
  */
 package net.ropes4k.impl;
 
+import net.ropes4k.Rope;
+
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Iterator;
-
-import net.ropes4k.Rope;
 
 /**
  * A rope that represents the concatenation of two other ropes.
@@ -56,8 +56,6 @@ public final class ConcatenationRope extends AbstractRope {
      * Returns this object as a char sequence optimized for
      * regular expression searches.
      * <p>
-     * <emph>This method is public only to facilitate unit
-     * testing.</emph>
      */
     private CharSequence getForSequentialAccess(Rope rope) {
         return new CharSequence() {
