@@ -33,44 +33,42 @@ internal class ConcatenationRope(
 
     override fun depth(): Int = depth
 
-    public override fun getForSequentialAccess(): CharSequence {
-        return getForSequentialAccess(this)
-    }
-
     /*
      * Returns this object as a char sequence optimized for
      * regular expression searches.
      * <p>
      */
-    private fun getForSequentialAccess(rope: Rope): CharSequence {
-        return object : CharSequence {
-            private val iterator = rope.iterator(0) as ConcatenationRopeIteratorImpl
+    public override fun getForSequentialAccess(): CharSequence {
+        return SequentialRopeAccessor(this)
+    }
 
-            override fun get(index: Int): Char {
-                if (index > iterator.pos) {
-                    iterator.skip(index - iterator.pos - 1)
-                    try {
-                        return iterator.next()
-                    } catch (e: IllegalArgumentException) {
-                        println("Rope length is: " + rope.length + " charAt is " + index)
-                        throw e
-                    }
-                } else { /* if (index <= lastIndex) */
-                    val toMoveBack = iterator.pos - index + 1
-                    if (iterator.canMoveBackwards(toMoveBack)) {
-                        iterator.moveBackwards(toMoveBack)
-                        return iterator.next()
-                    } else {
-                        return rope[index]
-                    }
+    class SequentialRopeAccessor(private val rope: Rope) : CharSequence {
+        private val iterator = rope.iterator(0) as ConcatenationRopeIteratorImpl
+
+        override fun get(index: Int): Char {
+            if (index > iterator.pos) {
+                iterator.skip(index - iterator.pos - 1)
+                try {
+                    return iterator.next()
+                } catch (e: IllegalArgumentException) {
+                    println("Rope length is: " + rope.length + " charAt is " + index)
+                    throw e
+                }
+            } else { /* if (index <= lastIndex) */
+                val toMoveBack = iterator.pos - index + 1
+                if (iterator.canMoveBackwards(toMoveBack)) {
+                    iterator.moveBackwards(toMoveBack)
+                    return iterator.next()
+                } else {
+                    return rope[index]
                 }
             }
+        }
 
-            override val length: Int get() = rope.length
+        override val length: Int get() = rope.length
 
-            override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
-                return rope.subSequence(startIndex, endIndex)
-            }
+        override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
+            return rope.subSequence(startIndex, endIndex)
         }
     }
 
