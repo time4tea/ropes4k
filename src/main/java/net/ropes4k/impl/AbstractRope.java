@@ -6,9 +6,11 @@
 package net.ropes4k.impl;
 
 import net.ropes4k.Rope;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.ObjectStreamException;
+import java.io.Serial;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -22,7 +24,7 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractRope implements Rope {
 
-    protected int hashCode = 0;
+    private int hashCode = 0;
 
     @Override
     public Rope append(char c) {
@@ -133,7 +135,7 @@ public abstract class AbstractRope implements Rope {
 
         int x = 0;
         for (Iterator<Character> i = iterator(offset); i.hasNext() && x < prefix.length(); ) {
-            if (i.next().charValue() != prefix.charAt(x++))
+            if (i.next() != prefix.charAt(x++))
                 return false;
         }
         return true;
@@ -156,7 +158,7 @@ public abstract class AbstractRope implements Rope {
         int index = fromIndex - 1;
         for (Iterator<Character> i = iterator(fromIndex); i.hasNext(); ) {
             ++index;
-            if (i.next().charValue() == ch)
+            if (i.next() == ch)
                 return index;
         }
         return -1;
@@ -223,6 +225,7 @@ public abstract class AbstractRope implements Rope {
         return subSequence(0, dstOffset).append(r).append(subSequence(dstOffset, length()));
     }
 
+    @NotNull
     @Override
     public Iterator<Character> iterator() {
         return iterator(0);
@@ -282,6 +285,7 @@ public abstract class AbstractRope implements Rope {
             return subSequence(0, index);
     }
 
+    @NotNull
     @Override
     public String toString() {
         StringWriter out = new StringWriter(length());
@@ -299,6 +303,7 @@ public abstract class AbstractRope implements Rope {
         return trimStart().trimEnd();
     }
 
+    @Serial
     public Object writeReplace() throws ObjectStreamException {
         return new SerializedRope(this);
     }
