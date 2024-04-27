@@ -3,337 +3,286 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package net.ropes4k.impl;
+package net.ropes4k.impl
 
-import net.ropes4k.Rope;
-
-import java.io.IOException;
-import java.io.ObjectStreamException;
-import java.io.Serial;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.ropes4k.Rope
+import net.ropes4k.Rope.Companion.of
+import net.ropes4k.impl.RopeUtilities.Companion.concatenate
+import java.io.IOException
+import java.io.ObjectStreamException
+import java.io.Serial
+import java.io.StringWriter
+import java.util.Arrays
+import java.util.regex.Matcher
+import java.util.regex.Pattern
+import kotlin.math.min
 
 /**
  * Abstract base class for ropes that implements many of the common operations.
  *
  * @author Amin Ahmad
  */
-public abstract class AbstractRope implements Rope {
+abstract class AbstractRope : Rope {
+    private var hashCode = 0
 
-    private int hashCode = 0;
-
-    @Override
-    public Rope append(char c) {
-        return RopeUtilities.Companion.concatenate(this, Companion.ofCharSequence(String.valueOf(c)));
+    override fun append(c: Char): Rope {
+        return concatenate(this, of(c.toString()))
     }
 
-    @Override
-    public Rope append(CharSequence suffix) {
-        return RopeUtilities.Companion.concatenate(this, Companion.ofCharSequence(suffix));
+    override fun append(suffix: CharSequence): Rope {
+        return concatenate(this, of(suffix))
     }
 
-    @Override
-    public Rope append(CharSequence csq, int start, int end) {
-        return RopeUtilities.Companion.concatenate(this, Companion.ofCharSequence(csq).subSequence(start, end));
+    override fun append(csq: CharSequence, start: Int, end: Int): Rope {
+        return concatenate(this, of(csq).subSequence(start, end))
     }
 
-    @Override
-    public int compareTo(CharSequence sequence) {
-        int compareTill = Math.min(sequence.length(), length());
-        Iterator<Character> i = iterator();
-        for (int j = 0; j < compareTill; ++j) {
-            char x = i.next();
-            char y = sequence.charAt(j);
-            if (x != y)
-                return x - y;
+    override fun compareTo(other: CharSequence): Int {
+        val compareTill: Int = min(other.length, length)
+        val i = iterator()
+        for (j in 0 until compareTill) {
+            val x = i.next()
+            val y = other[j]
+            if (x != y) return x.code - y.code
         }
-        return length() - sequence.length();
+        return length - other.length
     }
 
-    @Override
-    public Rope delete(int start, int end) {
-        if (start == end)
-            return this;
-        return subSequence(0, start).append(subSequence(end, length()));
+    override fun delete(start: Int, end: Int): Rope {
+        if (start == end) return this
+        return subSequence(0, start).append(subSequence(end, length))
     }
 
     /*
      * The depth of the current rope, as defined in "Ropes: an Alternative
      * to Strings".
      */
-    public abstract int depth();
+    abstract fun depth(): Int
 
-    @Override
-    public boolean equals(Object other) {
-        if (other instanceof Rope rope) {
-            if (rope.hashCode() != hashCode() || rope.length() != length())
-                return false;
-            Iterator<Character> i1 = iterator();
-            Iterator<Character> i2 = rope.iterator();
+    override fun equals(other: Any?): Boolean {
+        if (other is Rope) {
+            if (other.hashCode() != hashCode() || other.length != length) return false
+            val i1 = iterator()
+            val i2: Iterator<Char> = other.iterator()
 
             while (i1.hasNext()) {
-                char a = i1.next();
-                char b = i2.next();
-                if (a != b)
-                    return false;
+                val a = i1.next()
+                val b = i2.next()
+                if (a != b) return false
             }
-            return true;
+            return true
         }
-        return false;
+        return false
     }
 
     /**
      * A utility method that returns an instance of this rope optimized
      * for sequential access.
      */
-    protected CharSequence getForSequentialAccess() {
-        return this;
-    }
+    protected open fun getForSequentialAccess(): CharSequence = this
 
-    @Override
-    public int hashCode() {
-        if (hashCode == 0 && length() > 0) {
-            if (length() < 6) {
-                for (char c : this)
-                    hashCode = 31 * hashCode + c;
+    override fun hashCode(): Int {
+        if (hashCode == 0 && length > 0) {
+            if (length < 6) {
+                for (c in this) hashCode = 31 * hashCode + c.code
             } else {
-                Iterator<Character> i = iterator();
-                for (int j = 0; j < 5; ++j)
-                    hashCode = 31 * hashCode + i.next();
-                hashCode = 31 * hashCode + charAt(length() - 1);
+                val i = iterator()
+                for (j in 0..4) hashCode = 31 * hashCode + i.next().code
+                hashCode = 31 * hashCode + get(length - 1).code
             }
         }
-        return hashCode;
+        return hashCode
     }
 
-    @Override
-    public int indexOf(char ch) {
-        int index = -1;
-        for (char c : this) {
-            ++index;
-            if (c == ch)
-                return index;
+    override fun indexOf(ch: Char): Int {
+        var index = -1
+        for (c in this) {
+            ++index
+            if (c == ch) return index
         }
-        return -1;
+        return -1
     }
 
-    @Override
-    public boolean startsWith(CharSequence prefix) {
-        return startsWith(prefix, 0);
+    override fun startsWith(prefix: CharSequence): Boolean {
+        return startsWith(prefix, 0)
     }
 
-    @Override
-    public boolean startsWith(CharSequence prefix, int offset) {
-        if (offset < 0 || offset > length())
-            throw new IndexOutOfBoundsException("Rope offset out of range: " + offset);
-        if (offset + prefix.length() > length())
-            return false;
+    override fun startsWith(prefix: CharSequence, offset: Int): Boolean {
+        if (offset < 0 || offset > length) throw IndexOutOfBoundsException("Rope offset out of range: $offset")
+        if (offset + prefix.length > length) return false
 
-        int x = 0;
-        for (Iterator<Character> i = iterator(offset); i.hasNext() && x < prefix.length(); ) {
-            if (i.next() != prefix.charAt(x++))
-                return false;
+        var x = 0
+        val i = iterator(offset)
+        while (i.hasNext() && x < prefix.length) {
+            if (i.next() != prefix[x++]) return false
         }
-        return true;
+        return true
     }
 
-    @Override
-    public boolean endsWith(CharSequence suffix) {
-        return endsWith(suffix, 0);
+    override fun endsWith(suffix: CharSequence): Boolean {
+        return endsWith(suffix, 0)
     }
 
-    @Override
-    public boolean endsWith(CharSequence suffix, int offset) {
-        return startsWith(suffix, length() - suffix.length() - offset);
+    override fun endsWith(suffix: CharSequence, offset: Int): Boolean {
+        return startsWith(suffix, length - suffix.length - offset)
     }
 
-    @Override
-    public int indexOf(char ch, int fromIndex) {
-        if (fromIndex < 0 || fromIndex >= length())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + fromIndex);
-        int index = fromIndex - 1;
-        for (Iterator<Character> i = iterator(fromIndex); i.hasNext(); ) {
-            ++index;
-            if (i.next() == ch)
-                return index;
+    override fun indexOf(ch: Char, fromIndex: Int): Int {
+        if (fromIndex < 0 || fromIndex >= length) throw IndexOutOfBoundsException("Rope index out of range: $fromIndex")
+        var index = fromIndex - 1
+        val i = iterator(fromIndex)
+        while (i.hasNext()) {
+            ++index
+            if (i.next() == ch) return index
         }
-        return -1;
+        return -1
     }
 
-    @Override
-    public int indexOf(CharSequence sequence) {
-        return indexOf(sequence, 0);
+    override fun indexOf(sequence: CharSequence): Int {
+        return indexOf(sequence, 0)
     }
 
-    @Override
-    public int indexOf(CharSequence sequence, int fromIndex) {
-        CharSequence me = getForSequentialAccess();
+    override fun indexOf(sequence: CharSequence, fromIndex: Int): Int {
+        val me = getForSequentialAccess()
 
         // Implementation of Boyer-Moore-Horspool algorithm with
         // special support for unicode.
 
         // step 0. sanity check.
-        int sequenceLength = sequence.length();
-        if (sequenceLength == 0)
-            return -1;
-        if (sequenceLength == 1)
-            return indexOf(sequence.charAt(0), fromIndex);
+        val sequenceLength = sequence.length
+        if (sequenceLength == 0) return -1
+        if (sequenceLength == 1) return indexOf(sequence[0], fromIndex)
 
-        int[] bcs = new int[256]; // bad character shift
-        Arrays.fill(bcs, sequenceLength);
+        val bcs = IntArray(256) // bad character shift
+        Arrays.fill(bcs, sequenceLength)
 
         // step 1. preprocessing.
-        for (int j = 0; j < sequenceLength - 1; ++j) {
-            char c = sequence.charAt(j);
-            int l = (c & 0xFF);
-            bcs[l] = Math.min(sequenceLength - j - 1, bcs[l]);
+        for (j in 0 until sequenceLength - 1) {
+            val c = sequence[j]
+            val l = (c.code and 0xFF)
+            bcs[l] = min((sequenceLength - j - 1), bcs[l])
         }
 
         // step 2. search.
-        for (int j = fromIndex + sequenceLength - 1; j < length(); ) {
-            int x = j, y = sequenceLength - 1;
+        var j = fromIndex + sequenceLength - 1
+        while (j < length) {
+            var x = j
+            var y = sequenceLength - 1
             while (true) {
-                char c = me.charAt(x);
-                if (sequence.charAt(y) != c) {
-                    j += bcs[(me.charAt(j) & 0xFF)];
-                    break;
+                val c = me[x]
+                if (sequence[y] != c) {
+                    j += bcs[me[j].code and 0xFF]
+                    break
                 }
-                if (y == 0)
-                    return x;
-                --x;
-                --y;
+                if (y == 0) return x
+                --x
+                --y
             }
-
         }
 
-        return -1;
+        return -1
     }
 
-    @Override
-    public Rope insert(int dstOffset, CharSequence s) {
-        Rope r = Companion.ofCharSequence(s);
+    override fun insert(dstOffset: Int, s: CharSequence): Rope {
+        val r = of(s)
 
-        if (dstOffset == 0)
-            return r.append(this);
-        else if (dstOffset == length())
-            return append(r);
-        else if (dstOffset < 0 || dstOffset > length())
-            throw new IndexOutOfBoundsException(dstOffset + " is out of insert range [" + 0 + ":" + length() + "]");
-        return subSequence(0, dstOffset).append(r).append(subSequence(dstOffset, length()));
+        if (dstOffset == 0) return r.append(this)
+        else if (dstOffset == length) return append(r)
+        else if (dstOffset < 0 || dstOffset > length) throw IndexOutOfBoundsException("$dstOffset is out of insert range [0:$length]")
+        return subSequence(0, dstOffset).append(r).append(subSequence(dstOffset, length))
     }
 
-    @Override
-    public Iterator<Character> iterator() {
-        return iterator(0);
+    override fun iterator(): Iterator<Char> {
+        return iterator(0)
     }
 
-    @Override
-    public Rope trimStart() {
-        int index = -1;
-        for (char c : this) {
-            ++index;
-            if (c > 0x20 && !Character.isWhitespace(c))
-                break;
+    override fun trimStart(): Rope {
+        var index = -1
+        for (c in this) {
+            ++index
+            if (c.code > 0x20 && !Character.isWhitespace(c)) break
         }
-        if (index <= 0)
-            return this;
-        else
-            return subSequence(index, length());
+        return if (index <= 0) this
+        else subSequence(index, length)
     }
 
-    @Override
-    public Matcher matcher(Pattern pattern) {
-        return pattern.matcher(getForSequentialAccess());
+    override fun matcher(pattern: Pattern): Matcher {
+        return pattern.matcher(getForSequentialAccess())
     }
 
-    @Override
-    public boolean matches(Pattern regex) {
-        return regex.matcher(getForSequentialAccess()).matches();
+    override fun matches(regex: Pattern): Boolean {
+        return regex.matcher(getForSequentialAccess()).matches()
     }
 
-    @Override
-    public boolean matches(String regex) {
-        return Pattern.matches(regex, getForSequentialAccess());
+    override fun matches(regex: String): Boolean {
+        return Pattern.matches(regex, getForSequentialAccess())
     }
 
-    @Override
-    public Rope rebalance() {
-        return this;
+    override fun rebalance(): Rope {
+        return this
     }
 
-    @Override
-    public Iterator<Character> reverseIterator() {
-        return reverseIterator(0);
+    override fun reverseIterator(): Iterator<Char> {
+        return reverseIterator(0)
     }
 
-    @Override
-    public Rope trimEnd() {
-        int index = length() + 1;
-        for (Iterator<Character> i = reverseIterator(); i.hasNext(); ) {
-            char c = i.next();
-            --index;
-            if (c > 0x20 && !Character.isWhitespace(c))
-                break;
+    override fun trimEnd(): Rope {
+        var index = length + 1
+        val i = reverseIterator()
+        while (i.hasNext()) {
+            val c = i.next()
+            --index
+            if (c.code > 0x20 && !Character.isWhitespace(c)) break
         }
-        if (index >= length())
-            return this;
-        else
-            return subSequence(0, index);
+        return if (index >= length) this
+        else subSequence(0, index)
     }
 
-    @Override
-    public String toString() {
-        StringWriter out = new StringWriter(length());
+    override fun toString(): String {
+        val out = StringWriter(length)
         try {
-            write(out);
-            out.close();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            write(out)
+            out.close()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
         }
-        return out.toString();
+        return out.toString()
     }
 
-    @Override
-    public Rope trim() {
-        return trimStart().trimEnd();
+    override fun trim(): Rope {
+        return trimStart().trimEnd()
     }
 
     @Serial
-    public Object writeReplace() throws ObjectStreamException {
-        return new SerializedRope(this);
+    @Throws(ObjectStreamException::class)
+    fun writeReplace(): Any {
+        return SerializedRope(this)
     }
 
 
-    @Override
-    public Rope padStart(int toWidth) {
-        return padStart(toWidth, ' ');
+    override fun padStart(toLength: Int): Rope {
+        return padStart(toLength, ' ')
     }
 
-    @Override
-    public Rope padStart(int toWidth, char padChar) {
-        int toPad = toWidth - length();
-        if (toPad < 1)
-            return this;
-        return RopeUtilities.Companion.concatenate(
-                Companion.ofCharSequence(new RepeatedCharacterSequence(padChar, toPad)),
-                this);
+    override fun padStart(toLength: Int, padChar: Char): Rope {
+        val toPad = toLength - length
+        if (toPad < 1) return this
+        return concatenate(
+            of(RepeatedCharacterSequence(padChar, toPad)),
+            this
+        )
     }
 
-    @Override
-    public Rope padEnd(int toWidth) {
-        return padEnd(toWidth, ' ');
+    override fun padEnd(toLength: Int): Rope {
+        return padEnd(toLength, ' ')
     }
 
-    @Override
-    public Rope padEnd(int toWidth, char padChar) {
-        int toPad = toWidth - length();
-        if (toPad < 1)
-            return this;
-        return RopeUtilities.Companion.concatenate(
-                this,
-                Companion.ofCharSequence(new RepeatedCharacterSequence(padChar, toPad)));
+    override fun padEnd(toLength: Int, padChar: Char): Rope {
+        val toPad = toLength - length
+        if (toPad < 1) return this
+        return concatenate(
+            this,
+            of(RepeatedCharacterSequence(padChar, toPad))
+        )
     }
 }

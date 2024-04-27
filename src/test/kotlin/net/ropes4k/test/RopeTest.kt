@@ -502,11 +502,11 @@ class RopeTest {
     @Test
     fun testRegexp() {
         val r = ConcatenationRope(FlatCharSequenceRope("012345"), FlatCharSequenceRope("6789"))
-        var c = r.forSequentialAccess
+        var c = r.getForSequentialAccess()
         for (j in 0..9) {
             expectThat(c[j]).isEqualTo(r[j])
         }
-        c = r.forSequentialAccess
+        c = r.getForSequentialAccess()
 
         val indices = intArrayOf(1, 2, 1, 3, 5, 0, 6, 7, 8, 1, 7, 7, 7)
         for (i in indices) {
