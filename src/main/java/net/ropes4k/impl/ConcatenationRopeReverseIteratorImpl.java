@@ -61,8 +61,8 @@ public class ConcatenationRopeReverseIteratorImpl implements Iterator<Character>
         while (!toTraverse.isEmpty()) {
             currentRope = toTraverse.pop();
             if (currentRope instanceof ConcatenationRope) {
-                toTraverse.push(((ConcatenationRope) currentRope).getLeft());
-                toTraverse.push(((ConcatenationRope) currentRope).getRight());
+                toTraverse.push(((ConcatenationRope) currentRope).left);
+                toTraverse.push(((ConcatenationRope) currentRope).right);
             } else {
                 break;
             }
@@ -95,8 +95,8 @@ public class ConcatenationRopeReverseIteratorImpl implements Iterator<Character>
             while (!toTraverse.isEmpty()) {
                 currentRope = toTraverse.pop();
                 if (currentRope instanceof ConcatenationRope) {
-                    toTraverse.push(((ConcatenationRope) currentRope).getLeft());
-                    toTraverse.push(((ConcatenationRope) currentRope).getRight());
+                    toTraverse.push(((ConcatenationRope) currentRope).left);
+                    toTraverse.push(((ConcatenationRope) currentRope).right);
                 } else {
                     currentRopePos = currentRope.length();
                     break;

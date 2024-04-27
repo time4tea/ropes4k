@@ -3,55 +3,40 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package net.ropes4k.impl;
+package net.ropes4k.impl
 
-import net.ropes4k.Rope;
-
-import java.io.IOException;
-import java.io.Writer;
-import java.util.Iterator;
+import net.ropes4k.Rope
+import net.ropes4k.impl.RopeUtilities.Companion.concatenate
+import net.ropes4k.impl.RopeUtilities.Companion.depth
+import net.ropes4k.impl.RopeUtilities.Companion.rebalance
+import java.io.IOException
+import java.io.Writer
+import kotlin.math.max
 
 /**
  * A rope that represents the concatenation of two other ropes.
  *
  * @author Amin Ahmad
  */
-public final class ConcatenationRope extends AbstractRope {
+class ConcatenationRope(
+    @JvmField val left: Rope,
+    @JvmField val right: Rope
+) : AbstractRope() {
+    private val depth = max(depth(left), depth(right)) + 1
 
-    private final Rope left;
-    private final Rope right;
-    private final byte depth;
-    private final int length;
 
-    /**
-     * Create a new concatenation rope from two ropes.
-     *
-     * @param left  the first rope.
-     * @param right the second rope.
-     */
-    public ConcatenationRope(Rope left, Rope right) {
-        this.left = left;
-        this.right = right;
-        depth = (byte) (Math.max(RopeUtilities.Companion.depth(left), RopeUtilities.Companion.depth(right)) + 1);
-        length = left.length() + right.length();
+    override val length: Int = left.length + right.length
+
+    override fun get(index: Int): Char {
+        if (index >= length) throw IndexOutOfBoundsException("Rope index out of range: $index")
+
+        return (if (index < left.length) left[index] else right[index - left.length])
     }
 
-    @Override
-    public char charAt(int index) {
-        if (index >= length())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + index);
+    override fun depth(): Int = depth
 
-        return (index < left.length() ? left.charAt(index) : right.charAt(index - left.length()));
-    }
-
-    @Override
-    public byte depth() {
-        return depth;
-    }
-
-    @Override
-    public CharSequence getForSequentialAccess() {
-        return getForSequentialAccess(this);
+    public override fun getForSequentialAccess(): CharSequence {
+        return getForSequentialAccess(this)
     }
 
     /*
@@ -59,132 +44,92 @@ public final class ConcatenationRope extends AbstractRope {
      * regular expression searches.
      * <p>
      */
-    private CharSequence getForSequentialAccess(Rope rope) {
-        return new CharSequence() {
+    private fun getForSequentialAccess(rope: Rope): CharSequence {
+        return object : CharSequence {
+            private val iterator = rope.iterator(0) as ConcatenationRopeIteratorImpl
 
-            private final ConcatenationRopeIteratorImpl iterator = (ConcatenationRopeIteratorImpl) rope.iterator(0);
-
-            @Override
-            public char charAt(int index) {
-                if (index > iterator.getPos()) {
-                    iterator.skip(index - iterator.getPos() - 1);
+            override fun get(index: Int): Char {
+                if (index > iterator.pos) {
+                    iterator.skip(index - iterator.pos - 1)
                     try {
-                        return iterator.next();
-                    } catch (IllegalArgumentException e) {
-                        System.out.println("Rope length is: " + rope.length() + " charAt is " + index);
-                        throw e;
+                        return iterator.next()
+                    } catch (e: IllegalArgumentException) {
+                        println("Rope length is: " + rope.length + " charAt is " + index)
+                        throw e
                     }
                 } else { /* if (index <= lastIndex) */
-                    int toMoveBack = iterator.getPos() - index + 1;
+                    val toMoveBack = iterator.pos - index + 1
                     if (iterator.canMoveBackwards(toMoveBack)) {
-                        iterator.moveBackwards(toMoveBack);
-                        return iterator.next();
+                        iterator.moveBackwards(toMoveBack)
+                        return iterator.next()
                     } else {
-                        return rope.charAt(index);
+                        return rope[index]
                     }
                 }
             }
 
-            @Override
-            public int length() {
-                return rope.length();
+            override val length: Int get() = rope.length
+
+            override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
+                return rope.subSequence(startIndex, endIndex)
             }
-
-            @Override
-            public CharSequence subSequence(int start, int end) {
-                return rope.subSequence(start, end);
-            }
-
-        };
-    }
-
-    /**
-     * Return the left-hand rope.
-     *
-     * @return the left-hand rope.
-     */
-    public Rope getLeft() {
-        return left;
-    }
-
-    /**
-     * Return the right-hand rope.
-     *
-     * @return the right-hand rope.
-     */
-    public Rope getRight() {
-        return right;
-    }
-
-    @Override
-    public Iterator<Character> iterator(int start) {
-        if (start < 0 || start > length())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        if (start >= left.length()) {
-            return right.iterator(start - left.length());
-        } else {
-            return new ConcatenationRopeIteratorImpl(this, start);
         }
     }
 
-    @Override
-    public int length() {
-        return length;
-    }
-
-    @Override
-    public Rope rebalance() {
-        return RopeUtilities.Companion.rebalance(this);
-    }
-
-    @Override
-    public Rope reverse() {
-        return RopeUtilities.Companion.concatenate(getRight().reverse(), getLeft().reverse());
-    }
-
-    @Override
-    public Iterator<Character> reverseIterator(int start) {
-        if (start < 0 || start > length())
-            throw new IndexOutOfBoundsException("Rope index out of range: " + start);
-        if (start >= right.length()) {
-            return left.reverseIterator(start - right.length());
+    override fun iterator(start: Int): Iterator<Char> {
+        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
+        return if (start >= left.length) {
+            right.iterator(start - left.length)
         } else {
-            return new ConcatenationRopeReverseIteratorImpl(this, start);
+            ConcatenationRopeIteratorImpl(this, start)
         }
     }
 
-    @Override
-    public Rope subSequence(int start, int end) {
-        if (start < 0 || end > length())
-            throw new IllegalArgumentException("Illegal subsequence (" + start + "," + end + ")");
-        if (start == 0 && end == length())
-            return this;
-        int l = left.length();
-        if (end <= l)
-            return left.subSequence(start, end);
-        if (start >= l)
-            return right.subSequence(start - l, end - l);
-        return RopeUtilities.Companion.concatenate(
-                left.subSequence(start, l),
-                right.subSequence(0, end - l));
+    override fun rebalance(): Rope {
+        return rebalance(this)
     }
 
-    @Override
-    public void write(Writer out) throws IOException {
-        left.write(out);
-        right.write(out);
+    override fun reverse(): Rope {
+        return concatenate(right.reverse(), left.reverse())
     }
 
-    @Override
-    public void write(Writer out, int offset, int length) throws IOException {
-        if (offset + length <= left.length()) {
-            left.write(out, offset, length);
-        } else if (offset >= left.length()) {
-            right.write(out, offset - left.length(), length);
+    override fun reverseIterator(start: Int): Iterator<Char> {
+        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
+        return if (start >= right.length) {
+            left.reverseIterator(start - right.length)
         } else {
-            int writeLeft = left.length() - offset;
-            left.write(out, offset, writeLeft);
-            right.write(out, 0, length - writeLeft);
+            ConcatenationRopeReverseIteratorImpl(this, start)
+        }
+    }
+
+    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+        require(!(startIndex < 0 || endIndex > length)) { "Illegal subsequence ($startIndex,$endIndex)" }
+        if (startIndex == 0 && endIndex == length) return this
+        val l = left.length
+        if (endIndex <= l) return left.subSequence(startIndex, endIndex)
+        if (startIndex >= l) return right.subSequence(startIndex - l, endIndex - l)
+        return concatenate(
+            left.subSequence(startIndex, l),
+            right.subSequence(0, endIndex - l)
+        )
+    }
+
+    @Throws(IOException::class)
+    override fun write(out: Writer) {
+        left.write(out)
+        right.write(out)
+    }
+
+    @Throws(IOException::class)
+    override fun write(out: Writer, offset: Int, length: Int) {
+        if (offset + length <= left.length) {
+            left.write(out, offset, length)
+        } else if (offset >= left.length) {
+            right.write(out, offset - left.length, length)
+        } else {
+            val writeLeft = left.length - offset
+            left.write(out, offset, writeLeft)
+            right.write(out, 0, length - writeLeft)
         }
     }
 }

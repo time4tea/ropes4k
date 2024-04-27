@@ -148,7 +148,7 @@ internal class RopeUtilities {
          * @param r the rope.
          * @return the depth of the specified rope.
          */
-        fun depth(r: Rope?): Byte {
+        fun depth(r: Rope?): Int {
             return if (r is AbstractRope) {
                 r.depth()
             } else {

@@ -21,7 +21,7 @@ class FlatCharSequenceRope(private val sequence: CharSequence) : AbstractRope(),
         return sequence[index]
     }
 
-    override fun depth(): Byte {
+    override fun depth(): Int {
         return 0
     }
 

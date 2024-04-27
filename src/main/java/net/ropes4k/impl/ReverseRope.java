@@ -38,7 +38,7 @@ public final class ReverseRope extends AbstractRope {
     }
 
     @Override
-    public byte depth() {
+    public int depth() {
         return RopeUtilities.Companion.depth(rope);
     }
 

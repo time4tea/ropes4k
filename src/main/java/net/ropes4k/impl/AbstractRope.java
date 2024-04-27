@@ -64,7 +64,7 @@ public abstract class AbstractRope implements Rope {
      * The depth of the current rope, as defined in "Ropes: an Alternative
      * to Strings".
      */
-    public abstract byte depth();
+    public abstract int depth();
 
     @Override
     public boolean equals(Object other) {
@@ -335,10 +335,5 @@ public abstract class AbstractRope implements Rope {
         return RopeUtilities.Companion.concatenate(
                 this,
                 Companion.ofCharSequence(new RepeatedCharacterSequence(padChar, toPad)));
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return length() == 0;
     }
 }

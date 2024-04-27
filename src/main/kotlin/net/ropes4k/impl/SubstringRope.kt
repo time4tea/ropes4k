@@ -26,7 +26,7 @@ class SubstringRope(val rope: FlatRope, val offset: Int, override val length: In
         return rope[offset + index]
     }
 
-    override fun depth(): Byte {
+    override fun depth(): Int {
         return depth(getRope())
     }
 

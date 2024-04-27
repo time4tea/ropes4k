@@ -46,7 +46,7 @@ constructor(
         return sequence[index]
     }
 
-    override fun depth(): Byte {
+    override fun depth(): Int {
         return 0
     }
 
@@ -151,12 +151,12 @@ constructor(
         }
     }
 
-    override fun subSequence(start: Int, end: Int): Rope {
-        if (start == 0 && end == length) return this
-        return if (end - start < 16) {
-            FlatCharArrayRope(sequence, start, end - start)
+    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+        if (startIndex == 0 && endIndex == length) return this
+        return if (endIndex - startIndex < 16) {
+            FlatCharArrayRope(sequence, startIndex, endIndex - startIndex)
         } else {
-            SubstringRope(this, start, end - start)
+            SubstringRope(this, startIndex, endIndex - startIndex)
         }
     }
 
