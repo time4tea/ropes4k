@@ -49,7 +49,7 @@ class RopeUtilities {
      * @return the concatenation of the specified ropes.
      */
     Rope concatenate(Rope left, Rope right) {
-        if (left.length() == 0)
+        if (left.isEmpty())
             return right;
         if (right.length() == 0)
             return left;
@@ -102,22 +102,20 @@ class RopeUtilities {
     public Rope rebalance(Rope r) {
         // get all the nodes into a list
 
-        ArrayList<Rope> leafNodes = new ArrayList<Rope>();
-        ArrayDeque<Rope> toExamine = new ArrayDeque<Rope>();
+        ArrayList<Rope> leafNodes = new ArrayList<>();
+        ArrayDeque<Rope> toExamine = new ArrayDeque<>();
         // begin a depth first loop.
         toExamine.add(r);
-        while (toExamine.size() > 0) {
+        while (!toExamine.isEmpty()) {
             Rope x = toExamine.pop();
             if (x instanceof ConcatenationRope) {
                 toExamine.push(((ConcatenationRope) x).getRight());
                 toExamine.push(((ConcatenationRope) x).getLeft());
-                continue;
             } else {
                 leafNodes.add(x);
             }
         }
-        Rope result = merge(leafNodes, 0, leafNodes.size());
-        return result;
+        return merge(leafNodes, 0, leafNodes.size());
     }
 
     private Rope merge(ArrayList<Rope> leafNodes, int start, int end) {
@@ -136,8 +134,6 @@ class RopeUtilities {
     /**
      * Visualize a rope.
      *
-     * @param r
-     * @param out
      */
     void visualize(Rope r, PrintStream out) {
         visualize(r, out, (byte) 0);
@@ -170,7 +166,7 @@ class RopeUtilities {
         ArrayDeque<Rope> toExamine = new ArrayDeque<Rope>();
         // begin a depth first loop.
         toExamine.add(r);
-        while (toExamine.size() > 0) {
+        while (!toExamine.isEmpty()) {
             Rope x = toExamine.pop();
             if (x instanceof ConcatenationRope) {
                 ++nonLeaf;

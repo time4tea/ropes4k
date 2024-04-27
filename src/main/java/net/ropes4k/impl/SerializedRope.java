@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.ObjectStreamException;
+import java.io.Serial;
 
 /**
  * An instance of this class replaces ropes during the serialization
@@ -49,6 +50,7 @@ final class SerializedRope implements Externalizable {
         rope = Rope.BUILDER.build(in.readUTF());
     }
 
+    @Serial
     private Object readResolve() throws ObjectStreamException {
         // Substitute an instance of this class with the deserialized
         // rope.
