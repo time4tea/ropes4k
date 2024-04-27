@@ -6,7 +6,7 @@
 
 package net.ropes4k.test.bench
 
-import net.ropes4k.Rope.Companion.of
+import net.ropes4k.Rope
 import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
 import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarolRaw
 import org.openjdk.jmh.annotations.Benchmark
@@ -28,7 +28,7 @@ open class RegexSimpleBenchmark {
 
     val string = aChristmasCarol
     val stringBuilder = StringBuilder(aChristmasCarolRaw.size).also { it.append(aChristmasCarolRaw) }
-    val rope = of(aChristmasCarolRaw!!)
+    val rope = Rope.of(aChristmasCarolRaw)
 
     @Benchmark
     fun string1(): Int {

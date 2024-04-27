@@ -7,7 +7,6 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.Rope.Companion.of
 import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.Fork
@@ -27,7 +26,7 @@ open class TraversalBenchmark {
 
     val s = aChristmasCarol
     val sb = StringBuilder(aChristmasCarol)
-    val r = of(aChristmasCarol!!)
+    val r = Rope.of(aChristmasCarol)
 
     init {
         var result: Long = 0

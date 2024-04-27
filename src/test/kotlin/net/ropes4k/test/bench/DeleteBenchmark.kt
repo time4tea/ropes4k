@@ -7,7 +7,6 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.Rope.Companion.of
 import net.ropes4k.test.PerformanceTest
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
@@ -53,8 +52,8 @@ open class DeleteBenchmark {
     }
 
     @Benchmark
-    fun rope(): Rope? {
-        return deletes.fold(of(PerformanceTest.aChristmasCarol!!)) { acc, it ->
+    fun rope(): Rope {
+        return deletes.fold(Rope.of(PerformanceTest.aChristmasCarol)) { acc, it ->
             acc.delete(it.offset, it.offset + it.length)
         }
     }
