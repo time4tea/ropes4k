@@ -6,7 +6,7 @@
 
 package net.ropes4k.test.bench
 
-import net.ropes4k.Rope
+import net.ropes4k.Rope.Companion.of
 import net.ropes4k.test.PerformanceTest.Companion.bensAutoRaw
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
@@ -21,7 +21,7 @@ open class SearchSimpleBenchmark {
 
     val string = String(bensAutoRaw)
     val stringBuilder = StringBuilder(bensAutoRaw.size).also { it.append(bensAutoRaw) }
-    val rope = Rope.BUILDER.build(bensAutoRaw)
+    val rope = of(bensAutoRaw!!)
 
     @Benchmark
     fun string(): Int {

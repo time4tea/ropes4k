@@ -42,7 +42,7 @@ class RopeTest {
     fun testSubstringDeleteBug() {
         val s = "12345678902234567890"
 
-        var rope = Rope.BUILDER.build(s.toCharArray()) // bugs
+        var rope = Rope.of(s.toCharArray()) // bugs
 
         rope = rope.delete(0, 1)
 
@@ -51,7 +51,7 @@ class RopeTest {
         expectThat(rope.substring(7, 10)).isEqualTo("902")
 
 
-        rope = Rope.BUILDER.build(s) // no bugs
+        rope = Rope.of(s) // no bugs
         rope = rope.delete(0, 1)
         expectThat(rope.substring(0, 2)).isEqualTo("23")
         expectThat(rope.substring(0, 0)).isEqualTo("")
@@ -63,7 +63,7 @@ class RopeTest {
      */
     @Test
     fun testRopeWriteBug() {
-        var r = Rope.BUILDER.build("")
+        var r = Rope.of("")
         r = r.append("round ")
         r = r.append(0.toString())
         r = r.append(" 1234567890")
@@ -80,7 +80,7 @@ class RopeTest {
 
     @Test
     fun testLengthOverflow() {
-        var x1 = Rope.BUILDER.build("01")
+        var x1 = Rope.of("01")
         for (j in 2..30) x1 = x1.append(x1)
         expectThat(x1.length).isEqualTo(1073741824)
         try {
@@ -105,12 +105,12 @@ class RopeTest {
 
     @Test
     fun testConcatenationFlatFlat() {
-        var r1 = Rope.BUILDER.build("alpha")
-        val r2 = Rope.BUILDER.build("beta")
+        var r1 = Rope.of("alpha")
+        val r2 = Rope.of("beta")
         var r3 = r1.append(r2)
         expectThat(r3).isString("alphabeta")
 
-        r1 = Rope.BUILDER.build("The quick brown fox jumped over")
+        r1 = Rope.of("The quick brown fox jumped over")
         r3 = r1.append(r1)
         expectThat(r3).isString("The quick brown fox jumped overThe quick brown fox jumped over")
     }
@@ -199,12 +199,12 @@ class RopeTest {
     @Test
     fun testCreation() {
         try {
-            Rope.BUILDER.build("The quick brown fox jumped over")
+            Rope.of("The quick brown fox jumped over")
         } catch (e: Exception) {
             Assertions.fail<Any>("Nonempty string: " + e.message)
         }
         try {
-            Rope.BUILDER.build("")
+            Rope.of("")
         } catch (e: Exception) {
             Assertions.fail<Any>("Empty string: " + e.message)
         }
@@ -212,9 +212,9 @@ class RopeTest {
 
     @Test
     fun testEquals() {
-        val r1 = Rope.BUILDER.build("alpha")
-        val r2 = Rope.BUILDER.build("beta")
-        val r3 = Rope.BUILDER.build("alpha")
+        val r1 = Rope.of("alpha")
+        val r2 = Rope.of("beta")
+        val r3 = Rope.of("alpha")
 
         expectThat(r3).isEqualTo(r1)
         Assertions.assertFalse(r1 == r2)
@@ -222,9 +222,9 @@ class RopeTest {
 
     @Test
     fun testHashCode() {
-        val r1 = Rope.BUILDER.build("alpha")
-        val r2 = Rope.BUILDER.build("beta")
-        val r3 = Rope.BUILDER.build("alpha")
+        val r1 = Rope.of("alpha")
+        val r2 = Rope.of("beta")
+        val r3 = Rope.of("alpha")
 
         expectThat(r3.hashCode()).isEqualTo(r1.hashCode())
         Assertions.assertFalse(r1.hashCode() == r2.hashCode())
@@ -241,14 +241,14 @@ class RopeTest {
 
     @Test
     fun testIndexOf() {
-        val r1 = Rope.BUILDER.build("alpha")
-        val r2 = Rope.BUILDER.build("beta")
+        val r1 = Rope.of("alpha")
+        val r2 = Rope.of("beta")
         val r3 = r1.append(r2)
         expectThat(r3.indexOf('l')).isEqualTo(1)
         expectThat(r3.indexOf('e')).isEqualTo(6)
 
 
-        var r = Rope.BUILDER.build("abcdef")
+        var r = Rope.of("abcdef")
         expectThat(r.indexOf('z')).isEqualTo(-1)
         expectThat(r.indexOf('a')).isEqualTo(0)
         expectThat(r.indexOf('b')).isEqualTo(1)
@@ -263,7 +263,7 @@ class RopeTest {
 
         expectThat(r.indexOf("cd", 1)).isEqualTo(2)
 
-        r = Rope.BUILDER.build("The quick brown fox jumped over the jumpy brown dog.")
+        r = Rope.of("The quick brown fox jumped over the jumpy brown dog.")
         expectThat(r.indexOf("The")).isEqualTo(0)
         expectThat(r.indexOf("brown")).isEqualTo(10)
         expectThat(r.indexOf("brown", 10)).isEqualTo(10)
@@ -271,13 +271,13 @@ class RopeTest {
         expectThat(r.indexOf("brown", 43)).isEqualTo(-1)
         expectThat(r.indexOf("hhe")).isEqualTo(-1)
 
-        r = Rope.BUILDER.build("zbbzzz")
+        r = Rope.of("zbbzzz")
         expectThat(r.indexOf("ab", 1)).isEqualTo(-1)
     }
 
     @Test
     fun testInsert() {
-        val r1 = Rope.BUILDER.build("alpha")
+        val r1 = Rope.of("alpha")
         expectThat(r1.insert(0, "beta")).isString("betaalpha")
         expectThat(r1.insert(r1.length, "beta")).isString("alphabeta")
         expectThat(r1.insert(1, "beta")).isString("abetalpha")
@@ -285,7 +285,7 @@ class RopeTest {
 
     @Test
     fun testPrepend() {
-        var r1 = Rope.BUILDER.build("alphabeta")
+        var r1 = Rope.of("alphabeta")
         for (j in 0..1) r1 = r1.subSequence(0, 5).append(r1)
         expectThat(r1).isString("alphaalphaalphabeta")
         r1 = r1.append(r1.subSequence(5, 15))
@@ -294,10 +294,10 @@ class RopeTest {
 
     @Test
     fun testCompareTo() {
-        val r1 = Rope.BUILDER.build("alpha")
-        val r2 = Rope.BUILDER.build("beta")
-        val r3 = Rope.BUILDER.build("alpha")
-        val r4 = Rope.BUILDER.build("alpha1")
+        val r1 = Rope.of("alpha")
+        val r2 = Rope.of("beta")
+        val r3 = Rope.of("alpha")
+        val r4 = Rope.of("alpha1")
         val s2 = "beta"
 
         Assertions.assertTrue(r1.compareTo(r3) == 0)
@@ -312,7 +312,7 @@ class RopeTest {
     @Test
     fun testToString() {
         val phrase = "The quick brown fox jumped over the lazy brown dog. Boy am I glad the dog was asleep."
-        val r1 = Rope.BUILDER.build(phrase)
+        val r1 = Rope.of(phrase)
         Assertions.assertTrue(phrase == r1.toString())
         Assertions.assertTrue(phrase.subSequence(7, 27) == r1.subSequence(7, 27).toString())
     }
@@ -411,7 +411,7 @@ class RopeTest {
 
     @Test
     fun testPadStart() {
-        val r = Rope.BUILDER.build("hello")
+        val r = Rope.of("hello")
         expectThat(r.padStart(5)).isString("hello")
         expectThat(r.padStart(0)).isString("hello")
         expectThat(r.padStart(-1)).isString("hello")
@@ -424,7 +424,7 @@ class RopeTest {
 
     @Test
     fun testPadEnd() {
-        val r = Rope.BUILDER.build("hello")
+        val r = Rope.of("hello")
         expectThat(r.padEnd(5)).isString("hello")
         expectThat(r.padEnd(0)).isString("hello")
         expectThat(r.padEnd(-1)).isString("hello")
@@ -438,7 +438,7 @@ class RopeTest {
     @Test
     fun testSubstringBounds() {
         val r =
-            Rope.BUILDER.build("01234567890123456789012345678901234567890123456789012345678901234567890123456789".toCharArray())
+            Rope.of("01234567890123456789012345678901234567890123456789012345678901234567890123456789".toCharArray())
         val r2 = r.subSequence(0, 30)
         try {
             r2[31]
@@ -450,7 +450,7 @@ class RopeTest {
 
     @Test
     fun testAppend() {
-        var r = Rope.BUILDER.build("")
+        var r = Rope.of("")
         r = r.append('a')
         expectThat(r).isString("a")
         r = r.append("boy")
@@ -461,8 +461,8 @@ class RopeTest {
 
     @Test
     fun testEmpty() {
-        val r1 = Rope.BUILDER.build("")
-        val r2 = Rope.BUILDER.build("012345")
+        val r1 = Rope.of("")
+        val r2 = Rope.of("012345")
 
         Assertions.assertTrue(r1.isEmpty())
         Assertions.assertFalse(r2.isEmpty())
@@ -502,7 +502,7 @@ class RopeTest {
 
     @Test
     fun testStartsEndsWith() {
-        val r = Rope.BUILDER.build("Hello sir, how do you do?")
+        val r = Rope.of("Hello sir, how do you do?")
         Assertions.assertTrue(r.startsWith(""))
         Assertions.assertTrue(r.startsWith("H"))
         Assertions.assertTrue(r.startsWith("He"))
@@ -522,7 +522,7 @@ class RopeTest {
     @Test
     fun `index of same index as string 1`() {
         val s = "CCCCCCPIFPCFFP"
-        val r = Rope.BUILDER.build(s)
+        val r = Rope.of(s)
         val find = "IFPCFFP"
 
         expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))
@@ -531,7 +531,7 @@ class RopeTest {
     @Test
     fun `index of same as string 2`() {
         val s = "ABABAABBABABBAAABBBAAABABABABBBBAA"
-        val r = Rope.BUILDER.build(s)
+        val r = Rope.of(s)
         val find = "ABABAB"
 
         expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))

@@ -7,6 +7,7 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
+import net.ropes4k.Rope.Companion.of
 import net.ropes4k.test.PerformanceTest
 import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
 import net.ropes4k.test.PerformanceTest.Companion.bensAuto
@@ -36,7 +37,7 @@ open class Insert2Benchmark {
 
     @Benchmark
     fun rope(): Rope? {
-        val r = Rope.BUILDER.build(aChristmasCarol)
+        val r = of(aChristmasCarol!!)
 
         return inserts.fold(r) { acc, i -> acc.insert(i.location, bensAuto.subSequence(i.offset, i.offset + i.length)) }
     }

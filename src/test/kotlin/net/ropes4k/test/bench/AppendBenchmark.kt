@@ -7,6 +7,7 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
+import net.ropes4k.Rope.Companion.of
 import net.ropes4k.test.PerformanceTest
 import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
 import org.openjdk.jmh.annotations.Benchmark
@@ -66,7 +67,7 @@ open class AppendBenchmark {
 
     @Benchmark
     fun rope(): Int {
-        var rope = Rope.BUILDER.build(aChristmasCarol)
+        var rope = of(aChristmasCarol!!)
 
         appends.forEach {
             rope = rope.append(rope.subSequence(it.offset, it.offset + it.length))

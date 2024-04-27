@@ -238,7 +238,7 @@ class PerformanceTest {
 
 
         private fun ropeInsertTest(aChristmasCarol: CharArray, inserts: List<Insert>): Long {
-            var result = Rope.BUILDER.build(aChristmasCarol)
+            var result = Rope.of(aChristmasCarol)
 
             val x = System.nanoTime()
 

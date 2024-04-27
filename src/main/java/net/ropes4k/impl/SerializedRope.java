@@ -47,7 +47,7 @@ final class SerializedRope implements Externalizable {
     public void readExternal(ObjectInput in) throws IOException {
         // Read the UTF string and build a rope from it. This should
         // result in a FlatRope.
-        rope = Rope.BUILDER.build(in.readUTF());
+        rope = Rope.Companion.ofCharSequence(in.readUTF());
     }
 
     @Serial

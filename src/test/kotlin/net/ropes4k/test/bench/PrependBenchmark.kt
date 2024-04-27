@@ -7,6 +7,7 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
+import net.ropes4k.Rope.Companion.of
 import net.ropes4k.test.PerformanceTest
 import net.ropes4k.test.PerformanceTest.Companion.PLAN_LENGTH
 import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
@@ -43,7 +44,7 @@ open class PrependBenchmark {
 
     @Benchmark
     fun rope(): Int {
-        var result = Rope.BUILDER.build(aChristmasCarol)
+        var result = of(aChristmasCarol!!)
 
         prepends.forEach {
             result = result.subSequence(it.offset, it.offset + it.length).append(result)

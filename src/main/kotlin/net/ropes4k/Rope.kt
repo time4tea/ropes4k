@@ -5,6 +5,8 @@
  */
 package net.ropes4k
 
+import net.ropes4k.impl.FlatCharArrayRope
+import net.ropes4k.impl.FlatCharSequenceRope
 import java.io.IOException
 import java.io.Serializable
 import java.io.Writer
@@ -365,10 +367,16 @@ interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, Seriali
     fun endsWith(suffix: CharSequence, offset: Int): Boolean
 
     companion object {
-        /**
-         * A factory used for constructing ropes.
-         */
-		@JvmField
-		val BUILDER: RopeBuilder = RopeBuilder()
+
+        @JvmName("ofCharArray")
+        fun of(sequence: CharArray): Rope {
+            return FlatCharArrayRope(sequence)
+        }
+
+        @JvmName("ofCharSequence")
+        fun of(sequence: CharSequence): Rope {
+            if (sequence is Rope) return sequence
+            return FlatCharSequenceRope(sequence)
+        }
     }
 }
