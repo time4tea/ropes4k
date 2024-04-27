@@ -37,19 +37,22 @@ benchmark {
     }
 }
 
-fun findMostRecentJmhReportIn(d: File): String {
-    return d.walkBottomUp()
-        .filter { it.name == "test.json" }
-        .sortedByDescending { it.lastModified() }
-        .first()
-        .absolutePath
-        .also {
-            println("Selected JMH Report is $it")
-        }
-}
+
 
 // currently has to be run by hand after the benchmark,else it picks up previous run :-(
 jmhReport {
+
+    fun findMostRecentJmhReportIn(d: File): String? {
+        return d.walkBottomUp()
+            .filter { it.name == "test.json" }
+            .sortedByDescending { it.lastModified() }
+            .firstOrNull()
+            ?.absolutePath
+            ?.also {
+                println("Selected JMH Report is $it")
+            }
+    }
+
     jmhResultPath = findMostRecentJmhReportIn(project.file("build/reports/benchmarks"))
     jmhReportOutput = project.file("build/reports/benchmarks").absolutePath
 }
