@@ -347,7 +347,6 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
             else -> {
                 when (length) {
                     0 -> this
-                    1 -> this
                     else -> {
                         (1 until n).fold(Rope.of(this)) { acc: Rope, i: Int ->
                             acc + this

@@ -643,7 +643,14 @@ class RopeTest {
         expectThat(r*1).isEqualTo(Rope.of("HI"))
         expectThat(r*2).isEqualTo(Rope.of("HIHI"))
         expectThat(r*3).isEqualTo(Rope.of("HIHIHI"))
-
         expectThat(r.repeat(3)).isEqualTo(r*3)
+    }
+
+    @Test
+    fun `times small`() {
+        expectThat(Rope.of("") * 10 ).isEqualTo(Rope.of(""))
+        expectThat(Rope.of("A") * 0 ).isEqualTo(Rope.of(""))
+        expectThat(Rope.of("A") * 1 ).isEqualTo(Rope.of("A"))
+        expectThat(Rope.of("A") * 4 ).isEqualTo(Rope.of("AAAA"))
     }
 }
