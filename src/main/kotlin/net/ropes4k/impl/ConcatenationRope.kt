@@ -51,7 +51,7 @@ internal class ConcatenationRope(
                 try {
                     return iterator.next()
                 } catch (e: NoSuchElementException) {
-                    throw IndexOutOfBoundsException()
+                    throw IndexOutOfBoundsException("Index $index >= length $length")
                 }
             } else { /* if (index <= lastIndex) */
                 val toMoveBack = iterator.pos - index + 1
@@ -72,7 +72,7 @@ internal class ConcatenationRope(
     }
 
     override fun iterator(start: Int): Iterator<Char> {
-        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
+        if (start < 0 || start > length) throw IndexOutOfBoundsException("Start $start < 0 or > length $length")
         return if (start >= left.length) {
             right.iterator(start - left.length)
         } else {
@@ -89,7 +89,7 @@ internal class ConcatenationRope(
     }
 
     override fun reverseIterator(start: Int): Iterator<Char> {
-        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
+        if (start < 0 || start > length) throw IndexOutOfBoundsException("Start $start < 0 or > length $length")
         return if (start >= right.length) {
             left.reverseIterator(start - right.length)
         } else {
@@ -98,7 +98,7 @@ internal class ConcatenationRope(
     }
 
     override fun subSequence(startIndex: Int, endIndex: Int): Rope {
-        require(!(startIndex < 0 || endIndex > length)) { "Illegal subsequence ($startIndex,$endIndex)" }
+        require(!(startIndex < 0 || endIndex > length)) { "Start/End ($startIndex/$endIndex) out of bounds (0/$length)" }
         if (startIndex == 0 && endIndex == length) return this
         val l = left.length
         if (endIndex <= l) return left.subSequence(startIndex, endIndex)
