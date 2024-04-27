@@ -13,6 +13,7 @@ import java.util.Iterator;
 
 /**
  * A rope that represents the concatenation of two other ropes.
+ *
  * @author Amin Ahmad
  */
 public final class ConcatenationRope extends AbstractRope {
@@ -24,13 +25,14 @@ public final class ConcatenationRope extends AbstractRope {
 
     /**
      * Create a new concatenation rope from two ropes.
-     * @param left the first rope.
+     *
+     * @param left  the first rope.
      * @param right the second rope.
      */
     public ConcatenationRope(Rope left, Rope right) {
-        this.left   = left;
-        this.right  = right;
-        depth  = (byte) (Math.max(RopeUtilities.INSTANCE.depth(left), RopeUtilities.INSTANCE.depth(right)) + 1);
+        this.left = left;
+        this.right = right;
+        depth = (byte) (Math.max(RopeUtilities.INSTANCE.depth(left), RopeUtilities.INSTANCE.depth(right)) + 1);
         length = left.length() + right.length();
     }
 
@@ -39,7 +41,7 @@ public final class ConcatenationRope extends AbstractRope {
         if (index >= length())
             throw new IndexOutOfBoundsException("Rope index out of range: " + index);
 
-        return (index < left.length() ? left.charAt(index): right.charAt(index - left.length()));
+        return (index < left.length() ? left.charAt(index) : right.charAt(index - left.length()));
     }
 
     @Override
@@ -65,7 +67,7 @@ public final class ConcatenationRope extends AbstractRope {
             @Override
             public char charAt(int index) {
                 if (index > iterator.getPos()) {
-                    iterator.skip(index- iterator.getPos()-1);
+                    iterator.skip(index - iterator.getPos() - 1);
                     try {
                         return iterator.next();
                     } catch (IllegalArgumentException e) {
@@ -98,6 +100,7 @@ public final class ConcatenationRope extends AbstractRope {
 
     /**
      * Return the left-hand rope.
+     *
      * @return the left-hand rope.
      */
     public Rope getLeft() {
@@ -106,6 +109,7 @@ public final class ConcatenationRope extends AbstractRope {
 
     /**
      * Return the right-hand rope.
+     *
      * @return the right-hand rope.
      */
     public Rope getRight() {
@@ -161,8 +165,8 @@ public final class ConcatenationRope extends AbstractRope {
         if (start >= l)
             return right.subSequence(start - l, end - l);
         return RopeUtilities.INSTANCE.concatenate(
-            left.subSequence(start, l),
-            right.subSequence(0, end - l));
+                left.subSequence(start, l),
+                right.subSequence(0, end - l));
     }
 
     @Override

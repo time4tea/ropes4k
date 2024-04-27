@@ -10,47 +10,49 @@ import java.util.Arrays;
 /**
  * A character sequence defined by a character
  * and a repeat count.
+ *
  * @author Amin Ahmad
  */
 public class RepeatedCharacterSequence implements CharSequence {
-	
-	private final char character;
-	private final int repeat;
 
-	public RepeatedCharacterSequence(char character, int repeat) {
-		super();
-		this.character = character;
-		this.repeat = repeat;
-	}
+    private final char character;
+    private final int repeat;
 
-	@Override
-	public char charAt(int index) {
-		return getCharacter();
-	}
+    public RepeatedCharacterSequence(char character, int repeat) {
+        super();
+        this.character = character;
+        this.repeat = repeat;
+    }
 
-	@Override
-	public int length() {
-		return repeat;
-	}
+    @Override
+    public char charAt(int index) {
+        return getCharacter();
+    }
 
-	@Override
-	public CharSequence subSequence(int start, int end) {
-		return new RepeatedCharacterSequence(getCharacter(), end - start);
-	}
-	
-	@Override
-	public String toString() {
-		char[] result = new char[repeat];
-		Arrays.fill(result, character);
-		return new String(result);
-	}
+    @Override
+    public int length() {
+        return repeat;
+    }
 
-	/**
-	 * Returns the character used to construct this sequence.
-	 * @return the character used to construct this sequence.
-	 */
-	public char getCharacter() {
-		return character;
-	}
+    @Override
+    public CharSequence subSequence(int start, int end) {
+        return new RepeatedCharacterSequence(getCharacter(), end - start);
+    }
+
+    @Override
+    public String toString() {
+        char[] result = new char[repeat];
+        Arrays.fill(result, character);
+        return new String(result);
+    }
+
+    /**
+     * Returns the character used to construct this sequence.
+     *
+     * @return the character used to construct this sequence.
+     */
+    public char getCharacter() {
+        return character;
+    }
 
 }
