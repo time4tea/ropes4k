@@ -3,121 +3,104 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package net.ropes4k.impl;
+package net.ropes4k.impl
 
-import net.ropes4k.Rope;
-
-import java.util.ArrayDeque;
-import java.util.Iterator;
+import net.ropes4k.Rope
+import java.util.ArrayDeque
 
 /**
  * A fast reverse iterator for concatenated ropes. Iterating over
  * a complex rope structure is guaranteed to be O(n) so long as it
  * is reasonably well-balanced. Compare this to O(n log n) for
- * iteration using <code>charAt</code>.
+ * iteration using `charAt`.
  *
  * @author aahmad
  */
-public class ConcatenationRopeReverseIteratorImpl implements Iterator<Character> {
+class ConcatenationRopeReverseIteratorImpl(private val rope: Rope, start: Int) : MutableIterator<Char> {
+    private val toTraverse = ArrayDeque<Rope>()
+    private var currentRope: Rope?
+    private var currentRopePos = 0
+    private var skip = 0
+    var pos: Int = 0
+        private set
 
-    private final ArrayDeque<Rope> toTraverse;
-    private final Rope rope;
-    private Rope currentRope;
-    private int currentRopePos;
-    private int skip;
-    private int currentAbsolutePos;
 
+    init {
+        toTraverse.push(rope)
+        currentRope = null
+        initialize()
 
-    public ConcatenationRopeReverseIteratorImpl(Rope rope, int start) {
-        this.rope = rope;
-        toTraverse = new ArrayDeque<>();
-        toTraverse.push(rope);
-        currentRope = null;
-        initialize();
-
-        if (start < 0 || start > rope.length()) {
-            throw new IllegalArgumentException("Rope index out of range: " + start);
-        }
-        moveForward(start);
+        require(!(start < 0 || start > rope.length)) { "Rope index out of range: $start" }
+        moveForward(start)
     }
 
-    public boolean canMoveBackwards(int amount) {
-        return (currentRopePos + amount <= currentRope.length());
+    fun canMoveBackwards(amount: Int): Boolean {
+        return (currentRopePos + amount <= currentRope!!.length)
     }
 
-    public int getPos() {
-        return currentAbsolutePos;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return currentRopePos > 0 || !toTraverse.isEmpty();
+    override fun hasNext(): Boolean {
+        return currentRopePos > 0 || !toTraverse.isEmpty()
     }
 
     /**
      * Initialize the currentRope and currentRopePos fields.
      */
-    private void initialize() {
+    private fun initialize() {
         while (!toTraverse.isEmpty()) {
-            currentRope = toTraverse.pop();
-            if (currentRope instanceof ConcatenationRope) {
-                toTraverse.push(((ConcatenationRope) currentRope).left);
-                toTraverse.push(((ConcatenationRope) currentRope).right);
+            currentRope = toTraverse.pop()
+            if (currentRope is ConcatenationRope) {
+                toTraverse.push((currentRope as ConcatenationRope).left)
+                toTraverse.push((currentRope as ConcatenationRope).right)
             } else {
-                break;
+                break
             }
         }
-        if (currentRope == null)
-            throw new IllegalArgumentException("No terminal ropes present.");
-        currentRopePos = currentRope.length();
-        currentAbsolutePos = rope.length();
+        requireNotNull(currentRope) { "No terminal ropes present." }
+        currentRopePos = currentRope!!.length
+        pos = rope.length
     }
 
-    public void moveBackwards(int amount) {
-        if (!canMoveBackwards(amount))
-            throw new IllegalArgumentException("Unable to move backwards " + amount + ".");
-        currentRopePos += amount;
-        currentAbsolutePos += amount;
+    fun moveBackwards(amount: Int) {
+        require(canMoveBackwards(amount)) { "Unable to move backwards $amount." }
+        currentRopePos += amount
+        pos += amount
     }
 
-    public void moveForward(int amount) {
-        currentAbsolutePos -= amount;
-        int remainingAmt = amount;
+    fun moveForward(amount: Int) {
+        pos -= amount
+        var remainingAmt = amount
         while (remainingAmt != 0) {
             if (currentRopePos - remainingAmt > -1) {
-                currentRopePos -= remainingAmt;
-                return;
+                currentRopePos -= remainingAmt
+                return
             }
-            remainingAmt = remainingAmt - currentRopePos;
-            if (remainingAmt > 0 && toTraverse.isEmpty())
-                throw new IllegalArgumentException("Unable to move forward " + amount + ". Reached end of rope.");
+            remainingAmt = remainingAmt - currentRopePos
+            require(!(remainingAmt > 0 && toTraverse.isEmpty())) { "Unable to move forward $amount. Reached end of rope." }
 
             while (!toTraverse.isEmpty()) {
-                currentRope = toTraverse.pop();
-                if (currentRope instanceof ConcatenationRope) {
-                    toTraverse.push(((ConcatenationRope) currentRope).left);
-                    toTraverse.push(((ConcatenationRope) currentRope).right);
+                currentRope = toTraverse.pop()
+                if (currentRope is ConcatenationRope) {
+                    toTraverse.push((currentRope as ConcatenationRope).left)
+                    toTraverse.push((currentRope as ConcatenationRope).right)
                 } else {
-                    currentRopePos = currentRope.length();
-                    break;
+                    currentRopePos = currentRope!!.length
+                    break
                 }
             }
         }
     }
 
-    @Override
-    public Character next() {
-        moveForward(1 + skip);
-        skip = 0;
-        return currentRope.charAt(currentRopePos);
+    override fun next(): Char {
+        moveForward(1 + skip)
+        skip = 0
+        return currentRope!![currentRopePos]
     }
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Rope iterator is read-only.");
+    override fun remove() {
+        throw UnsupportedOperationException("Rope iterator is read-only.")
     }
 
-    public void skip(int skip) {
-        this.skip = skip;
+    fun skip(skip: Int) {
+        this.skip = skip
     }
 }
