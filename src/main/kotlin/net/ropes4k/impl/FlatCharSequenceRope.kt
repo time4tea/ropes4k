@@ -33,7 +33,10 @@ internal class FlatCharSequenceRope(private val sequence: CharSequence) : Abstra
             }
 
             override fun next(): Char {
-                return sequence[current++]
+                if ( current < length ) {
+                    return sequence[current++]
+                }
+                throw NoSuchElementException("Iterator is at end of Rope at $current")
             }
         }
     }

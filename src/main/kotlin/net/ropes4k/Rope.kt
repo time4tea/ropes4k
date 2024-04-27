@@ -335,6 +335,8 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      */
     public fun endsWith(suffix: CharSequence, offset: Int): Boolean
 
+    public operator fun plus(rope: Rope): Rope = append(rope)
+
     public companion object {
 
         public fun of(sequence: CharArray): Rope {

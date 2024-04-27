@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import strikt.api.Assertion
 import strikt.api.expectThat
+import strikt.api.expectThrows
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
 import java.io.ByteArrayInputStream
@@ -575,5 +576,41 @@ class RopeTest {
         val find = "ABABAB"
 
         expectThat(r.indexOf(find)).isEqualTo(s.indexOf(find))
+    }
+
+    @Test
+    fun `adding ropes`() {
+        val r1 = Rope.of("1")
+        val r2 = Rope.of("2")
+        expectThat(r1 + r2).isEqualTo(r1.append(r2))
+    }
+
+    @Test
+    fun `iterating throws right kind of exceptions`() {
+        val s = "A"
+        val rs = Rope.of(s)
+        val rca = Rope.of(s.toCharArray())
+        val cat = rs.append(rca)
+
+
+        expectThrows<NoSuchElementException> {
+            rs.iterator().also {
+                it.next()
+                it.next()
+            }
+        }
+        expectThrows<NoSuchElementException> {
+            rca.iterator().also {
+                it.next()
+                it.next()
+            }
+        }
+        expectThrows<NoSuchElementException> {
+            cat.iterator().also {
+                it.next()
+                it.next()
+                it.next()
+            }
+        }
     }
 }
