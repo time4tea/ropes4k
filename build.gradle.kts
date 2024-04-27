@@ -31,7 +31,7 @@ benchmark {
     benchmark {
         configurations {
             register("single") {
-                include(".*.\\.Insert2Benchmark")
+                include(".*.\\.TraversalBenchmark")
             }
         }
     }
@@ -48,6 +48,7 @@ fun findMostRecentJmhReportIn(d: File): String {
         }
 }
 
+// currently has to be run by hand after the benchmark,else it picks up previous run :-(
 jmhReport {
     jmhResultPath = findMostRecentJmhReportIn(project.file("build/reports/benchmarks"))
     jmhReportOutput = project.file("build/reports/benchmarks").absolutePath

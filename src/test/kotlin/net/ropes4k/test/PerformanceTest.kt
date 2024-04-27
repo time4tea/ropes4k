@@ -24,42 +24,9 @@ import kotlin.math.min
 @Tag("Performance")
 class PerformanceTest {
 
-
-    private fun traversal1() {
-        println()
-        println("**** TRAVERSAL TEST 1 (SIMPLY-CONSTRUCTED DATASTRUCTURES) ****")
-        println(
-            """
-    * A traversal test wherein the datastructures are simply
-    * constructed, meaning constructed straight from the data
-    * file with no further modifications. In this case, we expect
-    * rope performance to be competitive, with the charAt version
-    * performing better than the iterator version.
-    """.trimIndent()
-        )
-        println()
-
-        val stats0 = LongArray(ITERATION_COUNT)
-        val stats1 = LongArray(ITERATION_COUNT)
-        val stats2 = LongArray(ITERATION_COUNT)
-        val stats3 = LongArray(ITERATION_COUNT)
-        for (j in 0 until ITERATION_COUNT) {
-            stats0[j] = stringTraverseTest(aChristmasCarolRaw)
-            stats1[j] = stringBufferTraverseTest(aChristmasCarolRaw)
-            stats2[j] = ropeTraverseTest_1(aChristmasCarolRaw)
-            stats3[j] = ropeTraverseTest_2(aChristmasCarolRaw)
-        }
-        stat(stats0, "[String]")
-        stat(stats1, "[StringBuffer]")
-        stat(stats2, "[Rope/charAt]")
-        stat(stats3, "[Rope/itr]")
-    }
-
-
     @Test
     fun `inserts and things that depend on them`() {
         insertPlan()
-        traversal1()
         traversal2()
         regexComplex()
         search2()
@@ -456,31 +423,7 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun ropeTraverseTest_1(aChristmasCarol: CharArray): Long {
-            var result: Long = 0
-            val r = Rope.BUILDER.build(aChristmasCarol)
 
-            val x = System.nanoTime()
-
-            for (j in 0 until r.length) result += r[j].code.toLong()
-
-            val y = System.nanoTime()
-            System.out.printf("[Rope/charAt]  Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), result)
-            return (y - x)
-        }
-
-        private fun ropeTraverseTest_2(aChristmasCarol: CharArray): Long {
-            var result: Long = 0
-            val r = Rope.BUILDER.build(aChristmasCarol)
-
-            val x = System.nanoTime()
-
-            for (c in r) result += c.code.toLong()
-
-            val y = System.nanoTime()
-            System.out.printf("[Rope/itr]     Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), result)
-            return (y - x)
-        }
 
         private fun ropeTraverseTest2_1(aChristmasCarol: Rope?): Long {
             var r = 0
@@ -580,19 +523,6 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringBufferTraverseTest(aChristmasCarol: CharArray): Long {
-            var result: Long = 0
-            val b = StringBuilder(aChristmasCarol.size)
-            b.append(aChristmasCarol)
-
-            val x = System.nanoTime()
-
-            for (j in 0 until b.length) result += b[j].code.toLong()
-
-            val y = System.nanoTime()
-            System.out.printf("[StringBuffer] Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), result)
-            return (y - x)
-        }
 
         private fun stringBufferTraverseTest2(aChristmasCarol: StringBuffer?): Long {
             var r = 0
@@ -643,18 +573,6 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringTraverseTest(aChristmasCarol: CharArray): Long {
-            var result: Long = 0
-            val s = String(aChristmasCarol)
-
-            val x = System.nanoTime()
-
-            for (j in 0 until s.length) result += s[j].code.toLong()
-
-            val y = System.nanoTime()
-            System.out.printf("[String]       Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), result)
-            return (y - x)
-        }
 
         private fun stringTraverseTest2(aChristmasCarol: String?): Long {
             var r = 0
