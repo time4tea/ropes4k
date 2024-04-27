@@ -18,7 +18,9 @@ import kotlin.math.min
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 open class DeleteBenchmark {
 
-    lateinit var deletes: List<PerformanceTest.Delete>
+    data class Delete(val offset: Int, val length: Int, val expected: Int)
+
+    lateinit var deletes: List<Delete>
 
     @Setup
     fun setUp() {
@@ -31,7 +33,7 @@ open class DeleteBenchmark {
             )
             val expected = newSize - length
             newSize = expected
-            PerformanceTest.Delete(offset, length, expected)
+            Delete(offset, length, expected)
         }
     }
 
@@ -55,4 +57,5 @@ open class DeleteBenchmark {
             acc.delete(it.offset, it.offset + it.length)
         }
     }
+
 }

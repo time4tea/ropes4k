@@ -13,9 +13,9 @@ import java.io.StringWriter
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.*
+import java.util.Arrays
+import java.util.Random
 import java.util.regex.Pattern
-import kotlin.math.min
 
 /**
  * Performs an extensive performance test comparing Ropes, Strings, and
@@ -66,53 +66,6 @@ class PerformanceTest {
         }
     }
 
-
-
-    data class Delete(val offset: Int, val length: Int, val expected: Int)
-
-    @Test
-    fun deletePlan() {
-        println()
-        println("**** DELETE PLAN TEST ****")
-        println()
-        var newSize = aChristmasCarol.length
-
-        val deletes = (0 until PLAN_LENGTH).map {
-            val offset = random.nextInt(newSize)
-            val length = random.nextInt(
-                min(100, (newSize - offset))
-            )
-            val expected = newSize - length
-            newSize = expected
-            Delete(offset, length, expected)
-        }
-
-        (0..deletes.size step 20).forEach {
-            val stats0 = LongArray(ITERATION_COUNT)
-            val stats1 = LongArray(ITERATION_COUNT)
-            val stats2 = LongArray(ITERATION_COUNT)
-            for (j in 0 until ITERATION_COUNT) {
-                stats0[j] = timeit("delete") {
-                    deletes.fold(aChristmasCarol) { acc, it ->
-                        acc.substring(0, it.offset) + acc.substring(it.offset + it.length)
-                    }
-                }
-                stats1[j] = timeit("delete") {
-                    deletes.fold(StringBuilder(aChristmasCarol)) { acc, it ->
-                        acc.delete(it.offset, it.offset + it.length)
-                    }
-                }
-                stats2[j] = timeit("delete") {
-                    deletes.fold(Rope.BUILDER.build(aChristmasCarol)) { acc, it ->
-                        acc.delete(it.offset, it.offset + it.length)
-                    }
-                }
-            }
-            stat(stats0, "[String]")
-            stat(stats1, "[StringBuffer]")
-            stat(stats2, "[Rope]")
-        }
-    }
 
     companion object {
         private var seed = 342342
@@ -326,9 +279,6 @@ class PerformanceTest {
         }
 
 
-
-
-
         private fun ropeTraverseTest2_1(aChristmasCarol: Rope?): Long {
             var r = 0
             val x = System.nanoTime()
@@ -346,7 +296,6 @@ class PerformanceTest {
             System.out.printf("[Rope/itr]     Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), r)
             return (y - x)
         }
-
 
 
         private fun stringBufferInsertTest(aChristmasCarol: CharArray, inserts: List<Insert>): Long {
@@ -368,8 +317,6 @@ class PerformanceTest {
             complexStringBuffer = result
             return (y - x)
         }
-
-
 
 
         private fun stringBufferTraverseTest2(aChristmasCarol: StringBuffer?): Long {
@@ -402,8 +349,6 @@ class PerformanceTest {
             complexString = result
             return (y - x)
         }
-
-
 
         private fun stringTraverseTest2(aChristmasCarol: String?): Long {
             var r = 0
