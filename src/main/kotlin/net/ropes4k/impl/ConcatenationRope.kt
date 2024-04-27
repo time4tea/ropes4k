@@ -15,8 +15,6 @@ import kotlin.math.max
 
 /**
  * A rope that represents the concatenation of two other ropes.
- *
- * @author Amin Ahmad
  */
 internal class ConcatenationRope(
     @JvmField val left: Rope,

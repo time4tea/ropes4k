@@ -23,13 +23,8 @@ import java.io.Serial
  * The purpose of this class is to provide a performant serialization
  * mechanism for Ropes. The ideal serial form of a rope is as a String,
  * regardless of the particular in-memory representation.
- *
- * @author Amin Ahmad
  */
 internal class SerializedRope : Externalizable {
-    /**
-     * The rope.
-     */
     private var rope: Rope? = null
 
     /**

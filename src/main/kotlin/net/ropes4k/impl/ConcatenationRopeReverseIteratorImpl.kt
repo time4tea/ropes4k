@@ -13,8 +13,6 @@ import java.util.ArrayDeque
  * a complex rope structure is guaranteed to be O(n) so long as it
  * is reasonably well-balanced. Compare this to O(n log n) for
  * iteration using `charAt`.
- *
- * @author aahmad
  */
 internal class ConcatenationRopeReverseIteratorImpl(private val rope: Rope, start: Int) : MutableIterator<Char> {
     private val toTraverse = ArrayDeque<Rope>()
@@ -23,7 +21,6 @@ internal class ConcatenationRopeReverseIteratorImpl(private val rope: Rope, star
     private var skip = 0
     var pos: Int = 0
         private set
-
 
     init {
         toTraverse.push(rope)
@@ -42,9 +39,6 @@ internal class ConcatenationRopeReverseIteratorImpl(private val rope: Rope, star
         return currentRopePos > 0 || !toTraverse.isEmpty()
     }
 
-    /**
-     * Initialize the currentRope and currentRopePos fields.
-     */
     private fun initialize() {
         while (!toTraverse.isEmpty()) {
             currentRope = toTraverse.pop()

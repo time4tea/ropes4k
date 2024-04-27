@@ -9,8 +9,6 @@ import net.ropes4k.Rope
 
 /**
  * A rope that is directly backed by a data source.
- *
- * @author Amin Ahmad
  */
 internal interface FlatRope : Rope {
     /**

@@ -16,11 +16,6 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.min
 
-/**
- * Abstract base class for ropes that implements many of the common operations.
- *
- * @author Amin Ahmad
- */
 internal abstract class AbstractRope : Rope {
     private var hashCode = 0
 
@@ -52,10 +47,6 @@ internal abstract class AbstractRope : Rope {
         return subSequence(0, start).append(subSequence(end, length))
     }
 
-    /*
-     * The depth of the current rope, as defined in "Ropes: an Alternative
-     * to Strings".
-     */
     abstract fun depth(): Int
 
     override fun equals(other: Any?): Boolean {

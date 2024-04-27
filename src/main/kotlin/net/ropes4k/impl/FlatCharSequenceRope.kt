@@ -13,8 +13,6 @@ import java.util.regex.Pattern
 
 /**
  * A rope constructed from an underlying character sequence.
- *
- * @author Amin Ahmad
  */
 internal class FlatCharSequenceRope(private val sequence: CharSequence) : AbstractRope(), FlatRope {
     override fun get(index: Int): Char {

@@ -22,7 +22,6 @@ internal class ConcatenationRopeIteratorImpl(rope: Rope, start: Int) : Iterator<
     var pos: Int = 0
         private set
 
-
     init {
         toTraverse.push(rope)
         currentRope = null
@@ -40,9 +39,6 @@ internal class ConcatenationRopeIteratorImpl(rope: Rope, start: Int) : Iterator<
         return currentRopePos < currentRope!!.length - 1 || !toTraverse.isEmpty()
     }
 
-    /**
-     * Initialize the currentRope and currentRopePos fields.
-     */
     private fun initialize() {
         while (!toTraverse.isEmpty()) {
             currentRope = toTraverse.pop()
