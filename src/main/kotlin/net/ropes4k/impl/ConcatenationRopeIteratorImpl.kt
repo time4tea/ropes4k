@@ -3,122 +3,102 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package net.ropes4k.impl;
+package net.ropes4k.impl
 
-import net.ropes4k.Rope;
-
-import java.util.ArrayDeque;
-import java.util.Iterator;
+import net.ropes4k.Rope
+import java.util.ArrayDeque
 
 /**
  * A fast iterator for concatenated ropes. Iterating over a complex
  * rope structure is guaranteed to be O(n) so long as it is reasonably
  * well-balanced. Compare this to O(nlogn) for iteration using
- * <code>charAt</code>.
- *
- * @author aahmad
+ * `charAt`.
  */
-public class ConcatenationRopeIteratorImpl implements Iterator<Character> {
+class ConcatenationRopeIteratorImpl(rope: Rope, start: Int) : Iterator<Char> {
+    private val toTraverse = ArrayDeque<Rope>()
+    private var currentRope: Rope?
+    private var currentRopePos = 0
+    private var skip = 0
+    var pos: Int = 0
+        private set
 
-    private final ArrayDeque<Rope> toTraverse;
-    private Rope currentRope;
-    private int currentRopePos;
-    private int skip;
-    private int currentAbsolutePos;
 
+    init {
+        toTraverse.push(rope)
+        currentRope = null
+        initialize()
 
-    public ConcatenationRopeIteratorImpl(Rope rope, int start) {
-        toTraverse = new ArrayDeque<>();
-        toTraverse.push(rope);
-        currentRope = null;
-        initialize();
-
-        if (start < 0 || start > rope.length()) {
-            throw new IllegalArgumentException("Rope index out of range: " + start);
-        }
-        moveForward(start);
+        require(!(start < 0 || start > rope.length)) { "Rope index out of range: $start" }
+        moveForward(start)
     }
 
-    public boolean canMoveBackwards(int amount) {
-        return (-1 <= (currentRopePos - amount));
+    fun canMoveBackwards(amount: Int): Boolean {
+        return (-1 <= (currentRopePos - amount))
     }
 
-    public int getPos() {
-        return currentAbsolutePos;
-    }
-
-    @Override
-    public boolean hasNext() {
-        return currentRopePos < currentRope.length() - 1 || !toTraverse.isEmpty();
+    override fun hasNext(): Boolean {
+        return currentRopePos < currentRope!!.length - 1 || !toTraverse.isEmpty()
     }
 
     /**
      * Initialize the currentRope and currentRopePos fields.
      */
-    private void initialize() {
+    private fun initialize() {
         while (!toTraverse.isEmpty()) {
-            currentRope = toTraverse.pop();
-            if (currentRope instanceof ConcatenationRope) {
-                toTraverse.push(((ConcatenationRope) currentRope).getRight());
-                toTraverse.push(((ConcatenationRope) currentRope).getLeft());
+            currentRope = toTraverse.pop()
+            if (currentRope is ConcatenationRope) {
+                toTraverse.push((currentRope as ConcatenationRope).right)
+                toTraverse.push((currentRope as ConcatenationRope).left)
             } else {
-                break;
+                break
             }
         }
-        if (currentRope == null)
-            throw new IllegalArgumentException("No terminal ropes present.");
-        currentRopePos = -1;
-        currentAbsolutePos = -1;
+        requireNotNull(currentRope) { "No terminal ropes present." }
+        currentRopePos = -1
+        pos = -1
     }
 
-    public void moveBackwards(int amount) {
-        if (!canMoveBackwards(amount))
-            throw new IllegalArgumentException("Unable to move backwards " + amount + ".");
-        currentRopePos -= amount;
-        currentAbsolutePos -= amount;
+    fun moveBackwards(amount: Int) {
+        require(canMoveBackwards(amount)) { "Unable to move backwards $amount." }
+        currentRopePos -= amount
+        pos -= amount
     }
 
-    public void moveForward(int amount) {
-        currentAbsolutePos += amount;
-        int remainingAmt = amount;
+    fun moveForward(amount: Int) {
+        pos += amount
+        var remainingAmt = amount
         while (remainingAmt != 0) {
-            int available = currentRope.length() - currentRopePos - 1;
+            val available = currentRope!!.length - currentRopePos - 1
             if (remainingAmt <= available) {
-                currentRopePos += remainingAmt;
-                return;
+                currentRopePos += remainingAmt
+                return
             }
-            remainingAmt -= available;
+            remainingAmt -= available
             if (toTraverse.isEmpty()) {
-                currentAbsolutePos -= remainingAmt;
-                throw new IllegalArgumentException("Unable to move forward " + amount + ". Reached end of rope.");
+                pos -= remainingAmt
+                throw IllegalArgumentException("Unable to move forward $amount. Reached end of rope.")
             }
 
             while (!toTraverse.isEmpty()) {
-                currentRope = toTraverse.pop();
-                if (currentRope instanceof ConcatenationRope) {
-                    toTraverse.push(((ConcatenationRope) currentRope).getRight());
-                    toTraverse.push(((ConcatenationRope) currentRope).getLeft());
+                currentRope = toTraverse.pop()
+                if (currentRope is ConcatenationRope) {
+                    toTraverse.push((currentRope as ConcatenationRope).right)
+                    toTraverse.push((currentRope as ConcatenationRope).left)
                 } else {
-                    currentRopePos = -1;
-                    break;
+                    currentRopePos = -1
+                    break
                 }
             }
         }
     }
 
-    @Override
-    public Character next() {
-        moveForward(1 + skip);
-        skip = 0;
-        return currentRope.charAt(currentRopePos);
+    override fun next(): Char {
+        moveForward(1 + skip)
+        skip = 0
+        return currentRope!![currentRopePos]
     }
 
-    @Override
-    public void remove() {
-        throw new UnsupportedOperationException("Rope iterator is read-only.");
-    }
-
-    public void skip(int skip) {
-        this.skip = skip;
+    fun skip(skip: Int) {
+        this.skip = skip
     }
 }
