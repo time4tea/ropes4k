@@ -23,6 +23,8 @@ import java.io.ByteArrayOutputStream
 import java.io.ObjectInputStream
 import java.io.ObjectOutputStream
 import java.io.StringWriter
+import java.nio.file.Files
+import java.nio.file.Path
 import java.util.regex.Pattern
 
 class RopeTest {
@@ -612,5 +614,36 @@ class RopeTest {
                 it.next()
             }
         }
+    }
+
+    @Test
+    fun `utf-8`() {
+        val text = Files.readString(Path.of("test-files/w3c-utf-8-test.txt"))
+
+        val sb = StringBuilder(text)
+        val rcs = Rope.of(text)
+        val rca = Rope.of(text.toCharArray())
+
+        expectThat(text.length) {
+            isEqualTo(sb.length)
+            isEqualTo(rcs.length)
+            isEqualTo(rca.length)
+        }
+
+        val cat = rcs + rcs + rca
+        expectThat(cat).isA<ConcatenationRope>()
+        expectThat(cat.length).isEqualTo(text.length * 3)
+    }
+
+    @Test
+    fun `times and repeat`() {
+        val r = Rope.of("HI")
+
+        expectThat(r*0).isEqualTo(Rope.of(""))
+        expectThat(r*1).isEqualTo(Rope.of("HI"))
+        expectThat(r*2).isEqualTo(Rope.of("HIHI"))
+        expectThat(r*3).isEqualTo(Rope.of("HIHIHI"))
+
+        expectThat(r.repeat(3)).isEqualTo(r*3)
     }
 }

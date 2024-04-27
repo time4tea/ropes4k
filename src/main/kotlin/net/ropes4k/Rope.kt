@@ -336,6 +336,29 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
     public fun endsWith(suffix: CharSequence, offset: Int): Boolean
 
     public operator fun plus(rope: Rope): Rope = append(rope)
+    public operator fun plus(cs: CharSequence): Rope = append(Rope.of(cs))
+    public operator fun plus(ca: CharArray): Rope = append(Rope.of(ca))
+    public operator fun times(n: Int): Rope {
+        require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
+
+        return when (n) {
+            0 -> Rope.of("")
+            1 -> this
+            else -> {
+                when (length) {
+                    0 -> this
+                    1 -> this
+                    else -> {
+                        (1 until n).fold(Rope.of(this)) { acc: Rope, i: Int ->
+                            acc + this
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public fun repeat(n: Int): Rope = this * n
 
     public companion object {
 
