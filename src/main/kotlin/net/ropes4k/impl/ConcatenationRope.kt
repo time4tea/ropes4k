@@ -6,9 +6,7 @@
 package net.ropes4k.impl
 
 import net.ropes4k.Rope
-import net.ropes4k.impl.RopeUtilities.Companion.concatenate
 import net.ropes4k.impl.RopeUtilities.Companion.depth
-import net.ropes4k.impl.RopeUtilities.Companion.rebalance
 import java.io.IOException
 import java.io.Writer
 import kotlin.math.max
@@ -21,7 +19,6 @@ internal class ConcatenationRope(
     val right: Rope
 ) : AbstractRope() {
     private val depth = max(depth(left), depth(right)) + 1
-
 
     override val length: Int = left.length + right.length
 

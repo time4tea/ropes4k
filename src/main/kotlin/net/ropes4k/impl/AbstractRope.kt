@@ -6,7 +6,6 @@
 package net.ropes4k.impl
 
 import net.ropes4k.Rope
-import net.ropes4k.impl.RopeUtilities.Companion.concatenate
 import java.io.IOException
 import java.io.ObjectStreamException
 import java.io.Serial
