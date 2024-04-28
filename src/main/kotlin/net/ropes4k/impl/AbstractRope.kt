@@ -232,11 +232,6 @@ internal abstract class AbstractRope : Rope {
         return SerializedRope(this)
     }
 
-
-    override fun padStart(toLength: Int): Rope {
-        return padStart(toLength, ' ')
-    }
-
     override fun padStart(toLength: Int, padChar: Char): Rope {
         val toPad = toLength - length
         if (toPad < 1) return this
@@ -244,10 +239,6 @@ internal abstract class AbstractRope : Rope {
             Rope.of(RepeatedCharacterSequence(padChar, toPad)),
             this
         )
-    }
-
-    override fun padEnd(toLength: Int): Rope {
-        return padEnd(toLength, ' ')
     }
 
     override fun padEnd(toLength: Int, padChar: Char): Rope {

@@ -218,29 +218,12 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
     public fun write(out: Writer, offset: Int, length: Int)
 
     /**
-     * Increase the length of this rope to the specified length by prepending
-     * spaces to this rope. If the specified length is less than or equal to
-     * the current length of the rope, the rope is returned unmodified.
-     * @param toLength the desired length.
-     * @return the padded rope.
-     * @see .padStart
-     */
-    public fun padStart(toLength: Int): Rope
-
-    /**
      * Increase the length of this rope to the specified length by repeatedly
      * prepending the specified character to this rope. If the specified length
      * is less than or equal to the current length of the rope, the rope is
      * returned unmodified.
      */
-    public fun padStart(toLength: Int, padChar: Char): Rope
-
-    /**
-     * Increase the length of this rope to the specified length by appending
-     * spaces to this rope. If the specified length is less than or equal to
-     * the current length of the rope, the rope is returned unmodified.
-     */
-    public fun padEnd(toLength: Int): Rope
+    public fun padStart(toLength: Int, padChar: Char = ' '): Rope
 
     /**
      * Increase the length of this rope to the specified length by repeatedly
@@ -248,7 +231,7 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * is less than or equal to the current length of the rope, the rope is
      * returned unmodified.
      */
-    public fun padEnd(toLength: Int, padChar: Char): Rope
+    public fun padEnd(toLength: Int, padChar: Char = ' '): Rope
 
     /**
      * Returns `true` if this rope starts with the specified
