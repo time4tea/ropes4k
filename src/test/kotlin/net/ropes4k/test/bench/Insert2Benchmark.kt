@@ -24,7 +24,8 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 open class Insert2Benchmark {
 
-    val inserts = (0 until PerformanceTest.PLAN_LENGTH).map {
+    // string is so slow, plots show "0"
+    val inserts = (0 until PerformanceTest.PLAN_LENGTH / 5).map {
         val clipFrom = PerformanceTest.random.nextInt(bensAuto.length)
         PerformanceTest.Insert(
             PerformanceTest.random.nextInt(aChristmasCarol.length),
