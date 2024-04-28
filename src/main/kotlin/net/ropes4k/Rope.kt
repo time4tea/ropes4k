@@ -51,13 +51,13 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * Returns a new rope created by appending the specified character sequence to
      * this rope.
      */
-    public fun append(suffix: CharSequence): Rope
+    public fun append(chars: CharSequence): Rope
 
     /**
      * Returns a new rope created by appending the specified character range to
      * this rope.
      */
-    public fun append(csq: CharSequence, start: Int, end: Int): Rope
+    public fun append(chars: CharSequence, start: Int, end: Int): Rope
 
     /**
      * Creats a new rope by delete the specified character substring.
@@ -70,26 +70,6 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * @param      end    The ending index, exclusive.
      */
     public fun delete(start: Int, end: Int): Rope
-
-    /**
-     * Returns the index within this rope of the first occurrence of the
-     * specified character. If a character with value `ch` occurs
-     * in the character sequence represented by this `Rope`
-     * object, then the index of the first such occurrence is returned --
-     * that is, the smallest value k such that:
-     *
-     *
-     * `this.charAt(k) == ch`
-     *
-     *
-     * is `true`. If no such character occurs in this string, then
-     * `-1` is returned.
-     * @param ch a character.
-     * @return the index of the first occurrence of the character in the character
-     * sequence represented by this object, or `-1` if the character
-     * does not occur.
-     */
-    public fun indexOf(ch: Char): Int
 
     /**
      * Returns the index within this rope of the first occurrence of the
@@ -110,21 +90,7 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * @return the index of the first occurrence of the character in the character
      * sequence represented by this object, or -1 if the character does not occur.
      */
-    public fun indexOf(ch: Char, fromIndex: Int): Int
-
-    /**
-     * Returns the index within this rope of the first occurrence of the
-     * specified string. The value returned is the smallest *k* such
-     * that:
-     * <pre>
-     * this.startsWith(str, k)
-    </pre> *
-     * If no such *k* exists, then -1 is returned.
-     * @param sequence the string to find.
-     * @return the index of the first occurrence of the specified string, or
-     * -1 if the specified string does not occur.
-     */
-    public fun indexOf(sequence: CharSequence): Int
+    public fun indexOf(ch: Char, fromIndex: Int = 0): Int
 
     /**
      * Returns the index within this rope of the first occurrence of the
@@ -139,7 +105,7 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * @return the index of the first occurrence of the specified string, or
      * -1 if the specified string does not occur.
      */
-    public fun indexOf(sequence: CharSequence, fromIndex: Int): Int
+    public fun indexOf(sequence: CharSequence, fromIndex: Int = 0): Int
 
     /**
      * Creates a new rope by inserting the specified `CharSequence`
@@ -336,19 +302,19 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
     public fun endsWith(suffix: CharSequence, offset: Int): Boolean
 
     public operator fun plus(other: Rope): Rope = append(other)
-    public operator fun plus(other: CharSequence): Rope = append(Rope.of(other))
-    public operator fun plus(other: CharArray): Rope = append(Rope.of(other))
+    public operator fun plus(other: CharSequence): Rope = append(of(other))
+    public operator fun plus(other: CharArray): Rope = append(of(other))
     public operator fun times(n: Int): Rope {
         require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
 
         return when (n) {
-            0 -> Rope.of("")
+            0 -> of("")
             1 -> this
             else -> {
                 when (length) {
                     0 -> this
                     else -> {
-                        (1 until n).fold(Rope.of(this)) { acc: Rope, _: Int ->
+                        (1 until n).fold(of(this)) { acc: Rope, _: Int ->
                             acc + this
                         }
                     }
@@ -361,14 +327,14 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
 
     public companion object {
 
-        public fun of(sequence: CharArray): Rope {
-            return FlatCharArrayRope(sequence)
+        public fun of(chars: CharArray): Rope {
+            return FlatCharArrayRope(chars)
         }
 
-        public fun of(sequence: CharSequence): Rope {
-            return when (sequence) {
-                is Rope -> sequence
-                else -> FlatCharSequenceRope(sequence)
+        public fun of(chars: CharSequence): Rope {
+            return when (chars) {
+                is Rope -> chars
+                else -> FlatCharSequenceRope(chars)
             }
         }
     }

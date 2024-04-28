@@ -23,12 +23,12 @@ internal abstract class AbstractRope : Rope {
         return concatenate(this, Rope.of(c.toString()))
     }
 
-    override fun append(suffix: CharSequence): Rope {
-        return concatenate(this, Rope.of(suffix))
+    override fun append(chars: CharSequence): Rope {
+        return concatenate(this, Rope.of(chars))
     }
 
-    override fun append(csq: CharSequence, start: Int, end: Int): Rope {
-        return concatenate(this, Rope.of(csq).subSequence(start, end))
+    override fun append(chars: CharSequence, start: Int, end: Int): Rope {
+        return concatenate(this, Rope.of(chars).subSequence(start, end))
     }
 
     override fun compareTo(other: CharSequence): Int {
@@ -84,11 +84,13 @@ internal abstract class AbstractRope : Rope {
         return hashCode
     }
 
-    override fun indexOf(ch: Char): Int {
-        var index = -1
-        for (c in this) {
+    override fun indexOf(ch: Char, fromIndex: Int): Int {
+        if (fromIndex < 0 || fromIndex >= length) throw IndexOutOfBoundsException("Rope index out of range: $fromIndex")
+        var index = fromIndex - 1
+        val i = iterator(fromIndex)
+        while (i.hasNext()) {
             ++index
-            if (c == ch) return index
+            if (i.next() == ch) return index
         }
         return -1
     }
@@ -115,21 +117,6 @@ internal abstract class AbstractRope : Rope {
 
     override fun endsWith(suffix: CharSequence, offset: Int): Boolean {
         return startsWith(suffix, length - suffix.length - offset)
-    }
-
-    override fun indexOf(ch: Char, fromIndex: Int): Int {
-        if (fromIndex < 0 || fromIndex >= length) throw IndexOutOfBoundsException("Rope index out of range: $fromIndex")
-        var index = fromIndex - 1
-        val i = iterator(fromIndex)
-        while (i.hasNext()) {
-            ++index
-            if (i.next() == ch) return index
-        }
-        return -1
-    }
-
-    override fun indexOf(sequence: CharSequence): Int {
-        return indexOf(sequence, 0)
     }
 
     override fun indexOf(sequence: CharSequence, fromIndex: Int): Int {

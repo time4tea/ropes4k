@@ -35,16 +35,6 @@ internal class FlatCharArrayRope(
      * indexOf implementation. Calls to charAt have been replaced
      * with direct array access to improve speed.
      */
-    override fun indexOf(ch: Char): Int {
-        for (j in sequence.indices) if (sequence[j] == ch) return j
-        return -1
-    }
-
-    /*
-     * Implementation Note: This is a reproduction of the AbstractRope
-     * indexOf implementation. Calls to charAt have been replaced
-     * with direct array access to improve speed.
-     */
     override fun indexOf(ch: Char, fromIndex: Int): Int {
         if (fromIndex < 0 || fromIndex >= length) throw IndexOutOfBoundsException("Rope index out of range: $fromIndex")
         for (j in fromIndex until sequence.size) if (sequence[j] == ch) return j
@@ -61,7 +51,7 @@ internal class FlatCharArrayRope(
             }
 
             override fun next(): Char {
-                if ( current < length ) {
+                if (current < length) {
                     return sequence[current++]
                 }
                 throw NoSuchElementException("Iterator is at end of Rope at $current")
