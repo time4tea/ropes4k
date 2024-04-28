@@ -115,12 +115,12 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * The characters of the `CharSequence` argument are inserted,
      * in order, into this rope at the indicated offset.
      *
-     * @param      dstOffset the offset.
-     * @param      s the sequence to be inserted
+     * @param      at the offset.
+     * @param      chars the sequence to be inserted
      * @return     a reference to the new Rope.
      * @throws     IndexOutOfBoundsException  if the offset is invalid.
      */
-    public fun insert(dstOffset: Int, s: CharSequence): Rope
+    public fun insert(at: Int, chars: CharSequence): Rope
 
     /**
      * Returns an iterator positioned to start at the specified index.

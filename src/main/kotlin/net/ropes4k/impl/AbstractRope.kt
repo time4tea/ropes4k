@@ -160,13 +160,13 @@ internal abstract class AbstractRope : Rope {
         return -1
     }
 
-    override fun insert(dstOffset: Int, s: CharSequence): Rope {
-        val r = Rope.of(s)
+    override fun insert(at: Int, chars: CharSequence): Rope {
+        val r = Rope.of(chars)
 
-        if (dstOffset == 0) return r.append(this)
-        else if (dstOffset == length) return append(r)
-        else if (dstOffset < 0 || dstOffset > length) throw IndexOutOfBoundsException("$dstOffset is out of insert range [0:$length]")
-        return subSequence(0, dstOffset).append(r).append(subSequence(dstOffset, length))
+        if (at == 0) return r.append(this)
+        else if (at == length) return append(r)
+        else if (at < 0 || at > length) throw IndexOutOfBoundsException("$at is out of insert range [0:$length]")
+        return subSequence(0, at).append(r).append(subSequence(at, length))
     }
 
     override fun iterator(): Iterator<Char> {
