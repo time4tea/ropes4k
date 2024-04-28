@@ -173,10 +173,10 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * Returns a reverse iterator positioned to start at the specified index.
      * A reverse iterator moves backwards instead of forwards through a rope.
      * @param start the start position.
+
      * @return a reverse iterator positioned to start at the specified index from
      * the end of the rope. For example, a value of 1 indicates the iterator
      * should start 1 character before the end of the rope.
-     * @see Rope.reverseIterator
      */
     public fun reverseIterator(start: Int = 0): Iterator<Char>
 
