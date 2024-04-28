@@ -100,11 +100,8 @@ class RopeTest {
         val x1: Rope = FlatCharSequenceRope("0123456789")
         val x2: Rope = ConcatenationRope(x1, x1)
 
-        Assertions.assertTrue(x2.matches("0.*9"))
-        Assertions.assertTrue(x2.matches(Pattern.compile("0.*9")))
-
-        Assertions.assertTrue(x2.matches("0.*90.*9"))
-        Assertions.assertTrue(x2.matches(Pattern.compile("0.*90.*9")))
+        Assertions.assertTrue(x2.matches("0.*9".toRegex()))
+        Assertions.assertTrue(x2.matches("0.*90.*9".toRegex()))
     }
 
     @Test

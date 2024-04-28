@@ -191,10 +191,6 @@ internal abstract class AbstractRope : Rope {
         return regex.matcher(getForSequentialAccess()).matches()
     }
 
-    override fun matches(regex: String): Boolean {
-        return Pattern.matches(regex, getForSequentialAccess())
-    }
-
     override fun rebalance(): Rope {
         return this
     }

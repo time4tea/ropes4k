@@ -150,27 +150,9 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
     public fun matcher(pattern: Pattern): Matcher
 
     /**
-     * Returns `true` if this rope matches the specified
-     * `Pattern`, or `false` otherwise.
-     * @see java.util.regex.Pattern
-     *
-     * @param regex the specified regular expression.
-     * @return `true` if this rope matches the specified
-     * `Pattern`, or `false` otherwise.
+     * Returns if this rope matches the specified `Pattern`
      */
     public fun matches(regex: Pattern): Boolean
-
-    /**
-     * Returns `true` if this rope matches the specified
-     * regular expression, or `false` otherwise.
-     * @see java.util.regex.Pattern
-     *
-     * @param regex the specified regular expression.
-     * @return `true` if this rope matches the specified
-     * regular expression, or `false` otherwise.
-     */
-    public fun matches(regex: String): Boolean
-
 
     /**
      * Rebalances the current rope, returning the rebalanced rope. In general,
