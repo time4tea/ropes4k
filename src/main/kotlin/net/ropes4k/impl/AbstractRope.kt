@@ -195,10 +195,6 @@ internal abstract class AbstractRope : Rope {
         return this
     }
 
-    override fun reverseIterator(): Iterator<Char> {
-        return reverseIterator(0)
-    }
-
     override fun trimEnd(): Rope {
         var index = length + 1
         val i = reverseIterator()
