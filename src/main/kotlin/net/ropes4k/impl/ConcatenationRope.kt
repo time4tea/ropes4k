@@ -43,7 +43,7 @@ internal class ConcatenationRope(
     }
 
     class SequentialRopeAccessor(private val rope: Rope) : CharSequence {
-        private val iterator = rope.iterator(0) as ConcatenationRopeIteratorImpl
+        private val iterator = rope.iterator(0) as ConcatenationRopeIterator
 
         override fun get(index: Int): Char {
             if (index > iterator.pos) {
@@ -76,7 +76,7 @@ internal class ConcatenationRope(
         return if (start >= left.length) {
             right.iterator(start - left.length)
         } else {
-            ConcatenationRopeIteratorImpl(this, start)
+            ConcatenationRopeIterator(this, start)
         }
     }
 
@@ -93,7 +93,7 @@ internal class ConcatenationRope(
         return if (start >= right.length) {
             left.reverseIterator(start - right.length)
         } else {
-            ConcatenationRopeReverseIteratorImpl(this, start)
+            ConcatenationRopeReverseIterator(this, start)
         }
     }
 

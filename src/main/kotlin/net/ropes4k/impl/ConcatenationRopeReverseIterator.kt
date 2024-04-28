@@ -14,7 +14,7 @@ import java.util.ArrayDeque
  * is reasonably well-balanced. Compare this to O(n log n) for
  * iteration using `charAt`.
  */
-internal class ConcatenationRopeReverseIteratorImpl(private val rope: Rope, start: Int) : MutableIterator<Char> {
+internal class ConcatenationRopeReverseIterator(private val rope: Rope, start: Int) : MutableIterator<Char> {
     private val toTraverse = ArrayDeque<Rope>()
     private var currentRope: Rope?
     private var currentRopePos = 0

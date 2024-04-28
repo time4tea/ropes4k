@@ -30,7 +30,7 @@ A Rope implements the following interfaces:
  - Comparable<CharSequence>
  - Serializable
 
-Your code should refer to CharSequence whereever possible. If it does, then using a Rope
+Your code should refer to CharSequence wherever possible. If it does, then using a Rope
 is as simple as:
 
 ```kotlin
