@@ -6,7 +6,6 @@
 
 package net.ropes4k.impl
 
-import net.ropes4k.Rope
 import java.util.ArrayDeque
 
 internal fun rebalance(r: InternalRope): InternalRope {
