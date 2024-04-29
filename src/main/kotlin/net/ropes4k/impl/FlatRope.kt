@@ -5,8 +5,6 @@
  */
 package net.ropes4k.impl
 
-import net.ropes4k.Rope
-
 /**
  * A rope that is directly backed by a data source.
  */

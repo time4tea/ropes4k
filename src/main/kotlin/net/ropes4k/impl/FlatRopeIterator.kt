@@ -18,7 +18,7 @@ internal class FlatRopeIterator(private val flat: FlatRope, start: Int) : Iterat
     }
 
     override fun next(): Char {
-        if ( current < flat.length ) {
+        if (current < flat.length) {
             return flat[current++]
         }
         throw NoSuchElementException("Iterator is at end of Rope at $current")

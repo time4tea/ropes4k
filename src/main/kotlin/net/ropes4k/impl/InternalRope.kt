@@ -8,7 +8,7 @@ package net.ropes4k.impl
 
 import net.ropes4k.Rope
 
-internal interface InternalRope: Rope {
+internal interface InternalRope : Rope {
     val depth: Int
     override fun reverse(): InternalRope
     override fun subSequence(startIndex: Int, endIndex: Int): InternalRope

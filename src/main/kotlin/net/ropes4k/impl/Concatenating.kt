@@ -6,8 +6,6 @@
 
 package net.ropes4k.impl
 
-import net.ropes4k.Rope
-
 /**
  * Concatenate two ropes. Implements all recommended optimizations in "Ropes: an
  * Alternative to Strings".

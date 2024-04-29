@@ -28,8 +28,7 @@ internal fun rebalance(r: InternalRope): InternalRope {
 }
 
 private fun merge(leafNodes: ArrayList<InternalRope>, start: Int, end: Int): InternalRope {
-    val range = end - start
-    when (range) {
+    when (val range = end - start) {
         1 -> return leafNodes[start]
         2 -> return ConcatenationRope(leafNodes[start], leafNodes[start + 1])
         else -> {
