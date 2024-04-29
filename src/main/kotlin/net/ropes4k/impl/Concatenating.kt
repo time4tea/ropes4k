@@ -54,7 +54,7 @@ internal fun concatenate(left: InternalRope, right: InternalRope): InternalRope 
 private const val MAX_ROPE_DEPTH: Short = 96
 
 private fun maybeRebalance(r: InternalRope): InternalRope {
-    return if (r is AbstractRope && r.depth > MAX_ROPE_DEPTH) {
+    return if (r.depth > MAX_ROPE_DEPTH) {
         rebalance(r)
     } else {
         r
