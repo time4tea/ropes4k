@@ -94,10 +94,6 @@ internal abstract class AbstractRope : Rope {
         return -1
     }
 
-    override fun startsWith(prefix: CharSequence): Boolean {
-        return startsWith(prefix, 0)
-    }
-
     override fun startsWith(prefix: CharSequence, offset: Int): Boolean {
         if (offset < 0 || offset > length) throw IndexOutOfBoundsException("Rope offset out of range: $offset")
         if (offset + prefix.length > length) return false
@@ -108,10 +104,6 @@ internal abstract class AbstractRope : Rope {
             if (i.next() != prefix[x++]) return false
         }
         return true
-    }
-
-    override fun endsWith(suffix: CharSequence): Boolean {
-        return endsWith(suffix, 0)
     }
 
     override fun endsWith(suffix: CharSequence, offset: Int): Boolean {

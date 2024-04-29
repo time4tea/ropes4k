@@ -225,26 +225,10 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
     public fun padEnd(toLength: Int, padChar: Char = ' '): Rope
 
     /**
-     * Returns `true` if this rope starts with the specified
-     * prefix.
-     */
-    public fun startsWith(prefix: CharSequence): Boolean
-
-    /**
      * Returns `true` if this rope, beginning from a specified
      * offset, starts with the specified prefix.
      */
-    public fun startsWith(prefix: CharSequence, offset: Int): Boolean
-
-    /**
-     * Returns `true` if this rope ends with the specified
-     * suffix.
-     * @param suffix the suffix to test.
-     * @return `true` if this rope starts with the
-     * specified suffix and `false` otherwise.
-     * @see .endsWith
-     */
-    public fun endsWith(suffix: CharSequence): Boolean
+    public fun startsWith(prefix: CharSequence, offset: Int = 0): Boolean
 
     /**
      * Returns `true` if this rope, terminated at a specified
@@ -255,7 +239,7 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
      * @return `true` if this rope starts with the
      * specified prefix and `false` otherwise.
      */
-    public fun endsWith(suffix: CharSequence, offset: Int): Boolean
+    public fun endsWith(suffix: CharSequence, offset: Int = 0): Boolean
 
     public operator fun plus(other: Rope): Rope = append(other)
     public operator fun plus(other: CharSequence): Rope = append(of(other))
