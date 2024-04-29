@@ -6,7 +6,6 @@
 package net.ropes4k.test
 
 import net.ropes4k.Rope
-import net.ropes4k.impl.AbstractRope
 import net.ropes4k.impl.InternalRope
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
@@ -239,7 +238,7 @@ class PerformanceTest {
 
 
         private fun ropeInsertTest(aChristmasCarol: CharArray, inserts: List<Insert>): Long {
-            var result = Rope.of(aChristmasCarol)
+            var result = Rope.ofCopy(aChristmasCarol)
 
             val x = System.nanoTime()
 

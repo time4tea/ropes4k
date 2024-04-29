@@ -243,7 +243,7 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
 
     public operator fun plus(other: Rope): Rope = append(other)
     public operator fun plus(other: CharSequence): Rope = append(of(other))
-    public operator fun plus(other: CharArray): Rope = append(of(other))
+    public operator fun plus(other: CharArray): Rope = append(ofCopy(other))
     public operator fun times(n: Int): Rope {
         require(n >= 0) { "Count 'n' must be non-negative, but was $n." }
 
@@ -267,7 +267,7 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
 
     public companion object {
 
-        public fun of(chars: CharArray): Rope {
+        public fun ofCopy(chars: CharArray): Rope {
             return FlatCharArrayRope(chars)
         }
 

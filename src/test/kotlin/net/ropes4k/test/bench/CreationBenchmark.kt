@@ -42,6 +42,6 @@ open class CreationBenchmark {
 
     @Benchmark
     fun rope_chararray(): Any {
-        return Rope.of(aChristmasCarolRaw)
+        return Rope.ofCopy(aChristmasCarolRaw)
     }
 }

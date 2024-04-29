@@ -45,7 +45,7 @@ class RopeTest {
     fun testSubstringDeleteBug() {
         val s = "12345678902234567890"
 
-        var rope = Rope.of(s.toCharArray()) // bugs
+        var rope = Rope.ofCopy(s.toCharArray()) // bugs
 
         rope = rope.delete(0, 1)
 
@@ -455,7 +455,7 @@ class RopeTest {
     @Test
     fun testSubstringBounds() {
         val r =
-            Rope.of("01234567890123456789012345678901234567890123456789012345678901234567890123456789".toCharArray())
+            Rope.ofCopy("01234567890123456789012345678901234567890123456789012345678901234567890123456789".toCharArray())
         val r2 = r.subSequence(0, 30)
         try {
             r2[31]
@@ -550,7 +550,7 @@ class RopeTest {
     @Test
     fun `index of same index as string 1 flat char array`() {
         val s = "CCCCCCPIFPCFFP"
-        val r = Rope.of(s.toCharArray())
+        val r = Rope.ofCopy(s.toCharArray())
 
         expectThat(r).isA<FlatCharArrayRope>()
         val find = "IFPCFFP"
@@ -572,7 +572,7 @@ class RopeTest {
     @Test
     fun `index of same as string 2 flat char array`() {
         val s = "ABABAABBABABBAAABBBAAABABABABBBBAA"
-        val r = Rope.of(s.toCharArray())
+        val r = Rope.ofCopy(s.toCharArray())
 
         expectThat(r).isA<FlatCharArrayRope>()
         val find = "ABABAB"
@@ -591,7 +591,7 @@ class RopeTest {
     fun `iterating throws right kind of exceptions`() {
         val s = "A"
         val rs = Rope.of(s)
-        val rca = Rope.of(s.toCharArray())
+        val rca = Rope.ofCopy(s.toCharArray())
         val cat = rs.append(rca)
 
 
@@ -622,7 +622,7 @@ class RopeTest {
 
         val sb = StringBuilder(text)
         val rcs = Rope.of(text)
-        val rca = Rope.of(text.toCharArray())
+        val rca = Rope.ofCopy(text.toCharArray())
 
         expectThat(text.length) {
             isEqualTo(sb.length)

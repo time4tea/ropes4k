@@ -21,7 +21,7 @@ open class SearchSimpleBenchmark {
 
     val string = String(bensAutoRaw)
     val stringBuilder = StringBuilder(bensAutoRaw.size).also { it.append(bensAutoRaw) }
-    val rope = Rope.of(bensAutoRaw)
+    val rope = Rope.ofCopy(bensAutoRaw)
 
     @Benchmark
     fun string(): Int {

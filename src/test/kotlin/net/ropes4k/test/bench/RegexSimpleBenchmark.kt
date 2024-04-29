@@ -28,7 +28,7 @@ open class RegexSimpleBenchmark {
 
     val string = aChristmasCarol
     val stringBuilder = StringBuilder(aChristmasCarolRaw.size).also { it.append(aChristmasCarolRaw) }
-    val rope = Rope.of(aChristmasCarolRaw)
+    val rope = Rope.ofCopy(aChristmasCarolRaw)
 
     @Benchmark
     fun string1(): Int {

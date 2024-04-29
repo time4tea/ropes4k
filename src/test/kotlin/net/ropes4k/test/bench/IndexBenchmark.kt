@@ -30,7 +30,7 @@ open class IndexBenchmark {
     val s = String(aChristmasCarol)
     val sb = StringBuilder(aChristmasCarol)
     val rcs = Rope.of(aChristmasCarol)
-    val rca = Rope.of(aChristmasCarolRaw)
+    val rca = Rope.ofCopy(aChristmasCarolRaw)
 
     val len = s.length
 
