@@ -5,29 +5,26 @@
  */
 package net.ropes4k.impl
 
-import net.ropes4k.Rope
 import java.io.IOException
 import java.io.Writer
 
 internal class FlatCharArrayRope(
-    sequence: CharArray,
+    chars: CharArray,
     offset: Int = 0,
-    length: Int = sequence.size
+    length: Int = chars.size
 ) : AbstractRope(), FlatRope {
     private val sequence: CharArray
 
     init {
-        require(length <= sequence.size) { "Length must be less than " + sequence.size }
+        require(length <= chars.size) { "Length must be less than " + chars.size }
         this.sequence = CharArray(length)
-        System.arraycopy(sequence, offset, this.sequence, 0, length)
+        System.arraycopy(chars, offset, this.sequence, 0, length)
     }
+
+    override val length = this.sequence.size
 
     override fun get(index: Int): Char {
         return sequence[index]
-    }
-
-    override fun depth(): Int {
-        return 0
     }
 
     /*
@@ -59,9 +56,8 @@ internal class FlatCharArrayRope(
         }
     }
 
-    override val length: Int get() = sequence.size
 
-    override fun reverse(): Rope {
+    override fun reverse(): InternalRope {
         return ReverseRope(this)
     }
 
@@ -80,7 +76,7 @@ internal class FlatCharArrayRope(
         }
     }
 
-    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+    override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {
         if (startIndex == 0 && endIndex == length) return this
         return if (endIndex - startIndex < 16) {
             FlatCharArrayRope(sequence, startIndex, endIndex - startIndex)

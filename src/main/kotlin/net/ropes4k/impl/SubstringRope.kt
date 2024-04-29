@@ -5,8 +5,6 @@
  */
 package net.ropes4k.impl
 
-import net.ropes4k.Rope
-import net.ropes4k.impl.RopeUtilities.Companion.depth
 import java.io.IOException
 import java.io.Writer
 
@@ -20,29 +18,18 @@ internal class SubstringRope(val rope: FlatRope, val offset: Int, override val l
         if (length < 0 || offset < 0 || offset + length > rope.length) throw IndexOutOfBoundsException("Invalid substring offset (" + offset + ") and length (" + length + ") for underlying rope with length " + rope.length)
     }
 
+    override val depth = rope.depth
+
     override fun get(index: Int): Char {
         if (index >= length) throw IndexOutOfBoundsException("Rope index out of range: $index")
 
         return rope[offset + index]
     }
 
-    override fun depth(): Int {
-        return depth(getRope())
-    }
-
-    /**
-     * Returns the rope underlying this one.
-     *
-     * @return the rope underlying this one.
-     */
-    fun getRope(): Rope {
-        return rope
-    }
-
     override fun iterator(start: Int): Iterator<Char> {
         if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
         return object : Iterator<Char> {
-            val u: Iterator<Char> = getRope().iterator(offset + start)
+            val u: Iterator<Char> = rope.iterator(offset + start)
             var position: Int = start
 
             override fun hasNext(): Boolean {
@@ -56,14 +43,14 @@ internal class SubstringRope(val rope: FlatRope, val offset: Int, override val l
         }
     }
 
-    override fun reverse(): Rope {
+    override fun reverse(): InternalRope {
         return ReverseRope(this)
     }
 
     override fun reverseIterator(start: Int): Iterator<Char> {
         if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
         return object : Iterator<Char> {
-            val u: Iterator<Char> = getRope().reverseIterator(getRope().length - offset - length + start)
+            val u: Iterator<Char> = rope.reverseIterator(rope.length - offset - length + start)
             var position: Int = length - start
 
             override fun hasNext(): Boolean {
@@ -77,7 +64,7 @@ internal class SubstringRope(val rope: FlatRope, val offset: Int, override val l
         }
     }
 
-    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+    override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {
         if (startIndex == 0 && endIndex == length) return this
         return SubstringRope(rope, offset + startIndex, endIndex - startIndex)
     }

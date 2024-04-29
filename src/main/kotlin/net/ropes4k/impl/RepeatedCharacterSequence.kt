@@ -12,14 +12,14 @@ import java.util.Arrays
  * and a repeat count.
  */
 internal class RepeatedCharacterSequence(
-    val character: Char,
+    private val character: Char,
     private val repeat: Int
 ) : CharSequence {
     override fun get(index: Int): Char {
         return character
     }
 
-    override val length: Int get() = repeat
+    override val length = repeat
 
 
     override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {

@@ -16,7 +16,7 @@ import net.ropes4k.Rope
  * @param right the second rope.
  * @return the concatenation of the specified ropes.
  */
-internal fun concatenate(left: Rope, right: Rope): Rope {
+internal fun concatenate(left: InternalRope, right: InternalRope): InternalRope {
     if (left.isEmpty()) return right
     if (right.isEmpty()) return left
     require(left.length.toLong() + right.length <= Int.MAX_VALUE) {
@@ -53,8 +53,8 @@ internal fun concatenate(left: Rope, right: Rope): Rope {
 
 private const val MAX_ROPE_DEPTH: Short = 96
 
-private fun maybeRebalance(r: Rope): Rope {
-    return if (r is AbstractRope && r.depth() > MAX_ROPE_DEPTH) {
+private fun maybeRebalance(r: InternalRope): InternalRope {
+    return if (r is AbstractRope && r.depth > MAX_ROPE_DEPTH) {
         rebalance(r)
     } else {
         r

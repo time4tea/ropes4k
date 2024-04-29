@@ -5,8 +5,6 @@
  */
 package net.ropes4k.impl
 
-import net.ropes4k.Rope
-import net.ropes4k.impl.RopeUtilities.Companion.depth
 import java.io.IOException
 import java.io.Writer
 
@@ -14,13 +12,13 @@ import java.io.Writer
  * A rope representing the reversal of character sequence.
  */
 
-internal class ReverseRope(private val rope: Rope) : AbstractRope() {
+internal class ReverseRope(private val rope: InternalRope) : AbstractRope() {
+
+    override val depth: Int = rope.depth
+    override val length = rope.length
+
     override fun get(index: Int): Char {
         return rope[length - index - 1]
-    }
-
-    override fun depth(): Int {
-        return depth(rope)
     }
 
     override fun iterator(start: Int): Iterator<Char> {
@@ -38,9 +36,8 @@ internal class ReverseRope(private val rope: Rope) : AbstractRope() {
         }
     }
 
-    override val length: Int get() = rope.length
 
-    override fun reverse(): Rope {
+    override fun reverse(): InternalRope {
         return rope
     }
 
@@ -59,7 +56,7 @@ internal class ReverseRope(private val rope: Rope) : AbstractRope() {
         }
     }
 
-    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+    override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {
         if (startIndex == 0 && endIndex == length) return this
         return rope.subSequence(length - endIndex, length - startIndex).reverse()
     }

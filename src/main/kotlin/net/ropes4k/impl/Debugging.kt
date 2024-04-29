@@ -54,8 +54,6 @@ public fun stats(r: Rope, out: PrintStream) {
         }
     }
     out.println(
-        "rope(length=" + r.length + ", leaf nodes=" + leafNodes.size + ", non-leaf nodes=" + nonLeaf + ", depth=" + RopeUtilities.depth(
-            r
-        ) + ")"
+        "rope(length=" + r.length + ", leaf nodes=" + leafNodes.size + ", non-leaf nodes=" + nonLeaf + ", depth=" + (r as InternalRope).depth + ")"
     )
 }

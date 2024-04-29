@@ -25,7 +25,6 @@ import java.io.ObjectOutputStream
 import java.io.StringWriter
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.regex.Pattern
 
 class RopeTest {
     private fun Rope.substring(start: Int, end: Int): String {
@@ -34,7 +33,7 @@ class RopeTest {
         return out.toString()
     }
 
-    private fun Assertion.Builder<Rope>.isString(s: String): Assertion.Builder<String> {
+    private fun <T : Rope> Assertion.Builder<T>.isString(s: String): Assertion.Builder<String> {
         return get { this.toString() }.isEqualTo(s)
     }
 
@@ -97,7 +96,7 @@ class RopeTest {
 
     @Test
     fun testMatches() {
-        val x1: Rope = FlatCharSequenceRope("0123456789")
+        val x1 = FlatCharSequenceRope("0123456789")
         val x2: Rope = ConcatenationRope(x1, x1)
 
         Assertions.assertTrue(x2.matches("0.*9".toRegex()))
@@ -118,9 +117,9 @@ class RopeTest {
 
     @Test
     fun testIterator() {
-        val x1: Rope = FlatCharSequenceRope("0123456789")
-        val x2: Rope = FlatCharSequenceRope("0123456789")
-        val x3: Rope = FlatCharSequenceRope("0123456789")
+        val x1 = FlatCharSequenceRope("0123456789")
+        val x2 = FlatCharSequenceRope("0123456789")
+        val x3 = FlatCharSequenceRope("0123456789")
         val c1 = ConcatenationRope(x1, x2)
         val c2 = ConcatenationRope(c1, x3)
 
@@ -132,9 +131,9 @@ class RopeTest {
         expectThat(i).isFinished()
 
         val z1 = FlatCharSequenceRope("0123456789")
-        val z2: Rope = SubstringRope(z1, 2, 0)
-        val z3: Rope = SubstringRope(z1, 2, 2)
-        val z4: Rope = ConcatenationRope(z3, SubstringRope(z1, 6, 2)) // 2367
+        val z2 = SubstringRope(z1, 2, 0)
+        val z3 = SubstringRope(z1, 2, 2)
+        val z4 = ConcatenationRope(z3, SubstringRope(z1, 6, 2)) // 2367
 
         i = z2.iterator()
         expectThat(i).isFinished()
@@ -167,21 +166,25 @@ class RopeTest {
 
     @Test
     fun testReverse() {
-        val x1: Rope = FlatCharSequenceRope("012345")
-        val x2: Rope = FlatCharSequenceRope("67")
-        val x3: Rope = ConcatenationRope(x1, x2)
+        val x1 = FlatCharSequenceRope("012345")
+        val x2 = FlatCharSequenceRope("67")
+        val x3 = ConcatenationRope(x1, x2)
 
         expectThat(x1.reverse()).isString("543210")
         expectThat(x3.reverse()).isString("76543210")
         expectThat(x3.reverse().reverse().reverse()).isEqualTo(x3.reverse())
         expectThat(x3.reverse().subSequence(1, 7)).isString("654321")
+
+
+        val rope: Rope = Rope.of("0123445").subSequence(1, 2)
+
     }
 
     @Test
     fun testTrim() {
-        val x1: Rope = FlatCharSequenceRope("\u0012  012345")
-        val x2: Rope = FlatCharSequenceRope("\u0002 67	       \u0007")
-        val x3: Rope = ConcatenationRope(x1, x2)
+        val x1 = FlatCharSequenceRope("\u0012  012345")
+        val x2 = FlatCharSequenceRope("\u0002 67	       \u0007")
+        val x3 = ConcatenationRope(x1, x2)
 
         expectThat(x1.trimStart()).isString("012345")
         expectThat(x2.trimStart()).isString("67	       \u0007")
@@ -636,18 +639,18 @@ class RopeTest {
     fun `times and repeat`() {
         val r = Rope.of("HI")
 
-        expectThat(r*0).isEqualTo(Rope.of(""))
-        expectThat(r*1).isEqualTo(Rope.of("HI"))
-        expectThat(r*2).isEqualTo(Rope.of("HIHI"))
-        expectThat(r*3).isEqualTo(Rope.of("HIHIHI"))
-        expectThat(r.repeat(3)).isEqualTo(r*3)
+        expectThat(r * 0).isEqualTo(Rope.of(""))
+        expectThat(r * 1).isEqualTo(Rope.of("HI"))
+        expectThat(r * 2).isEqualTo(Rope.of("HIHI"))
+        expectThat(r * 3).isEqualTo(Rope.of("HIHIHI"))
+        expectThat(r.repeat(3)).isEqualTo(r * 3)
     }
 
     @Test
     fun `times small`() {
-        expectThat(Rope.of("") * 10 ).isEqualTo(Rope.of(""))
-        expectThat(Rope.of("A") * 0 ).isEqualTo(Rope.of(""))
-        expectThat(Rope.of("A") * 1 ).isEqualTo(Rope.of("A"))
-        expectThat(Rope.of("A") * 4 ).isEqualTo(Rope.of("AAAA"))
+        expectThat(Rope.of("") * 10).isEqualTo(Rope.of(""))
+        expectThat(Rope.of("A") * 0).isEqualTo(Rope.of(""))
+        expectThat(Rope.of("A") * 1).isEqualTo(Rope.of("A"))
+        expectThat(Rope.of("A") * 4).isEqualTo(Rope.of("AAAA"))
     }
 }

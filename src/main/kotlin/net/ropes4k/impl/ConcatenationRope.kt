@@ -6,7 +6,6 @@
 package net.ropes4k.impl
 
 import net.ropes4k.Rope
-import net.ropes4k.impl.RopeUtilities.Companion.depth
 import java.io.IOException
 import java.io.Writer
 import kotlin.math.max
@@ -15,20 +14,17 @@ import kotlin.math.max
  * A rope that represents the concatenation of two other ropes.
  */
 internal class ConcatenationRope(
-    val left: Rope,
-    val right: Rope
+    val left: InternalRope,
+    val right: InternalRope
 ) : AbstractRope() {
-    private val depth = max(depth(left), depth(right)) + 1
-
-    override val length: Int = left.length + right.length
+    override val depth = max(left.depth, right.depth) + 1
+    override val length = left.length + right.length
 
     override fun get(index: Int): Char {
         if (index >= length) throw IndexOutOfBoundsException("Rope index out of range: $index")
 
         return (if (index < left.length) left[index] else right[index - left.length])
     }
-
-    override fun depth(): Int = depth
 
     /*
      * Returns this object as a char sequence optimized for
@@ -61,7 +57,7 @@ internal class ConcatenationRope(
             }
         }
 
-        override val length: Int get() = rope.length
+        override val length = rope.length
 
         override fun subSequence(startIndex: Int, endIndex: Int): CharSequence {
             return rope.subSequence(startIndex, endIndex)
@@ -81,7 +77,7 @@ internal class ConcatenationRope(
         return rebalance(this)
     }
 
-    override fun reverse(): Rope {
+    override fun reverse(): InternalRope {
         return concatenate(right.reverse(), left.reverse())
     }
 
@@ -94,7 +90,7 @@ internal class ConcatenationRope(
         }
     }
 
-    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+    override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {
         require(!(startIndex < 0 || endIndex > length)) { "Start/End ($startIndex/$endIndex) out of bounds (0/$length)" }
         if (startIndex == 0 && endIndex == length) return this
         val l = left.length

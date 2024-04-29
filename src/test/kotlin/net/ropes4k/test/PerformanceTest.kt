@@ -7,6 +7,7 @@ package net.ropes4k.test
 
 import net.ropes4k.Rope
 import net.ropes4k.impl.AbstractRope
+import net.ropes4k.impl.InternalRope
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.io.StringWriter
@@ -251,7 +252,7 @@ class PerformanceTest {
                 "[Rope]         Executed insert plan in % ,18d ns. Result has length: %d. Rope Depth: %d\n",
                 (y - x),
                 result.length,
-                (result as AbstractRope).depth()
+                (result as InternalRope).depth
             )
             complexRope = result
             return (y - x)

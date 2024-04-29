@@ -15,19 +15,21 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.min
 
-internal abstract class AbstractRope : Rope {
+internal abstract class AbstractRope : InternalRope {
     private var hashCode = 0
 
+    override val depth = 0
+
     override fun append(c: Char): Rope {
-        return concatenate(this, Rope.of(c.toString()))
+        return concatenate(this, FlatCharSequenceRope(c.toString()))
     }
 
     override fun append(chars: CharSequence): Rope {
-        return concatenate(this, Rope.of(chars))
+        return concatenate(this, FlatCharSequenceRope(chars))
     }
 
     override fun append(chars: CharSequence, start: Int, end: Int): Rope {
-        return concatenate(this, Rope.of(chars).subSequence(start, end))
+        return concatenate(this, FlatCharSequenceRope(chars).subSequence(start, end))
     }
 
     override fun compareTo(other: CharSequence): Int {
@@ -45,8 +47,6 @@ internal abstract class AbstractRope : Rope {
         if (start == end) return this
         return subSequence(0, start).append(subSequence(end, length))
     }
-
-    abstract fun depth(): Int
 
     override fun equals(other: Any?): Boolean {
         if (other is Rope) {
@@ -223,7 +223,7 @@ internal abstract class AbstractRope : Rope {
         val toPad = toLength - length
         if (toPad < 1) return this
         return concatenate(
-            Rope.of(RepeatedCharacterSequence(padChar, toPad)),
+            FlatCharSequenceRope(RepeatedCharacterSequence(padChar, toPad)),
             this
         )
     }
@@ -233,7 +233,7 @@ internal abstract class AbstractRope : Rope {
         if (toPad < 1) return this
         return concatenate(
             this,
-            Rope.of(RepeatedCharacterSequence(padChar, toPad))
+            FlatCharSequenceRope(RepeatedCharacterSequence(padChar, toPad))
         )
     }
 }

@@ -5,7 +5,6 @@
  */
 package net.ropes4k.impl
 
-import net.ropes4k.Rope
 import java.io.IOException
 import java.io.Writer
 import java.util.regex.Matcher
@@ -14,13 +13,12 @@ import java.util.regex.Pattern
 /**
  * A rope constructed from an underlying character sequence.
  */
-internal class FlatCharSequenceRope(private val sequence: CharSequence) : AbstractRope(), FlatRope {
-    override fun get(index: Int): Char {
-        return sequence[index]
-    }
+internal class FlatCharSequenceRope(private val chars: CharSequence) : AbstractRope(), FlatRope {
 
-    override fun depth(): Int {
-        return 0
+    override val length = chars.length
+
+    override fun get(index: Int): Char {
+        return chars[index]
     }
 
     override fun iterator(start: Int): Iterator<Char> {
@@ -34,22 +32,20 @@ internal class FlatCharSequenceRope(private val sequence: CharSequence) : Abstra
 
             override fun next(): Char {
                 if ( current < length ) {
-                    return sequence[current++]
+                    return chars[current++]
                 }
                 throw NoSuchElementException("Iterator is at end of Rope at $current")
             }
         }
     }
 
-    override val length: Int
-        get() = sequence.length
 
     override fun matcher(pattern: Pattern): Matcher {
         // optimized to return a matcher directly on the underlying sequence.
-        return pattern.matcher(sequence)
+        return pattern.matcher(chars)
     }
 
-    override fun reverse(): Rope {
+    override fun reverse(): InternalRope {
         return ReverseRope(this)
     }
 
@@ -63,26 +59,26 @@ internal class FlatCharSequenceRope(private val sequence: CharSequence) : Abstra
             }
 
             override fun next(): Char {
-                return sequence[--current]
+                return chars[--current]
             }
         }
     }
 
-    override fun subSequence(startIndex: Int, endIndex: Int): Rope {
+    override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {
         if (startIndex == 0 && endIndex == length) return this
-        return if (endIndex - startIndex < 8 || sequence is String /* special optimization for String */) {
-            FlatCharSequenceRope(sequence.subSequence(startIndex, endIndex))
+        return if (endIndex - startIndex < 8 || chars is String /* special optimization for String */) {
+            FlatCharSequenceRope(chars.subSequence(startIndex, endIndex))
         } else {
             SubstringRope(this, startIndex, endIndex - startIndex)
         }
     }
 
     override fun toString(): String {
-        return sequence.toString()
+        return chars.toString()
     }
 
     override fun toString(offset: Int, length: Int): String {
-        return sequence.subSequence(offset, offset + length).toString()
+        return chars.subSequence(offset, offset + length).toString()
     }
 
     @Throws(IOException::class)
@@ -94,10 +90,10 @@ internal class FlatCharSequenceRope(private val sequence: CharSequence) : Abstra
     override fun write(out: Writer, offset: Int, length: Int) {
         if (offset < 0 || offset + length > this.length) throw IndexOutOfBoundsException("Rope index out of bounds:" + (if (offset < 0) offset else offset + length))
 
-        if (sequence is String) {    // optimization for String
-            out.write(sequence.substring(offset, offset + length))
+        if (chars is String) {    // optimization for String
+            out.write(chars.substring(offset, offset + length))
             return
         }
-        for (j in offset until offset + length) out.write(sequence[j].code)
+        for (j in offset until offset + length) out.write(chars[j].code)
     }
 }

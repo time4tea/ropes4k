@@ -10,7 +10,7 @@ import net.ropes4k.Rope
 /**
  * A rope that is directly backed by a data source.
  */
-internal interface FlatRope : Rope {
+internal interface FlatRope : InternalRope {
     /**
      * Returns a `String` representation of a range
      * in this rope.

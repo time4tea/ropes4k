@@ -9,11 +9,11 @@ package net.ropes4k.impl
 import net.ropes4k.Rope
 import java.util.ArrayDeque
 
-internal fun rebalance(r: Rope): Rope {
+internal fun rebalance(r: InternalRope): InternalRope {
     // get all the nodes into a list
 
-    val leafNodes = ArrayList<Rope>()
-    val toExamine = ArrayDeque<Rope>()
+    val leafNodes = ArrayList<InternalRope>()
+    val toExamine = ArrayDeque<InternalRope>()
     // begin a depth first loop.
     toExamine.add(r)
     while (!toExamine.isEmpty()) {
@@ -28,7 +28,7 @@ internal fun rebalance(r: Rope): Rope {
     return merge(leafNodes, 0, leafNodes.size)
 }
 
-private fun merge(leafNodes: ArrayList<Rope>, start: Int, end: Int): Rope {
+private fun merge(leafNodes: ArrayList<InternalRope>, start: Int, end: Int): InternalRope {
     val range = end - start
     when (range) {
         1 -> return leafNodes[start]
