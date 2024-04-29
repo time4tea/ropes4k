@@ -22,23 +22,8 @@ internal class FlatCharSequenceRope(private val chars: CharSequence) : AbstractR
     }
 
     override fun iterator(start: Int): Iterator<Char> {
-        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
-        return object : Iterator<Char> {
-            var current: Int = start
-
-            override fun hasNext(): Boolean {
-                return current < length
-            }
-
-            override fun next(): Char {
-                if ( current < length ) {
-                    return chars[current++]
-                }
-                throw NoSuchElementException("Iterator is at end of Rope at $current")
-            }
-        }
+        return FlatRopeIterator(this, start)
     }
-
 
     override fun matcher(pattern: Pattern): Matcher {
         // optimized to return a matcher directly on the underlying sequence.
@@ -50,18 +35,7 @@ internal class FlatCharSequenceRope(private val chars: CharSequence) : AbstractR
     }
 
     override fun reverseIterator(start: Int): Iterator<Char> {
-        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
-        return object : Iterator<Char> {
-            var current: Int = length - start
-
-            override fun hasNext(): Boolean {
-                return current > 0
-            }
-
-            override fun next(): Char {
-                return chars[--current]
-            }
-        }
+        return FlatRopeReverseIterator(this, start)
     }
 
     override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {

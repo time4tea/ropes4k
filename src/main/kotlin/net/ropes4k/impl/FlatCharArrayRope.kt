@@ -39,41 +39,15 @@ internal class FlatCharArrayRope(
     }
 
     override fun iterator(start: Int): Iterator<Char> {
-        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
-        return object : Iterator<Char> {
-            var current: Int = start
-
-            override fun hasNext(): Boolean {
-                return current < length
-            }
-
-            override fun next(): Char {
-                if (current < length) {
-                    return sequence[current++]
-                }
-                throw NoSuchElementException("Iterator is at end of Rope at $current")
-            }
-        }
+        return FlatRopeIterator(this, start)
     }
-
 
     override fun reverse(): InternalRope {
         return ReverseRope(this)
     }
 
     override fun reverseIterator(start: Int): Iterator<Char> {
-        if (start < 0 || start > length) throw IndexOutOfBoundsException("Rope index out of range: $start")
-        return object : Iterator<Char> {
-            var current: Int = length - start
-
-            override fun hasNext(): Boolean {
-                return current > 0
-            }
-
-            override fun next(): Char {
-                return sequence[--current]
-            }
-        }
+        return FlatRopeReverseIterator(this, start)
     }
 
     override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {
