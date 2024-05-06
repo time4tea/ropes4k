@@ -6,8 +6,6 @@
 
 package net.ropes4k.test.bench
 
-import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest.Companion.bensAutoRaw
 import org.openjdk.jmh.annotations.*
 import java.io.StringWriter
 import java.util.concurrent.TimeUnit
@@ -17,8 +15,6 @@ import java.util.concurrent.TimeUnit
 @Warmup(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 open class WriteComplexBenchmark {
-
-    val toFind = "Bob was very cheerful with them, and spoke pleasantly to"
 
     val complex = Complex()
 
@@ -63,6 +59,4 @@ open class WriteComplexBenchmark {
             require(it == expected) { "Checksum mismatch, expected $expected, was $it" }
         }
     }
-
-
 }

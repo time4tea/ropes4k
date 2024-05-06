@@ -7,34 +7,33 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest
 
 class Complex {
-    val inserts = (0 until PerformanceTest.PLAN_LENGTH / 10).map {
-        val location = PerformanceTest.random.nextInt(PerformanceTest.aChristmasCarol.length)
-        val clipFrom = PerformanceTest.random.nextInt(PerformanceTest.aChristmasCarol.length)
-        PerformanceTest.Insert(
+    val inserts = (0 until BenchmarkFiles.PLAN_LENGTH / 10).map {
+        val location = BenchmarkFiles.random.nextInt(BenchmarkFiles.aChristmasCarol.length)
+        val clipFrom = BenchmarkFiles.random.nextInt(BenchmarkFiles.aChristmasCarol.length)
+        BenchmarkFiles.Insert(
             location,
             clipFrom,
-            PerformanceTest.random.nextInt(PerformanceTest.aChristmasCarol.length - clipFrom)
+            BenchmarkFiles.random.nextInt(BenchmarkFiles.aChristmasCarol.length - clipFrom)
         )
     }
 
-    val r = inserts.fold(Rope.of(PerformanceTest.aChristmasCarol)) { acc, i ->
+    val r = inserts.fold(Rope.of(BenchmarkFiles.aChristmasCarol)) { acc, i ->
         acc.insert(
             i.location,
-            PerformanceTest.aChristmasCarol.subSequence(i.offset, i.offset + i.length)
+            BenchmarkFiles.aChristmasCarol.subSequence(i.offset, i.offset + i.length)
         )
     }
 
-    val sb = inserts.fold(StringBuilder(PerformanceTest.aChristmasCarol)) { acc, i ->
+    val sb = inserts.fold(StringBuilder(BenchmarkFiles.aChristmasCarol)) { acc, i ->
         acc.insert(
-            i.location, PerformanceTest.aChristmasCarol.subSequence(i.offset, i.offset + i.length)
+            i.location, BenchmarkFiles.aChristmasCarol.subSequence(i.offset, i.offset + i.length)
         )
     }
 
-    val s = inserts.fold(PerformanceTest.aChristmasCarol) { acc, i ->
-        acc.substring(0, i.location) + PerformanceTest.aChristmasCarol.substring(
+    val s = inserts.fold(BenchmarkFiles.aChristmasCarol) { acc, i ->
+        acc.substring(0, i.location) + BenchmarkFiles.aChristmasCarol.substring(
             i.offset, i.offset + i.length
         ) + acc.substring(i.location)
     }

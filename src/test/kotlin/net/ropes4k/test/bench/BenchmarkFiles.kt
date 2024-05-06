@@ -3,13 +3,13 @@
  *  - Originally Copyright (C) 2007 Amin Ahmad.
  * Licenced under GPL
  */
-package net.ropes4k.test
+package net.ropes4k.test.bench
 
 import java.nio.file.Files
 import java.nio.file.Path
 import java.util.*
 
-class PerformanceTest {
+class BenchmarkFiles {
 
     data class Insert(val location: Int, val offset: Int, val length: Int)
 

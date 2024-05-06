@@ -7,10 +7,10 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest.Companion.PLAN_LENGTH
-import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
-import net.ropes4k.test.PerformanceTest.Companion.random
-import net.ropes4k.test.PerformanceTest.Insert
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.PLAN_LENGTH
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.aChristmasCarol
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.random
+import net.ropes4k.test.bench.BenchmarkFiles.Insert
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
 

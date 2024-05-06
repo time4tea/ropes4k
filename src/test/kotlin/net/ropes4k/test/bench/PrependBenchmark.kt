@@ -7,9 +7,8 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest
-import net.ropes4k.test.PerformanceTest.Companion.PLAN_LENGTH
-import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.PLAN_LENGTH
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.aChristmasCarol
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement
@@ -27,8 +26,8 @@ open class PrependBenchmark {
     data class Prepend(val offset: Int, val length: Int)
 
     val prepends = (0 until PLAN_LENGTH).map {
-        val offset = PerformanceTest.random.nextInt(aChristmasCarol.length)
-        Prepend(offset, PerformanceTest.random.nextInt(aChristmasCarol.length - offset))
+        val offset = BenchmarkFiles.random.nextInt(aChristmasCarol.length)
+        Prepend(offset, BenchmarkFiles.random.nextInt(aChristmasCarol.length - offset))
     }
 
     val checksum: Int

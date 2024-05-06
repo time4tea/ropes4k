@@ -7,8 +7,7 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest
-import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.aChristmasCarol
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement
@@ -26,10 +25,10 @@ open class AppendBenchmark {
     data class Append(val offset: Int, val length: Int)
 
     val length = aChristmasCarol.length
-    val appends = (0 until PerformanceTest.PLAN_LENGTH).map {
-        val offset = PerformanceTest.random.nextInt(length)
+    val appends = (0 until BenchmarkFiles.PLAN_LENGTH).map {
+        val offset = BenchmarkFiles.random.nextInt(length)
         Append(
-            offset, PerformanceTest.random.nextInt(length - offset)
+            offset, BenchmarkFiles.random.nextInt(length - offset)
         )
     }
 

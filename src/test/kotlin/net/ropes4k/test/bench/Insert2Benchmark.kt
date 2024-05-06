@@ -7,9 +7,8 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest
-import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
-import net.ropes4k.test.PerformanceTest.Companion.bensAuto
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.aChristmasCarol
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.bensAuto
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement
@@ -28,12 +27,12 @@ open class Insert2Benchmark {
                 "* A Christmas Carol. */
 
     // string is so slow, plots show "0"
-    val inserts = (0 until PerformanceTest.PLAN_LENGTH / 5).map {
-        val clipFrom = PerformanceTest.random.nextInt(bensAuto.length)
-        PerformanceTest.Insert(
-            PerformanceTest.random.nextInt(aChristmasCarol.length),
+    val inserts = (0 until BenchmarkFiles.PLAN_LENGTH / 5).map {
+        val clipFrom = BenchmarkFiles.random.nextInt(bensAuto.length)
+        BenchmarkFiles.Insert(
+            BenchmarkFiles.random.nextInt(aChristmasCarol.length),
             clipFrom,
-            PerformanceTest.random.nextInt(bensAuto.length - clipFrom)
+            BenchmarkFiles.random.nextInt(bensAuto.length - clipFrom)
         )
     }
 

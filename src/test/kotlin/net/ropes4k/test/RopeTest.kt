@@ -6,11 +6,7 @@
 package net.ropes4k.test
 
 import net.ropes4k.Rope
-import net.ropes4k.impl.ConcatenationRope
-import net.ropes4k.impl.FlatCharArrayRope
-import net.ropes4k.impl.FlatCharSequenceRope
-import net.ropes4k.impl.ReverseRope
-import net.ropes4k.impl.SubstringRope
+import net.ropes4k.impl.*
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import strikt.api.Assertion
@@ -18,11 +14,7 @@ import strikt.api.expectThat
 import strikt.api.expectThrows
 import strikt.assertions.isA
 import strikt.assertions.isEqualTo
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
-import java.io.StringWriter
+import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
 
@@ -319,7 +311,7 @@ class RopeTest {
 
     @Test
     fun reverse() {
-        val orig = PerformanceTest.aChristmasCarol
+        val orig = "hello this is some sort of string"
         val r = Rope.of(orig)
         val rev = orig.reversed()
 

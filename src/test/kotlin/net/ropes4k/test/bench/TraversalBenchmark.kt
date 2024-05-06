@@ -7,7 +7,7 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest.Companion.aChristmasCarol
+import net.ropes4k.test.bench.BenchmarkFiles.Companion.aChristmasCarol
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.annotations.Fork
 import org.openjdk.jmh.annotations.Measurement

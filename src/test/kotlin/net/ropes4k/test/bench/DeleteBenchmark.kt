@@ -7,7 +7,6 @@
 package net.ropes4k.test.bench
 
 import net.ropes4k.Rope
-import net.ropes4k.test.PerformanceTest
 import org.openjdk.jmh.annotations.*
 import java.util.concurrent.TimeUnit
 import kotlin.math.min
@@ -24,11 +23,11 @@ open class DeleteBenchmark {
 
     @Setup
     fun setUp() {
-        var newSize = PerformanceTest.aChristmasCarol.length
+        var newSize = BenchmarkFiles.aChristmasCarol.length
 
-        deletes = (0 until PerformanceTest.PLAN_LENGTH).map {
-            val offset = PerformanceTest.random.nextInt(newSize)
-            val length = PerformanceTest.random.nextInt(
+        deletes = (0 until BenchmarkFiles.PLAN_LENGTH).map {
+            val offset = BenchmarkFiles.random.nextInt(newSize)
+            val length = BenchmarkFiles.random.nextInt(
                 min(100, (newSize - offset))
             )
             val expected = newSize - length
@@ -39,21 +38,21 @@ open class DeleteBenchmark {
 
     @Benchmark
     fun string(): String {
-        return deletes.fold(PerformanceTest.aChristmasCarol) { acc, it ->
+        return deletes.fold(BenchmarkFiles.aChristmasCarol) { acc, it ->
             acc.substring(0, it.offset) + acc.substring(it.offset + it.length)
         }
     }
 
     @Benchmark
     fun stringBuilder(): StringBuilder {
-        return deletes.fold(StringBuilder(PerformanceTest.aChristmasCarol)) { acc, it ->
+        return deletes.fold(StringBuilder(BenchmarkFiles.aChristmasCarol)) { acc, it ->
             acc.delete(it.offset, it.offset + it.length)
         }
     }
 
     @Benchmark
     fun rope(): Rope {
-        return deletes.fold(Rope.of(PerformanceTest.aChristmasCarol)) { acc, it ->
+        return deletes.fold(Rope.of(BenchmarkFiles.aChristmasCarol)) { acc, it ->
             acc.delete(it.offset, it.offset + it.length)
         }
     }
