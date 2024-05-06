@@ -37,6 +37,13 @@ is as simple as:
 val r = Rope.of("123")
 ```
 
+If you have a `CharArray`, you can use `ofCopy` - This is to highlight that `CharArray`s are copied right now.
+
+```kotlin
+var r = Rope.ofCopy("123".toCharArray())
+```
+
+
 ## Caveats
 
 The Rope doesn't copy your `CharSequence`, but Ropes are supposed to be immutable, so if you modify the underlying `CharSequence`
