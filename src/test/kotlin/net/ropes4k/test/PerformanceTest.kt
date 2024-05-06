@@ -13,8 +13,7 @@ import java.io.StringWriter
 import java.io.Writer
 import java.nio.file.Files
 import java.nio.file.Path
-import java.util.Arrays
-import java.util.Random
+import java.util.*
 import java.util.regex.Pattern
 
 /**
@@ -50,7 +49,7 @@ class PerformanceTest {
             )
         }
 
-        (0..inserts.size step 20).forEach {
+        (0..inserts.size step 200).forEach {
             println("Insert plan length: ${inserts.size}")
             val stats0 = LongArray(ITERATION_COUNT)
             val stats1 = LongArray(ITERATION_COUNT)
@@ -74,9 +73,9 @@ class PerformanceTest {
         const val ITERATION_COUNT = 7
         const val PLAN_LENGTH = 500
 
-        private var complexString: String? = null
-        private var complexStringBuffer: StringBuffer? = null
-        private var complexRope: Rope? = null
+        private lateinit var complexString: String
+        private lateinit var complexStringBuffer: StringBuffer
+        private lateinit var complexRope: Rope
 
         private fun search2() {
             println()
@@ -165,8 +164,8 @@ class PerformanceTest {
             for (j in 0..2) {
                 stats0[j] = stringTraverseTest2(complexString)
                 stats1[j] = stringBufferTraverseTest2(complexStringBuffer)
-                stats2[j] = ropeTraverseTest2_1(complexRope)
-                stats3[j] = ropeTraverseTest2_2(complexRope)
+                stats2[j] = ropeTraverseTest2_charAt(complexRope)
+                stats3[j] = ropeTraverseTest2_iterator(complexRope)
             }
             stat(stats0, "[String]")
             stat(stats1, "[StringBuffer]")
@@ -188,9 +187,9 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun stringBufferFindTest2(aChristmasCarol: StringBuffer?, toFind: String): Long {
+        private fun stringBufferFindTest2(aChristmasCarol: StringBuffer, toFind: String): Long {
             val x = System.nanoTime()
-            val loc = aChristmasCarol!!.indexOf(toFind)
+            val loc = aChristmasCarol.indexOf(toFind)
             val y = System.nanoTime()
             System.out.printf(
                 "[StringBuffer.find] indexOf needle length %d found at index %d in % ,18d ns.\n",
@@ -201,9 +200,9 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun ropeFindTest2(aChristmasCarol: Rope?, toFind: String): Long {
+        private fun ropeFindTest2(aChristmasCarol: Rope, toFind: String): Long {
             val x = System.nanoTime()
-            val loc = aChristmasCarol!!.indexOf(toFind)
+            val loc = aChristmasCarol.indexOf(toFind)
             val y = System.nanoTime()
             System.out.printf(
                 "[Rope.find]         indexOf needle length %d found at index %d in % ,18d ns.\n",
@@ -258,19 +257,21 @@ class PerformanceTest {
         }
 
 
-        private fun ropeTraverseTest2_1(aChristmasCarol: Rope?): Long {
+        private fun ropeTraverseTest2_charAt(aChristmasCarol: Rope): Long {
             var r = 0
             val x = System.nanoTime()
-            for (j in 0 until aChristmasCarol!!.length) r += aChristmasCarol[j].code
+            for (j in 0 until aChristmasCarol.length) {
+                r += aChristmasCarol[j].code
+            }
             val y = System.nanoTime()
             System.out.printf("[Rope/charAt]  Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), r)
             return (y - x)
         }
 
-        private fun ropeTraverseTest2_2(aChristmasCarol: Rope?): Long {
+        private fun ropeTraverseTest2_iterator(aChristmasCarol: Rope): Long {
             var r = 0
             val x = System.nanoTime()
-            for (c in aChristmasCarol!!) r += c.code
+            for (c in aChristmasCarol) r += c.code
             val y = System.nanoTime()
             System.out.printf("[Rope/itr]     Executed traversal in % ,18d ns. Result checksum: %d\n", (y - x), r)
             return (y - x)
@@ -339,7 +340,7 @@ class PerformanceTest {
         }
 
 
-        private fun stringRegexpTest2(aChristmasCarol: String?, pattern: Pattern): Long {
+        private fun stringRegexpTest2(aChristmasCarol: String, pattern: Pattern): Long {
             val x = System.nanoTime()
 
             var result = 0
@@ -352,7 +353,7 @@ class PerformanceTest {
         }
 
 
-        private fun stringBufferRegexpTest2(aChristmasCarol: StringBuffer?, pattern: Pattern): Long {
+        private fun stringBufferRegexpTest2(aChristmasCarol: StringBuffer, pattern: Pattern): Long {
             val x = System.nanoTime()
 
             var result = 0
@@ -364,7 +365,7 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun ropeRegexpTest2(aChristmasCarol: Rope?, pattern: Pattern): Long {
+        private fun ropeRegexpTest2(aChristmasCarol: Rope, pattern: Pattern): Long {
             val x = System.nanoTime()
 
             var result = 0
@@ -376,17 +377,21 @@ class PerformanceTest {
             return (y - x)
         }
 
-        private fun ropeRebalancedRegexpTest2(aChristmasCarol: Rope?, pattern: Pattern): Long {
+        private fun ropeRebalancedRegexpTest2(aChristmasCarol: Rope, pattern: Pattern): Long {
             val x = System.nanoTime()
 
             val adaptedRope: CharSequence =
-                aChristmasCarol!!.rebalance() //Rope.BUILDER.buildForRegexpSearching(aChristmasCarol);
+                (aChristmasCarol as InternalRope).rebalance() //Rope.BUILDER.buildForRegexpSearching(aChristmasCarol);
             var result = 0
             val m = pattern.matcher(adaptedRope)
             while (m.find()) ++result
 
             val y = System.nanoTime()
-            System.out.printf("[Reblncd Rope] Executed regexp test in % ,18d ns. Found %d matches.\n", (y - x), result)
+            System.out.printf(
+                "[Rebalanced Rope] Executed regexp test in % ,18d ns. Found %d matches.\n",
+                (y - x),
+                result
+            )
             return (y - x)
         }
 

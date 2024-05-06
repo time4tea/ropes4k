@@ -10,6 +10,7 @@ import net.ropes4k.Rope
 
 internal interface InternalRope : Rope {
     val depth: Int
+    fun rebalance(): Rope
     override fun reverse(): InternalRope
     override fun subSequence(startIndex: Int, endIndex: Int): InternalRope
 }

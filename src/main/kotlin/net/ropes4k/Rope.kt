@@ -150,15 +150,6 @@ public interface Rope : CharSequence, Iterable<Char>, Comparable<CharSequence>, 
     public fun matcher(pattern: Pattern): Matcher
 
     /**
-     * Rebalances the current rope, returning the rebalanced rope. In general,
-     * rope rebalancing is handled automatically, but this method is provided
-     * to give users more control.
-     *
-     * @return a rebalanced rope.
-     */
-    public fun rebalance(): Rope
-
-    /**
      * Reverses this rope.
      * @return a reversed copy of this rope.
      */
