@@ -180,10 +180,6 @@ internal abstract class AbstractRope : InternalRope {
         return pattern.matcher(getForSequentialAccess())
     }
 
-    override fun matches(regex: Pattern): Boolean {
-        return regex.matcher(getForSequentialAccess()).matches()
-    }
-
     override fun rebalance(): Rope {
         return this
     }
