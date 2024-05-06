@@ -24,6 +24,9 @@ import java.util.concurrent.TimeUnit
 @Measurement(iterations = 5, time = 1, timeUnit = TimeUnit.SECONDS)
 open class Insert2Benchmark {
 
+    /* Insert fragments of Benjamin Franklin's Autobiography into\n" +
+                "* A Christmas Carol. */
+
     // string is so slow, plots show "0"
     val inserts = (0 until PerformanceTest.PLAN_LENGTH / 5).map {
         val clipFrom = PerformanceTest.random.nextInt(bensAuto.length)
