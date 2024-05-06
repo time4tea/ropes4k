@@ -25,11 +25,18 @@ internal abstract class AbstractRope : InternalRope {
     }
 
     override fun append(chars: CharSequence): Rope {
-        return concatenate(this, FlatCharSequenceRope(chars))
+        return concatenate(this, internalRopeOf(chars))
     }
 
     override fun append(chars: CharSequence, start: Int, end: Int): Rope {
-        return concatenate(this, FlatCharSequenceRope(chars).subSequence(start, end))
+        return concatenate(this, internalRopeOf(chars).subSequence(start, end))
+    }
+
+    private fun internalRopeOf(chars: CharSequence): InternalRope {
+        return when (chars) {
+            is InternalRope -> chars
+            else -> FlatCharSequenceRope(chars)
+        }
     }
 
     override fun compareTo(other: CharSequence): Int {
@@ -154,7 +161,7 @@ internal abstract class AbstractRope : InternalRope {
     }
 
     override fun insert(at: Int, chars: CharSequence): Rope {
-        val r = Rope.of(chars)
+        val r = internalRopeOf(chars)
 
         if (at == 0) return r.append(this)
         else if (at == length) return append(r)

@@ -29,7 +29,7 @@ internal fun concatenate(left: InternalRope, right: InternalRope): InternalRope 
         if (right is ConcatenationRope) {
             if (left.length + right.left.length < combineLength) return maybeRebalance(
                 ConcatenationRope(
-                    FlatCharSequenceRope(left.toString() + right.left),
+                    FlatCharSequenceRope(left.toString() + right.left.toString()),
                     right.right
                 )
             )
@@ -40,7 +40,7 @@ internal fun concatenate(left: InternalRope, right: InternalRope): InternalRope 
             if (right.length + left.right.length < combineLength) return maybeRebalance(
                 ConcatenationRope(
                     left.left,
-                    FlatCharSequenceRope(left.right.toString() + right)
+                    FlatCharSequenceRope(left.right.toString() + right.toString())
                 )
             )
         }

@@ -41,20 +41,21 @@ class PerformanceTest {
 
         val length = aChristmasCarol.length
         val inserts = (0 until PLAN_LENGTH).map {
+            val location = random.nextInt(length)
             val clipFrom = random.nextInt(length)
             Insert(
-                random.nextInt(length),
+                location,
                 clipFrom,
                 random.nextInt(length - clipFrom)
             )
         }
 
-        (0..inserts.size step 200).forEach {
+        (0..inserts.size step inserts.size).forEach {
             println("Insert plan length: ${inserts.size}")
             val stats0 = LongArray(ITERATION_COUNT)
             val stats1 = LongArray(ITERATION_COUNT)
             val stats2 = LongArray(ITERATION_COUNT)
-            for (j in 0 until 2) { // 7 takes too long!
+            for (j in 0 until 7) { // 7 takes too long!
                 stats0[j] = stringInsertTest(aChristmasCarolRaw, inserts)
                 stats1[j] = stringBufferInsertTest(aChristmasCarolRaw, inserts)
                 stats2[j] = ropeInsertTest(aChristmasCarolRaw, inserts)
@@ -64,7 +65,6 @@ class PerformanceTest {
             stat(stats2, "[Rope]")
         }
     }
-
 
     companion object {
         private var seed = 342342
@@ -388,7 +388,7 @@ class PerformanceTest {
 
             val y = System.nanoTime()
             System.out.printf(
-                "[Rebalanced Rope] Executed regexp test in % ,18d ns. Found %d matches.\n",
+                "[Rebal  Rope] Executed regexp test in % ,18d ns. Found %d matches.\n",
                 (y - x),
                 result
             )
