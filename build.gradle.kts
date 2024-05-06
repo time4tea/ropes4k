@@ -1,3 +1,8 @@
+/*
+ * Copyright (C) 2024 James Richardson
+ * Licenced under GPL
+ */
+
 plugins {
     kotlin("jvm") version "1.9.23"
     id("org.jetbrains.kotlinx.benchmark") version "0.4.10"
