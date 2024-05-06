@@ -31,7 +31,11 @@ internal class ReverseRope(private val rope: InternalRope) : AbstractRope() {
             }
 
             override fun next(): Char {
-                return get(current++)
+                try {
+                    return get(current++)
+                } catch (e: StringIndexOutOfBoundsException) {
+                    throw NoSuchElementException()
+                }
             }
         }
     }

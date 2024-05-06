@@ -41,10 +41,11 @@ internal class ConcatenationRopeIterator(rope: Rope, start: Int) : Iterator<Char
 
     private fun initialize() {
         while (!toTraverse.isEmpty()) {
-            currentRope = toTraverse.pop()
-            if (currentRope is ConcatenationRope) {
-                toTraverse.push((currentRope as ConcatenationRope).right)
-                toTraverse.push((currentRope as ConcatenationRope).left)
+            val nextRope = toTraverse.pop()
+            currentRope = nextRope
+            if (nextRope is ConcatenationRope) {
+                if ( nextRope.right.isNotEmpty()) toTraverse.push(nextRope.right)
+                if ( nextRope.left.isNotEmpty()) toTraverse.push(nextRope.left)
             } else {
                 break
             }
@@ -60,7 +61,7 @@ internal class ConcatenationRopeIterator(rope: Rope, start: Int) : Iterator<Char
         pos -= amount
     }
 
-    fun moveForward(amount: Int) {
+    private fun moveForward(amount: Int) {
         pos += amount
         var remainingAmt = amount
         while (remainingAmt != 0) {
@@ -72,14 +73,15 @@ internal class ConcatenationRopeIterator(rope: Rope, start: Int) : Iterator<Char
             remainingAmt -= available
             if (toTraverse.isEmpty()) {
                 pos -= remainingAmt
-                throw IllegalArgumentException("Unable to move forward $amount. Reached end of rope.")
+                throw NoSuchElementException("Unable to move forward $amount. Reached end of rope.")
             }
 
             while (!toTraverse.isEmpty()) {
-                currentRope = toTraverse.pop()
-                if (currentRope is ConcatenationRope) {
-                    toTraverse.push((currentRope as ConcatenationRope).right)
-                    toTraverse.push((currentRope as ConcatenationRope).left)
+                val nextRope = toTraverse.pop()
+                currentRope = nextRope
+                if (nextRope is ConcatenationRope) {
+                    if ( nextRope.right.isNotEmpty()) toTraverse.push(nextRope.right)
+                    if ( nextRope.left.isNotEmpty()) toTraverse.push(nextRope.left)
                 } else {
                     currentRopePos = -1
                     break

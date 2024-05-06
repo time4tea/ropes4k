@@ -91,7 +91,7 @@ internal class ConcatenationRope(
     }
 
     override fun subSequence(startIndex: Int, endIndex: Int): InternalRope {
-        require(!(startIndex < 0 || endIndex > length)) { "Start/End ($startIndex/$endIndex) out of bounds (0/$length)" }
+        if (startIndex < 0 || startIndex > length || endIndex > length) throw IndexOutOfBoundsException("Start/End ($startIndex/$endIndex) out of bounds (0/$length)")
         if (startIndex == 0 && endIndex == length) return this
         val l = left.length
         if (endIndex <= l) return left.subSequence(startIndex, endIndex)

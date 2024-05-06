@@ -10,7 +10,7 @@ import java.io.IOException
 import java.io.ObjectStreamException
 import java.io.Serial
 import java.io.StringWriter
-import java.util.Arrays
+import java.util.*
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import kotlin.math.min
@@ -73,7 +73,9 @@ internal abstract class AbstractRope : InternalRope {
     override fun hashCode(): Int {
         if (hashCode == 0 && length > 0) {
             if (length < 6) {
-                for (c in this) hashCode = 31 * hashCode + c.code
+                for (c in this) {
+                    hashCode = 31 * hashCode + c.code
+                }
             } else {
                 val i = iterator()
                 for (j in 0..4) hashCode = 31 * hashCode + i.next().code

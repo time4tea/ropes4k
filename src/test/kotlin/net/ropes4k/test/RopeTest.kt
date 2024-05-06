@@ -27,14 +27,10 @@ import java.nio.file.Files
 import java.nio.file.Path
 
 class RopeTest {
-    private fun Rope.substring(start: Int, end: Int): String {
+    fun Rope.substring(start: Int, end: Int): String {
         val out = StringWriter(end - start)
         write(out, start, end - start)
         return out.toString()
-    }
-
-    private fun <T : Rope> Assertion.Builder<T>.isString(s: String): Assertion.Builder<String> {
-        return get { this.toString() }.isEqualTo(s)
     }
 
     private fun <T : Iterator<Char>> Assertion.Builder<T>.isFinished(): Assertion.Builder<Boolean> {
