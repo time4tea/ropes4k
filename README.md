@@ -82,9 +82,16 @@ Indexing into a 200kB char string.
 ![net.ropes4k.test.bench.IndexBenchmark](graphs/net.ropes4k.test.bench.IndexBenchmark.png)
 
 
+### net.ropes4k.test.bench.InsertBenchmark
+
+Inserting subsequences of a rope into itself
+
+![net.ropes4k.test.bench.InsertBenchmark](graphs/net.ropes4k.test.bench.InsertBenchmark.png)
+
+
 ### net.ropes4k.test.bench.Insert2Benchmark
 
-Inserting 100 subsequences of a 200kB char string into itself.
+Inserting subsequences of a rope into a different rope
 
 ![net.ropes4k.test.bench.Insert2Benchmark](graphs/net.ropes4k.test.bench.Insert2Benchmark.png)
 
@@ -94,6 +101,11 @@ Inserting 100 subsequences of a 200kB char string into itself.
 Prepending 500 subsequences of a 200kB character string onto itself.
 
 ![net.ropes4k.test.bench.PrependBenchmark](graphs/net.ropes4k.test.bench.PrependBenchmark.png)
+
+
+### net.ropes4k.test.bench.RegexComplexBenchmark
+
+![net.ropes4k.test.bench.RegexComplexBenchmark](graphs/net.ropes4k.test.bench.RegexComplexBenchmark.png)
 
 
 ### net.ropes4k.test.bench.RegexSimpleBenchmark
@@ -110,11 +122,22 @@ Finding simple string in 200kB character string.
 ![net.ropes4k.test.bench.SearchSimpleBenchmark](graphs/net.ropes4k.test.bench.SearchSimpleBenchmark.png)
 
 
+### net.ropes4k.test.bench.SearchComplexBenchmark
+![net.ropes4k.test.bench.SearchComplexBenchmark](graphs/net.ropes4k.test.bench.SearchComplexBenchmark.png)
+
+
+
 ### net.ropes4k.test.bench.TraversalBenchmark
 
 Iterating over 200kB character string
 
 ![net.ropes4k.test.bench.TraversalBenchmark](graphs/net.ropes4k.test.bench.TraversalBenchmark.png)
+
+
+
+### net.ropes4k.test.bench.WriteComplexBenchmark
+![net.ropes4k.test.bench.WriteComplexBenchmark](graphs/net.ropes4k.test.bench.WriteComplexBenchmark.png)
+
 
 
 # Original Implementation
